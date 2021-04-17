@@ -1,0 +1,52 @@
+{
+  "name": "ludum-48",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ludum Dare 48 Game Jam",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "parcel index.html --no-autoinstall",
+    "test": "npm run build && node ./test/test.js",
+    "typecheck": "tsc -p . --noEmit",
+    "build": "parcel build index.html",
+    "build:excalibur": "cd lib/excalibur && npm install && npm run core && cd ../../",
+    "build:excalibur-tiled": "cd lib/excalibur-tiled && npm install && npm run build && cd ../../"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/excaliburjs/ludum-48.git"
+  },
+  "author": "",
+  "license": "BSD-2",
+  "bugs": {
+    "url": "https://github.com/excaliburjs/ludum-48/issues"
+  },
+  "homepage": "https://github.com/excaliburjs/tludum-48#readme",
+  "assetsPath": "static/",
+  "alias": {
+    "excalibur": "./lib/excalibur/build/dist",
+    "excalibur-tiled": "./lib/excalibur-tiled/"
+  },
+  "devDependencies": {
+    "husky": "4.2.5",
+    "lint-staged": "^10.2.11",
+    "node-static": "0.7.11",
+    "parcel-bundler": "1.12.5",
+    "parcel-plugin-asset-copier": "1.1.0",
+    "pixelmatch": "5.2.1",
+    "pngjs": "6.0.0",
+    "posthtml-expressions": "^1.7.1",
+    "prettier": "^2.0.5",
+    "puppeteer": "5.5.0",
+    "sass": "^1.26.10",
+    "typescript": "4.2.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,css,scss,md}": "prettier --write"
+  }
+}
