@@ -8,7 +8,7 @@
     "start": "parcel index.html --no-autoinstall",
     "test": "npm run build && node ./test/test.js",
     "typecheck": "tsc -p . --noEmit",
-    "build": "parcel build index.html",
+    "build": "npm run build:excalibur && parcel build index.html",
     "build:excalibur": "cd lib/excalibur && npm install && npm run core && cd ../../",
     "build:excalibur-tiled": "cd lib/excalibur-tiled && npm install && npm run build && cd ../../"
   },
