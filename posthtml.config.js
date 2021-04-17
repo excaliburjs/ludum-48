@@ -3,7 +3,7 @@ module.exports = {
     "posthtml-expressions": {
       locals: {
         commitRef() {
-          return process.env.COMMIT_REF || "local";
+          return process.env.GITHUB_SHA || "local";
         },
       },
     },
