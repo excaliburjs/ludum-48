@@ -1,6 +1,8 @@
 [submodule "lib/excalibur"]
 	path = lib/excalibur
 	url = https://github.com/excaliburjs/excalibur.git
+	ignore = dirty
 [submodule "lib/excalibur-tiled"]
 	path = lib/excalibur-tiled
 	url = https://github.com/excaliburjs/excalibur-tiled.git
+	ignore = dirty
