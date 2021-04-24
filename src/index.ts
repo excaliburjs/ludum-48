@@ -27,6 +27,11 @@ class Game extends Engine {
     this.addScene("main", level);
     this.goToScene("main");
 
+    game.input.keyboard.on("press", (e) => {
+      if (e.key === Input.Keys.D) {
+        this.toggleDebug();
+      }
+    });
     this.start(loader);
   }
 }

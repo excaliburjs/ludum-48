@@ -11,8 +11,7 @@ export class Level extends Scene {
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
-  onScreenChunk: TileMap | null = null;
-  nextChunk: TileMap | null = null;
+  currentChunk: TileMap | null = null;
 
   player: Player | null = null;
   snek: Snek | null = null;
@@ -30,28 +29,32 @@ export class Level extends Scene {
     const tileMap = this.generateChunk(config.TileWidth * this.start);
 
     this.previousChunk = null;
-    this.nextChunk = null;
-    this.add((this.onScreenChunk = tileMap));
+    this.add((this.currentChunk = tileMap));
   }
 
   onPostUpdate() {
-    if (this.onScreenChunk && this.player) {
+    if (this.currentChunk && this.player) {
       if (
         this.player.pos.y >
-        this.onScreenChunk.y + (config.TileWidth * config.ChunkHeight) / 2
+        this.currentChunk.y + (config.TileWidth * config.ChunkHeight) / 2
       ) {
         this.loadNextChunk();
       }
+    }
 
-      // if ((this.player.pos.y - config.TileWidth)  < (this.onScreenChunk.y + (config.TileWidth * config.ChunkHeight) / 2)) {
-      //     this.loadPrevChunk();
-      // }
+    if (this.previousChunk && this.player) {
+      if (
+        this.player.pos.y <=
+        this.previousChunk.y + (config.TileWidth * config.ChunkHeight) / 2
+      ) {
+        this.loadPrevChunk();
+      }
     }
   }
 
   getTile(xpos: number, ypos: number): Cell | null {
     return (
-      this.onScreenChunk?.getCellByPoint(xpos, ypos) ??
+      this.currentChunk?.getCellByPoint(xpos, ypos) ??
       this.previousChunk?.getCellByPoint(xpos, ypos) ??
       null
     );
@@ -87,9 +90,9 @@ export class Level extends Scene {
       this.remove(this.previousChunk);
       console.log("Removing previous chunk");
     }
-    this.previousChunk = this.onScreenChunk;
-    this.onScreenChunk = newChunk;
-    this.add(this.onScreenChunk);
+    this.previousChunk = this.currentChunk;
+    this.currentChunk = newChunk;
+    this.add(this.currentChunk);
   }
 
   loadPrevChunk(): void {
@@ -101,13 +104,13 @@ export class Level extends Scene {
           this.start * config.TileWidth
       );
 
-      if (this.previousChunk) {
-        this.remove(this.previousChunk);
+      if (this.currentChunk) {
+        this.remove(this.currentChunk);
       }
 
-      this.previousChunk = this.onScreenChunk;
-      this.onScreenChunk = newChunk;
-      this.add(this.onScreenChunk);
+      this.currentChunk = this.previousChunk;
+      this.previousChunk = newChunk;
+      this.add(newChunk);
     }
   }
 }
