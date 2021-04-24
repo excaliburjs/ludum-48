@@ -7,12 +7,14 @@ import {
   Loader,
   Input,
   PostUpdateEvent,
+  Physics,
 } from "excalibur";
 import dat from "dat.gui";
 
 import { Resources } from "./resources";
 import { Level } from "./level";
 import config from "./config";
+Physics.enabled = false;
 
 const gui = new dat.GUI({ name: "Ludum 48 Debug" });
 for (let key in config as any) {
