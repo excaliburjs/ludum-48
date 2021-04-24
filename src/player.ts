@@ -60,7 +60,14 @@ export class Player extends Actor {
 
     engine.input.pointers.primary.on("down", (evt) => {
       // Find the best cardinal
-      const dir = evt.pos.sub(this.pos);
+      let dir = evt.pos.sub(this.pos).normalize();
+
+      // Handle ambigous down cases between
+      const angle = Math.atan2(dir.y, dir.x);
+      if (angle < Math.PI - Math.PI / 16 && angle > Math.PI / 16) {
+        dir = Vector.Down;
+      }
+
       const cardinal = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
       let bestDir = Vector.Down;
       let mostDir = -Number.MAX_VALUE;
