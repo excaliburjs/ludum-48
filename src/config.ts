@@ -1,4 +1,6 @@
 export default {
+  RandomSeed: 1337,
+
   // Board Layout
   TileWidth: 64, // pixels
 

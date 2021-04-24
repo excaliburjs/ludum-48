@@ -66,8 +66,11 @@ export class Level extends Scene {
   start = 5; // tiles down
   chunkWidth = config.ChunkWidth;
   chunkHeight = config.ChunkHeight; // full screen
-  random = new Random(1337);
+  random = new Random(config.RandomSeed);
   terrainWeightMap: TerrainWeightMap = new TerrainWeightMap(this.random);
+
+  dirtSprite!: Graphics.Sprite;
+  rockSprite!: Graphics.Sprite;
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -79,8 +82,12 @@ export class Level extends Scene {
   gameOver: GameOver | null = null;
   gameOverOccured: boolean = false;
 
+  chunks: TileMap[] = [];
+
   onInitialize(engine: Engine) {
     Terrain.Initialize();
+    this.dirtSprite = Resources.Dirt.toSprite();
+    this.rockSprite = Resources.Rock.toSprite();
     this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
