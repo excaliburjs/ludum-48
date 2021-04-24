@@ -7,11 +7,13 @@ import {
   Scene,
   TileMap,
   vec,
+  Vector,
 } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
+import { GameOver } from "./gameOver";
 import {
   DirtTag,
   DirtTerrain,
@@ -74,13 +76,18 @@ export class Level extends Scene {
   player: Player | null = null;
   snek: Snek | null = null;
 
+  gameOver: GameOver | null = null;
+  gameOverOccured: boolean = false;
+
   onInitialize(engine: Engine) {
     Terrain.Initialize();
     this.player = new Player(this);
     this.snek = new Snek(this);
+    this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
 
     this.add(this.player);
     this.add(this.snek);
+    this.add(this.gameOver);
 
     // Camera follows actor's Y Axis
     this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
@@ -115,6 +122,19 @@ export class Level extends Scene {
       ) {
         this.loadPrevChunk();
       }
+    }
+    this.checkGameOver();
+  }
+
+  checkGameOver() {
+    if (this.gameOverOccured) return;
+    if (
+      this.player?.pos.x == this.snek?.pos.x &&
+      this.player?.pos.y == this.snek?.pos.y
+    ) {
+      this.gameOver?.updateEndScreen();
+      this.gameOver?.show();
+      this.gameOverOccured = true;
     }
   }
 

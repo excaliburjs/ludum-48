@@ -6,6 +6,7 @@ import digWav from "./sound/dig.wav";
 import digMp3 from "./sound/dig.mp3";
 import clankWav from "./sound/clank.wav";
 import clankMp3 from "./sound/clank.mp3";
+import modal from "./images/modal.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -13,6 +14,7 @@ let Resources = {
   Rock: new Graphics.ImageSource(rock),
   DigSound: new Sound(digMp3, digWav),
   ClankSound: new Sound(clankMp3, clankWav),
+  Modal: new Graphics.ImageSource(modal),
 };
 
 export { Resources };

@@ -1,6 +1,13 @@
 import "regenerator-runtime/runtime"; // needed for async/await with parcel
 
-import { DisplayMode, Engine, Flags, Loader, Input } from "excalibur";
+import {
+  DisplayMode,
+  Engine,
+  Flags,
+  Loader,
+  Input,
+  PostUpdateEvent,
+} from "excalibur";
 import { Player } from "./player";
 import { Resources } from "./resources";
 import { Level } from "./level";
@@ -26,12 +33,13 @@ class Game extends Engine {
     const level = new Level();
     this.addScene("main", level);
     this.goToScene("main");
-    
+
     game.input.keyboard.on("press", (e) => {
       if (e.key === Input.Keys.Semicolon) {
         this.toggleDebug();
       }
     });
+
     this.start(loader);
   }
 }
