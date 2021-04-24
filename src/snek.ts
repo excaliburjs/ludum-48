@@ -29,7 +29,7 @@ export class Snek extends Actor {
         this.timer += _delta;
         if (this.timer >= config.SnekAdvanceTimer) {
             this.timer -= config.SnekAdvanceTimer;
-            this.moveSnek(this.playerTrail.pop()?.value ?? this.pos);
+            this.moveSnek(this.playerTrail.dequeue() ?? this.pos);
         }
         if (this.vel.size !== 0) {
             this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;

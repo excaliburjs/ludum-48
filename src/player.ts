@@ -91,7 +91,7 @@ export class Player extends Actor {
         500,
         EasingFunctions.EaseInOutCubic
       );
-      this.trail.push(this.pos);
+      this.trail.enqueue(this.pos);
     }
   }
 }
