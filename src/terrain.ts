@@ -16,7 +16,7 @@ export class Terrain implements ITerrain {
   constructor(
     tag: string,
     mineable: Boolean,
-    delay: number,
+    delay: () => number,
     spriteImage: ImageSource | null,
     digSound: Sound | null
   ) {
@@ -30,7 +30,7 @@ export class Terrain implements ITerrain {
 
   private actorTag: string;
   private isMineable: Boolean;
-  private mineDelay: number;
+  private mineDelay: () => number;
   private digSound: Sound | null;
   private spriteImage: ImageSource | null;
   private blockSprite: Graphics.Sprite | null;
@@ -46,7 +46,7 @@ export class Terrain implements ITerrain {
     return this.isMineable;
   }
   delay(): number {
-    return this.mineDelay;
+    return this.mineDelay();
   }
   sprite(): Graphics.Sprite | null {
     if (this.blockSprite) return this.blockSprite;
@@ -64,18 +64,24 @@ export class Terrain implements ITerrain {
   }
 
   static Initialize() {
-    EmptyTerrain = new Terrain(EmptyTag, true, config.DigTime, null, null);
+    EmptyTerrain = new Terrain(
+      EmptyTag,
+      true,
+      () => config.DigTime,
+      null,
+      null
+    );
     RockTerrain = new Terrain(
       RockTag,
       false,
-      config.RockDigDelay,
+      () => config.RockDigDelay,
       Resources.Rock,
       Resources.ClankSound
     );
     DirtTerrain = new Terrain(
       DirtTag,
       true,
-      config.DigTime,
+      () => config.DigTime,
       Resources.Dirt,
       Resources.DigSound
     );
