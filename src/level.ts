@@ -16,19 +16,56 @@ import {
   DirtTag,
   DirtTerrain,
   EmptyTag,
+  EmptyTerrain,
   RockTag,
   RockTerrain,
   Terrain,
 } from "./terrain";
+import { Dictionary } from "underscore";
+
+class WeightPair {
+  constructor(weight: number, terrain: Terrain) {
+    this.weight = weight;
+    this.terrain = terrain;
+  }
+  weight: number;
+  terrain: Terrain;
+}
+class TerrainWeightMap {
+  total: number = 0;
+  pairs: WeightPair[] = [];
+  random: Random;
+
+  constructor(random: Random) {
+    this.random = random;
+  }
+
+  add(weight: number, terrain: Terrain) {
+    this.total += weight;
+    this.pairs.push(new WeightPair(weight, terrain));
+  }
+
+  randomSelect(): Terrain {
+    const roll = this.random.next() * this.total;
+    var total = 0;
+    var terrain: Terrain | null = null;
+    this.pairs.forEach((a) => {
+      if (terrain) return;
+      if (roll - total <= a.weight) {
+        terrain = a.terrain;
+      }
+      total += a.weight;
+    });
+    return terrain ?? EmptyTerrain;
+  }
+}
 
 export class Level extends Scene {
   start = 5; // tiles down
   chunkWidth = config.ChunkWidth;
   chunkHeight = config.ChunkHeight; // full screen
   random = new Random(1337);
-
-  dirtSprite!: Graphics.Sprite;
-  rockSprite!: Graphics.Sprite;
+  terrainWeightMap: TerrainWeightMap = new TerrainWeightMap(this.random);
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -48,10 +85,17 @@ export class Level extends Scene {
     // Camera follows actor's Y Axis
     this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
 
+    this.buildTerrainWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);
+    this.setCellToTerrain(tileMap.getCellByIndex(4), DirtTerrain); // Make sure the player entry is always allowed.
 
     this.previousChunk = null;
     this.add((this.currentChunk = tileMap));
+  }
+
+  buildTerrainWeightMap(): void {
+    this.terrainWeightMap.add(20, RockTerrain);
+    this.terrainWeightMap.add(80, DirtTerrain);
   }
 
   onPostUpdate() {
@@ -93,22 +137,40 @@ export class Level extends Scene {
     });
 
     for (let cell of tileMap.data) {
-      if (this.random.next() < 0.2) {
-        var sprite = RockTerrain.sprite();
-        if (sprite) {
-          cell.addSprite(sprite);
-        }
-        cell.addTag(RockTag);
-      } else {
-        var sprite = DirtTerrain.sprite();
-        if (sprite) {
-          cell.addSprite(sprite);
-        }
-        cell.addTag(DirtTag);
-      }
+      var terrain = this.terrainWeightMap.randomSelect();
+      this.setCellToTerrain(cell, terrain);
     }
 
+    this.ValidateTileMap(tileMap);
+
     return tileMap;
+  }
+
+  ValidateTileMap(tile: TileMap) {
+    var y = tile.y;
+    var prevRow: Cell[] | null = null;
+    for (var i = 0; i < tile.rows; ++i) {
+      const row = tile.data.filter((c) => {
+        return c.y === y;
+      });
+      const pathable = row.filter((c) => {
+        const terr = Terrain.GetTerrain(c);
+        return terr.mineable();
+      });
+
+      // TODO add more checks
+      if (pathable.length == 0) {
+        const index = Math.floor(this.random.next() * row.length);
+        const makePathable = row[index];
+        this.setCellToTerrain(makePathable, DirtTerrain);
+
+        if (prevRow) {
+          this.setCellToTerrain(prevRow[index], DirtTerrain);
+        }
+      }
+      y += tile.cellHeight;
+      prevRow = row;
+    }
   }
 
   loadNextChunk(): void {
@@ -156,9 +218,22 @@ export class Level extends Scene {
     }
     if (!tile) return;
 
-    var terrain = Terrain.GetTerrain(tile);
-    tile.clearSprites();
-    tile.removeComponent(terrain.tag(), true);
-    tile.addTag(EmptyTag);
+    this.setCellToTerrain(tile, EmptyTerrain);
+  }
+
+  setCellToTerrain(cell: Cell, terrain: Terrain) {
+    const curTerrain = Terrain.GetTerrain(cell);
+    if (terrain === EmptyTerrain) {
+      if (curTerrain === EmptyTerrain) {
+        return;
+      }
+      cell.clearSprites();
+    }
+    cell.removeComponent(curTerrain.tag(), true);
+    var sprite = terrain.sprite();
+    if (sprite) {
+      cell.addSprite(sprite);
+    }
+    cell.addTag(terrain.tag());
   }
 }

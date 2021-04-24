@@ -60,17 +60,11 @@ export class Terrain implements ITerrain {
     if (cell.hasTag(EmptyTag)) return EmptyTerrain;
     else if (cell.hasTag(RockTag)) return RockTerrain;
     else if (cell.hasTag(DirtTag)) return DirtTerrain;
-    else throw new Error("Unexpected Terrain for cell:" + cell);
+    else return EmptyTerrain;
   }
 
   static Initialize() {
-    EmptyTerrain = new Terrain(
-      EmptyTag,
-      true,
-      () => config.DigTime,
-      null,
-      null
-    );
+    EmptyTerrain = new Terrain(EmptyTag, true, () => 0, null, null);
     RockTerrain = new Terrain(
       RockTag,
       false,

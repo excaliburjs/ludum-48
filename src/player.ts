@@ -153,9 +153,7 @@ export class Player extends Actor {
           return;
         } else {
           this.actions.delay(terrain.delay()).callMethod(() => {
-            tile.removeComponent(terrain.tag(), true);
-            tile.addTag(EmptyTag);
-            tile.clearSprites();
+            this.level.finishDig(worldPos.x, worldPos.y);
           });
         }
 
@@ -167,7 +165,6 @@ export class Player extends Actor {
             EasingFunctions.EaseInOutCubic
           )
           .callMethod(() => {
-            this.level.finishDig(this.pos.x, this.pos.y);
             this.moving = false;
           });
         this.trail.enqueue(this.pos.clone());
