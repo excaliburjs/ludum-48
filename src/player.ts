@@ -106,19 +106,19 @@ export class Player extends Actor {
   }
 
   moveToNearestTile(worldPos: Vector) {
-    // if you are moving we wait otherwise weird things happen and players can make invalid moves
-    if (!this.moving) {
-      this.moving = true;
-    } else {
-      return;
-    }
-
     const tileX = Math.floor(worldPos.x / config.TileWidth);
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
     const validMove = this.isValidMove(worldPos.x, worldPos.y);
 
     if (validMove) {
+      // if you are moving we wait otherwise weird things happen and players can make invalid moves
+      if (!this.moving) {
+        this.moving = true;
+      } else {
+        return;
+      }
+
       // TODO play digging animation
       // TODO after time remove tile
       this.actions
