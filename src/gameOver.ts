@@ -19,13 +19,13 @@ export class GameOver extends Actor {
   private backShadowLayer!: Graphics.GraphicsLayer;
   
   constructor(public gameWidth: number, public gameHeight: number) {
-    super(gameWidth / 2, gameHeight * 2, 600, 600);
+    super(gameWidth / 2, gameHeight / 2, 600, 600);
   }
 
   onInitialize(engine: Engine) {
     this.backShadow = new Graphics.Rectangle({
-      width: this.gameWidth + 500,
-      height: this.gameHeight + 500,
+      width: this.gameWidth * 2,
+      height: this.gameHeight * 2,
       color: Color.fromRGB(51, 51, 51, 0.5),
     });
     this.backShadowLayer = this.graphics.layers.create({
@@ -51,7 +51,7 @@ export class GameOver extends Actor {
     this.pos = vec(0, 0);
     this.card.actions.easeTo(
       this.gameWidth / 2,
-      this.gameHeight / 2,
+      this.gameHeight / 4,
       500,
       EasingFunctions.EaseInOutCubic
     );

@@ -46,7 +46,7 @@ export class Level extends Scene {
     Terrain.Initialize();
     this.player = new Player(this);
     this.snek = new Snek(this);
-    this.gameOver = new GameOver(engine.halfCanvasWidth, engine.halfCanvasHeight);
+    this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
 
     this.add(this.player);
     this.add(this.snek);
@@ -87,8 +87,8 @@ export class Level extends Scene {
     if(this.player?.pos.x == this.snek?.pos.x && this.player?.pos.y == this.snek?.pos.y) {
       this.gameOver?.updateEndScreen();
       this.gameOver?.show();
+      this.gameOverOccured = true;
     }
-    this.gameOverOccured = true;
   }
 
   getTile(xpos: number, ypos: number): Cell | null {
