@@ -2,6 +2,7 @@ import { Axis, Cell, Engine, Scene, TileMap, vec } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
+import { Snek } from "./snek";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -14,10 +15,14 @@ export class Level extends Scene {
   nextChunk: TileMap | null = null;
 
   player: Player | null = null;
+  snek: Snek | null = null;
 
   onInitialize(engine: Engine) {
     this.player = new Player(this);
+    this.snek = new Snek(this);
+    
     this.add(this.player);
+    this.add(this.snek);
 
     // Camera follows actor's Y Axis
     this.camera.strategy.lockToActorAxis(this.player, Axis.Y);

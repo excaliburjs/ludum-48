@@ -11,8 +11,11 @@ import {
 import { Level } from "./level";
 import { Resources } from "./resources";
 import config from "./config";
+import { PlayerTrail } from "./playerTrail";
 
 export class Player extends Actor {
+  private trail: PlayerTrail = PlayerTrail.GetInstance();
+
   constructor(public level: Level) {
     super({
       pos: vec(
@@ -83,6 +86,7 @@ export class Player extends Actor {
         500,
         EasingFunctions.EaseInOutCubic
       );
+      this.trail.push(this.pos);
     }
   }
 }
