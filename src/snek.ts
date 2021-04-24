@@ -7,6 +7,7 @@ import { PlayerTrail } from "./playerTrail";
 export class Snek extends Actor {
     private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
     private timer: number = 0;
+    private moving: Boolean = false;
 
     constructor(public level: Level) {
         super({
@@ -27,27 +28,34 @@ export class Snek extends Actor {
 
     onPreUpdate(_engine: Engine, _delta: number): void {
         this.timer += _delta;
-        if (this.timer >= config.SnekAdvanceTimer) {
-            this.timer -= config.SnekAdvanceTimer;
-            const place = this.playerTrail.dequeue();
-            if (place)
-            {
-                this.moveSnek(place);
-            }
+        if (this.timer >= config.SnekAdvanceTimer*1000) {
+            this.timer -= config.SnekAdvanceTimer*1000;
+            this.moveSnek();
         }
         if (this.vel.size !== 0) {
             this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
         }
     }
 
-    moveSnek(worldPos: Vector) {
-        const tileX = Math.floor(worldPos.x / config.TileWidth);
-        const tileY = Math.floor(worldPos.y / config.TileWidth);
+    moveSnek() {
+        if (this.moving) {
+            return;
+        }
+        else
+        {
+            this.moving = true;
+        }
+        const place = this.playerTrail.dequeue();
+        if (!place) {
+            return;
+        }
+        const tileX = Math.floor(place.x / config.TileWidth);
+        const tileY = Math.floor(place.y / config.TileWidth);
         this.actions.easeTo(
             tileX * config.TileWidth + config.TileWidth / 2,
             tileY * config.TileWidth + config.TileWidth / 2,
             500,
             EasingFunctions.EaseInOutCubic
-        );
+        ).callMethod(() => {this.moving = false;});
     }
 }

@@ -53,6 +53,8 @@ export class Player extends Actor {
         case Input.Keys.Up:
           dir = Vector.Up;
           break;
+        default:
+          return;
       }
 
       this.moveToNearestTile(this.pos.add(dir.scale(config.TileWidth)));
@@ -131,7 +133,7 @@ export class Player extends Actor {
         .callMethod(() => {
           this.moving = false;
         });
-      this.trail.enqueue(this.pos);
+      this.trail.enqueue(this.pos.clone());
     }
   }
 }
