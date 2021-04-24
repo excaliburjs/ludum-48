@@ -7,7 +7,7 @@ import digMp3 from "./sound/dig.mp3";
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
-  DigSound: new Sound(digMp3, digWav),
+  DigSound: new Sound(digMp3, digWav)
 };
 
 export { Resources };
