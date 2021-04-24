@@ -8,6 +8,7 @@ import {
   Vector,
   Util,
   Input,
+  RotationType,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -70,24 +71,24 @@ export class Player extends Actor {
   }
 
   bestDirection(dir: Vector): Vector {
-      // Handle ambigous down cases between
-      const angle = Math.atan2(dir.y, dir.x);
-      if (angle < Math.PI - Math.PI / 16 && angle > Math.PI / 16) {
-        dir = Vector.Down;
-      }
+    // Handle ambigous down cases between
+    const angle = Math.atan2(dir.y, dir.x);
+    if (angle < Math.PI - Math.PI / 16 && angle > Math.PI / 16) {
+      dir = Vector.Down;
+    }
 
-      const cardinal = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
-      let bestDir = Vector.Down;
-      let mostDir = -Number.MAX_VALUE;
+    const cardinal = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
+    let bestDir = Vector.Down;
+    let mostDir = -Number.MAX_VALUE;
 
-      for (let card of cardinal) {
-        let currDir = dir.dot(card);
-        if (currDir > mostDir) {
-          mostDir = currDir;
-          bestDir = card;
-        }
+    for (let card of cardinal) {
+      let currDir = dir.dot(card);
+      if (currDir > mostDir) {
+        mostDir = currDir;
+        bestDir = card;
       }
-      return bestDir;
+    }
+    return bestDir;
   }
 
   onPreUpdate() {
@@ -129,8 +130,14 @@ export class Player extends Actor {
 
       const tile = this.level.getTile(worldPos.x, worldPos.y);
       if (tile?.sprites.length) {
+        this.actions.rotateTo(
+          Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
+            Math.PI / 4,
+          100,
+          RotationType.ShortestPath
+        );
         Resources.DigSound.play();
-        this.actions.delay(400).callMethod(()=> {
+        this.actions.delay(400).callMethod(() => {
           tile?.clearSprites();
         });
       }
@@ -142,7 +149,6 @@ export class Player extends Actor {
           EasingFunctions.EaseInOutCubic
         )
         .callMethod(() => {
-          this.level.finishDig(this.pos.x, this.pos.y);
           this.moving = false;
         });
       this.trail.enqueue(this.pos.clone());

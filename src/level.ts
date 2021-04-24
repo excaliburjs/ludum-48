@@ -19,7 +19,7 @@ export class Level extends Scene {
   onInitialize(engine: Engine) {
     this.player = new Player(this);
     this.snek = new Snek(this);
-    
+
     this.add(this.player);
     this.add(this.snek);
 
@@ -112,17 +112,5 @@ export class Level extends Scene {
       this.previousChunk = newChunk;
       this.add(newChunk);
     }
-  }
-
-  finishDig(xpos: number, ypos: number): void {
-      var tilemap = this.currentChunk;
-      var tile = tilemap?.getCellByPoint(xpos, ypos);
-      if(!tile) {
-        tilemap = this.previousChunk;
-        tile = tilemap?.getCellByPoint(xpos, ypos);
-      }
-      if (!tile) return;
-
-      tile.clearSprites();
   }
 }
