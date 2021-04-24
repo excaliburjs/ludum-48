@@ -8,10 +8,28 @@ import {
   Input,
   PostUpdateEvent,
 } from "excalibur";
-import { Player } from "./player";
+import dat from "dat.gui";
+
 import { Resources } from "./resources";
 import { Level } from "./level";
 import config from "./config";
+
+const gui = new dat.GUI({ name: "Ludum 48 Debug" });
+for (let key in config as any) {
+  if (typeof (config as any)[key] === "number") {
+    switch (key) {
+      default: {
+        gui.add(
+          config as any,
+          key,
+          0,
+          (config as any)[key] * 10,
+          ((config as any)[key] * 10) / 20
+        );
+      }
+    }
+  }
+}
 
 Flags.enable("use-webgl");
 class Game extends Engine {

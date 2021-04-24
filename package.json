@@ -28,6 +28,7 @@
     "excalibur-tiled": "./lib/excalibur-tiled/"
   },
   "devDependencies": {
+    "@types/dat.gui": "^0.7.6",
     "husky": "4.2.5",
     "lint-staged": "10.5.4",
     "node-static": "0.7.11",
@@ -48,5 +49,8 @@
   },
   "lint-staged": {
     "*.{js,ts,css,scss,md}": "prettier --write"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.7"
   }
 }
