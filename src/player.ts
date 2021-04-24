@@ -126,7 +126,9 @@ export class Player extends Actor {
       const tile = this.level.getTile(worldPos.x, worldPos.y);
       if (tile?.sprites.length) {
         Resources.DigSound.play();
-        tile?.clearSprites();
+        this.actions.delay(400).callMethod(()=> {
+          tile?.clearSprites();
+        });
       }
       this.actions
         .easeTo(
