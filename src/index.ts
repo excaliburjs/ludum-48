@@ -39,8 +39,9 @@ class Game extends Engine {
         this.toggleDebug();
       }
     });
-
-    this.start(loader);
+    this.start(loader).then(() => {
+      Resources.BackgroundMusic.play();
+    });
   }
 }
 
