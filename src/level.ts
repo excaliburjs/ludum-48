@@ -113,4 +113,16 @@ export class Level extends Scene {
       this.add(newChunk);
     }
   }
+
+  finishDig(xpos: number, ypos: number): void {
+      var tilemap = this.currentChunk;
+      var tile = tilemap?.getCellByPoint(xpos, ypos);
+      if(!tile) {
+        tilemap = this.previousChunk;
+        tile = tilemap?.getCellByPoint(xpos, ypos);
+      }
+      if (!tile) return;
+
+      tile.clearSprites();
+  }
 }

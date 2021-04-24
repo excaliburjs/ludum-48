@@ -63,7 +63,13 @@ export class Player extends Actor {
     engine.input.pointers.primary.on("down", (evt) => {
       // Find the best cardinal
       let dir = evt.pos.sub(this.pos).normalize();
+      let bestDir = this.bestDirection(dir);
 
+      this.moveToNearestTile(this.pos.add(bestDir.scale(config.TileWidth)));
+    });
+  }
+
+  bestDirection(dir: Vector): Vector {
       // Handle ambigous down cases between
       const angle = Math.atan2(dir.y, dir.x);
       if (angle < Math.PI - Math.PI / 16 && angle > Math.PI / 16) {
@@ -81,9 +87,7 @@ export class Player extends Actor {
           bestDir = card;
         }
       }
-
-      this.moveToNearestTile(this.pos.add(bestDir.scale(config.TileWidth)));
-    });
+      return bestDir;
   }
 
   onPreUpdate() {
@@ -131,6 +135,7 @@ export class Player extends Actor {
           EasingFunctions.EaseInOutCubic
         )
         .callMethod(() => {
+          this.level.finishDig(this.pos.x, this.pos.y);
           this.moving = false;
         });
       this.trail.enqueue(this.pos.clone());
