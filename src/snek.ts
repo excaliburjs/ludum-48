@@ -3,13 +3,14 @@ import { Level } from "./level";
 import { Resources } from "./resources";
 import config from "./config";
 import { PlayerTrail } from "./playerTrail";
-
+import { Every } from "./every";
 export class Snek extends Actor {
     private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
     private currentSnekAdvance: number = config.SnekAdvanceTimer;
     private calculatedSnekSpeed: number = config.SnekAdvanceTimer;
     private timer: number = 0;
     private moving: Boolean = false;
+    private snekSpeedUpdater: Every.Second = new Every.Second(() => this.updateSnekSpeed, 1);
 
     constructor(public level: Level) {
         super({
@@ -33,13 +34,13 @@ export class Snek extends Actor {
         if (this.timer >= this.currentSnekAdvance) {
             this.timer = 0;
             this.moveSnek();
-            this.updateSnekSpeed();
         }
-
+        this.snekSpeedUpdater.Update(_delta);
         if (this.vel.size !== 0) {
             this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
         }
     }
+
     updateSnekSpeed() {
         this.calculatedSnekSpeed -= config.SnekAcceleration
         const playerPos = this.playerTrail.peekLast();
@@ -47,12 +48,12 @@ export class Snek extends Actor {
             const distX = Math.abs(playerPos.x - this.pos.x);
             const distY = Math.abs(playerPos.y - this.pos.y);
             const distance = Math.sqrt(distX * distX + distY * distY)
-            if (distance >= config.SnekDistanceBeforeCatchUp)
-            {
+            if (distance >= config.SnekDistanceBeforeCatchUp) {
                 this.currentSnekAdvance = Math.min(config.SnekCatchUpAcceleration, this.calculatedSnekSpeed);
             }
         }
     }
+
     moveSnek() {
         if (this.moving) {
             return;
@@ -70,6 +71,6 @@ export class Snek extends Actor {
             tileY * config.TileWidth + config.TileWidth / 2,
             500,
             EasingFunctions.EaseInOutCubic
-        ).callMethod(() => {this.moving = false;});
+        ).callMethod(() => { this.moving = false; });
     }
 }
