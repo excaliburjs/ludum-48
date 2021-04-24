@@ -7,6 +7,7 @@ import {
   vec,
   Vector,
   Util,
+  Input,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -16,6 +17,7 @@ import { PlayerTrail } from "./playerTrail";
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
 
+  private moving = false;
   constructor(public level: Level) {
     super({
       pos: vec(
@@ -31,6 +33,31 @@ export class Player extends Actor {
 
   onInitialize(engine: Engine) {
     this.graphics.add(Resources.Sword.toSprite());
+
+    engine.input.keyboard.on("hold", (evt) => {
+      let dir = Vector.Down;
+      switch (evt.key) {
+        case Input.Keys.A:
+        case Input.Keys.Left:
+          dir = Vector.Left;
+          break;
+        case Input.Keys.D:
+        case Input.Keys.Right:
+          dir = Vector.Right;
+          break;
+        case Input.Keys.S:
+        case Input.Keys.Down:
+          dir = Vector.Down;
+          break;
+        case Input.Keys.W:
+        case Input.Keys.Up:
+          dir = Vector.Up;
+          break;
+      }
+
+      this.moveToNearestTile(this.pos.add(dir.scale(config.TileWidth)));
+    });
+
     engine.input.pointers.primary.on("down", (evt) => {
       // Find the best cardinal
       const dir = evt.pos.sub(this.pos);
@@ -57,11 +84,6 @@ export class Player extends Actor {
   }
 
   isValidMove(posX: number, posY: number) {
-    // if you are moving we wait otherwise weird things happen and players can make invalid moves
-    if (this.vel.size !== 0) {
-      return false;
-    }
-
     const tileX = Math.floor(posX / config.TileWidth);
     const tileY = Math.floor(posY / config.TileWidth);
 
@@ -77,6 +99,13 @@ export class Player extends Actor {
   }
 
   moveToNearestTile(worldPos: Vector) {
+    // if you are moving we wait otherwise weird things happen and players can make invalid moves
+    if (!this.moving) {
+      this.moving = true;
+    } else {
+      return;
+    }
+
     const tileX = Math.floor(worldPos.x / config.TileWidth);
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
@@ -85,12 +114,16 @@ export class Player extends Actor {
     if (validMove) {
       // TODO play digging animation
       // TODO after time remove tile
-      this.actions.easeTo(
-        tileX * config.TileWidth + config.TileWidth / 2,
-        tileY * config.TileWidth + config.TileWidth / 2,
-        500,
-        EasingFunctions.EaseInOutCubic
-      );
+      this.actions
+        .easeTo(
+          tileX * config.TileWidth + config.TileWidth / 2,
+          tileY * config.TileWidth + config.TileWidth / 2,
+          500,
+          EasingFunctions.EaseInOutCubic
+        )
+        .callMethod(() => {
+          this.moving = false;
+        });
       this.trail.push(this.pos);
     }
   }
