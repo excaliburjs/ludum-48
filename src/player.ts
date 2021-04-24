@@ -21,6 +21,9 @@ export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
   private state: GlobalState = GlobalState.GetInstance();
   private moving = false;
+  private pointerHeld = false;
+  private pointerScreenPos = vec(0, 0);
+  private engine!: Engine;
   constructor(public level: Level) {
     super({
       pos: vec(
@@ -41,7 +44,7 @@ export class Player extends Actor {
 
   onInitialize(engine: Engine) {
     this.graphics.add(Resources.Sword.toSprite());
-
+    this.engine = engine;
     engine.input.keyboard.on("hold", (evt) => {
       if (this.state.GameOver) return;
       let dir = Vector.Down;
@@ -71,11 +74,16 @@ export class Player extends Actor {
 
     engine.input.pointers.primary.on("down", (evt) => {
       if (this.state.GameOver) return;
-      // Find the best cardinal
-      let dir = evt.pos.sub(this.pos).normalize();
-      let bestDir = this.bestDirection(dir);
+      this.pointerHeld = true;
+      this.pointerScreenPos = evt.screenPos;
+    });
 
-      this.moveToNearestTile(this.pos.add(bestDir.scale(config.TileWidth)));
+    engine.input.pointers.primary.on("move", (evt) => {
+      this.pointerScreenPos = evt.screenPos;
+    });
+
+    engine.input.pointers.primary.on("up", (evt) => {
+      this.pointerHeld = false;
     });
   }
 
@@ -103,6 +111,18 @@ export class Player extends Actor {
   onPreUpdate() {
     if (this.vel.size !== 0) {
       this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
+    }
+
+    if (this.pointerHeld) {
+      if (this.state.GameOver) return;
+      // Find the best cardinal
+      let actorScreenPos = this.engine.screen.worldToScreenCoordinates(
+        this.pos
+      );
+      let dir = this.pointerScreenPos.sub(actorScreenPos).normalize();
+      let bestDir = this.bestDirection(dir);
+
+      this.moveToNearestTile(this.pos.add(bestDir.scale(config.TileWidth)));
     }
   }
 
