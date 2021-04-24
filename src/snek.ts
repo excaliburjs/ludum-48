@@ -47,6 +47,7 @@ export class Snek extends Actor {
         }
         const place = this.playerTrail.dequeue();
         if (!place) {
+            this.moving = false;
             return;
         }
         const tileX = Math.floor(place.x / config.TileWidth);
