@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime"; // needed for async/await with parcel
 
-import { DisplayMode, Engine, Flags, Loader } from "excalibur";
+import { DisplayMode, Engine, Flags, Loader, Input } from "excalibur";
 import { Player } from "./player";
 import { Resources } from "./resources";
 import { Level } from "./level";
@@ -12,14 +12,12 @@ class Game extends Engine {
     super({
       canvasElementId: "game",
       width: config.TileWidth * config.ChunkWidth,
-      height: config.TileWidth * config.ChunkHeight,
+      height: config.TileWidth * (config.ChunkWidth * config.InvAspectRatio),
       displayMode: DisplayMode.Fit,
+      pointerScope: Input.PointerScope.Canvas,
     });
   }
   initialize() {
-    // const player = new Player();
-    // this.add(player);
-
     const loader = new Loader();
     for (const resource of Object.values(Resources)) {
       loader.addResource(resource);
