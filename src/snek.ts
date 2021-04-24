@@ -56,6 +56,9 @@ export class Snek extends Actor {
                 this.currentSnekAdvance = Math.min(config.SnekCatchUpAcceleration, this.calculatedSnekSpeed);
             }
         }
+        if( this.currentSnekAdvance >= config.SnekMaxSpeed) {
+            this.currentSnekAdvance = config.SnekMaxSpeed;
+        }
     }
 
     moveSnek() {
