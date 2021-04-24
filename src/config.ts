@@ -13,9 +13,9 @@ InvAspectRatio: 1 / (9 / 16),
 /**************************
  * Snek Config
  **************************/
-  SnekAdvanceTimer: 2, // seconds per tile
-  SnekAcceleration: 1, // seconds per tile when user is further away
-  SnekCatchUpAcceleration: 0.05,
+  SnekAdvanceTimer: 5, // seconds per tile
+  SnekAcceleration: 0.05, // seconds per tile when user is further away
+  SnekCatchUpAcceleration: 2,
   SnekDistanceBeforeCatchUp: 15
 
 }

@@ -1,5 +1,5 @@
 export module Every {
-  abstract class Interval {
+  export abstract class Interval {
     protected internalTimer: number = 0;
     constructor(protected action: Function, protected interval: number) { }
 

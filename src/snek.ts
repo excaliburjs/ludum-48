@@ -10,7 +10,13 @@ export class Snek extends Actor {
     private calculatedSnekSpeed: number = config.SnekAdvanceTimer;
     private timer: number = 0;
     private moving: Boolean = false;
-    private snekSpeedUpdater: Every.Second = new Every.Second(() => this.updateSnekSpeed, 1);
+    private moveSnekTimer = new Every.Second(() => { this.moveSnek(); }, config.SnekAdvanceTimer);
+    private updateSnekTimer = new Every.Second(() => {this.updateSnekSpeed();}, 1);
+
+    private updateFunctions: Every.Interval[] = [
+        this.moveSnekTimer,
+        this.updateSnekTimer
+    ];
 
     constructor(public level: Level) {
         super({
@@ -30,12 +36,10 @@ export class Snek extends Actor {
 
 
     onPreUpdate(_engine: Engine, _delta: number): void {
-        this.timer += _delta / 1000;
-        if (this.timer >= this.currentSnekAdvance) {
-            this.timer = 0;
-            this.moveSnek();
-        }
-        this.snekSpeedUpdater.Update(_delta);
+        this.moveSnekTimer.UpdateInterval(this.currentSnekAdvance);
+        
+        this.updateFunctions.forEach((fun) => fun.Update(_delta));
+
         if (this.vel.size !== 0) {
             this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
         }
