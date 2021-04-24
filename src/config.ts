@@ -11,6 +11,8 @@ export default {
   InvAspectRatio: 1 / (9 / 16),
 
   DigTime: 400,
+  SpaceMoveDuration: 500,
+
   RockDigDelay: 100,
 
   /**************************
