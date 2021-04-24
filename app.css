@@ -21,7 +21,6 @@ body {
 ul#menu {
   list-style-type: none;
   font-size: 1.5em;
-  font-size: 2em;
 }
 
 ul#menu li {
@@ -36,7 +35,7 @@ h1 {
 }
 
 a {
-  color: #c94105;
+  color: #f62459;
 }
 
 #commitRef {
