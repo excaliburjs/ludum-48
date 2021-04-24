@@ -1,13 +1,18 @@
 import "regenerator-runtime/runtime"; // needed for async/await with parcel
 
-import { Engine, Flags, Loader } from "excalibur";
+import { DisplayMode, Engine, Flags, Loader } from "excalibur";
 import { Player } from "./player";
 import { Resources } from "./resources";
 
 Flags.enable("use-webgl");
 class Game extends Engine {
   constructor() {
-    super({ canvasElementId: "game", width: 800, height: 600 });
+    super({
+      canvasElementId: "game",
+      width: 900,
+      height: 1600,
+      displayMode: DisplayMode.Fit,
+    });
   }
   initialize() {
     const player = new Player();

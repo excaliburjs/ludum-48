@@ -33,8 +33,8 @@ a {
 
 #commitRef {
   position: absolute;
-  bottom: 3;
-  right: 3;
+  bottom: 3px;
+  right: 3px;
   font-family: "Fira Code", "Dank Mono", "Consolas", monospace;
   font-size: 10px;
   opacity: 0.5;
