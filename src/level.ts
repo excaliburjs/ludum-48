@@ -144,5 +144,7 @@ export class Level extends Scene {
     if (!tile) return;
 
     tile.clearSprites();
+    tile.removeComponent("dirt", true);
+    tile.addTag("empty");
   }
 }

@@ -129,38 +129,46 @@ export class Player extends Actor {
       // TODO play digging animation
 
       const tile = this.level.getTile(worldPos.x, worldPos.y);
+      
+      this.actions.rotateTo(
+        Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
+          Math.PI / 4,
+        100,
+        RotationType.ShortestPath
+      );
+    
 
-      if (tile?.sprites.length) {
-        this.actions.rotateTo(
-          Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
-            Math.PI / 4,
-          100,
-          RotationType.ShortestPath
-        );
-        // Cant move through rock
-        if (tile?.hasTag("rock")) {
-          Resources.ClankSound.play();
-          this.actions.delay(100).callMethod(() => {
+      // Cant move through rock
+      if (tile?.hasTag("rock")) {
+        Resources.ClankSound.play();
+        this.actions.delay(config.RockDigDelay).callMethod(() => {
+          this.moving = false;
+        });
+      // Can move through dirt or empty space
+      } else if (tile?.hasTag("dirt") || tile?.hasTag("empty")) {
+
+        if (tile.hasTag("dirt")) {
+          Resources.DigSound.play();
+          this.actions.delay(config.DigTime).callMethod(() => {
+            tile.removeComponent('dirt', true);
+            tile.addTag('empty');
+            tile.clearSprites();
+          });
+
+        }
+
+        this.actions
+        .easeTo(
+          tileX * config.TileWidth + config.TileWidth / 2,
+          tileY * config.TileWidth + config.TileWidth / 2,
+          500,
+          EasingFunctions.EaseInOutCubic
+          )
+          .callMethod(() => {
+            this.level.finishDig(this.pos.x, this.pos.y);
             this.moving = false;
           });
-        } else if (tile?.hasTag("dirt")) {
-          Resources.DigSound.play();
-          this.actions.delay(400).callMethod(() => {
-            tile?.clearSprites();
-          });
-          this.actions
-            .easeTo(
-              tileX * config.TileWidth + config.TileWidth / 2,
-              tileY * config.TileWidth + config.TileWidth / 2,
-              500,
-              EasingFunctions.EaseInOutCubic
-            )
-            .callMethod(() => {
-              this.level.finishDig(this.pos.x, this.pos.y);
-              this.moving = false;
-            });
           this.trail.enqueue(this.pos.clone());
-        }
       }
     }
   }

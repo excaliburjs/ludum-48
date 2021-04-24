@@ -9,6 +9,9 @@ ChunkHeight: 16, // tiles
 AspectRatio: 9 / 16, // 9:16
 InvAspectRatio: 1 / (9 / 16),
 
+DigTime: 400,
+RockDigDelay: 100,
+
 
 /**************************
  * Snek Config
