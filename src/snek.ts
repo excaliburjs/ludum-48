@@ -9,6 +9,9 @@ export class Snek extends Actor {
     private currentSnekAdvance: number = config.SnekAdvanceTimer;
     private calculatedSnekSpeed: number = config.SnekAdvanceTimer;
     private moving: Boolean = false;
+
+    private snekBody: Actor[] = [];
+
     private moveSnekTimer = new Every.Second(() => { this.moveSnek(); }, config.SnekAdvanceTimer);
     private updateSnekTimer = new Every.Second(() => {this.updateSnekSpeed();}, 1);
 
@@ -31,6 +34,7 @@ export class Snek extends Actor {
 
     onInitialize(engine: Engine) {
         this.graphics.add(Resources.Sword.toSprite());
+        this.createSnekBody();
     }
 
 
@@ -68,6 +72,9 @@ export class Snek extends Actor {
         if (!place) {
             return;
         }
+        const currentTileX = Math.floor(this.pos.x / config.TileWidth);
+        const currentTileY = Math.floor(this.pos.y / config.TileWidth);
+
         this.moving = true;
         const tileX = Math.floor(place.x / config.TileWidth);
         const tileY = Math.floor(place.y / config.TileWidth);
@@ -78,5 +85,54 @@ export class Snek extends Actor {
             500,
             EasingFunctions.EaseInOutCubic
         ).callMethod(() => { this.moving = false; });
+
+        this.moveSnekBody(currentTileX, currentTileY);
+
+    }
+
+    createSnekBody() {
+        for (let i=0; i < config.SnekBodyLength; i++) {
+            const bodySegment = new Actor({
+                x: this.pos.x,
+                y: this.pos.y - ((i + 1) * config.TileWidth),
+                width: config.TileWidth,
+                height: config.TileWidth,
+                color: Color.Green,
+            });
+            this.snekBody.push(bodySegment);
+            this.scene.add(bodySegment);
+        }
+    }
+
+    moveSnekBody(prevHeadX: number, prevHeadY: number) {
+        const snekBodyLocations: Vector[] = this.getSnekBodyLocations();
+        
+        // move the first body segment to where the head just was
+        this.snekBody[0].actions.easeTo(
+            prevHeadX * config.TileWidth + config.TileWidth / 2,
+            prevHeadY * config.TileWidth + config.TileWidth / 2,
+            500,
+            EasingFunctions.EaseInOutCubic
+        );
+
+        for (let i=1; i < this.snekBody.length; i++) {
+            this.snekBody[i].actions.easeTo(
+                snekBodyLocations[i-1].x * config.TileWidth + config.TileWidth / 2,
+                snekBodyLocations[i-1].y * config.TileWidth + config.TileWidth / 2,
+                500,
+                EasingFunctions.EaseInOutCubic
+            );
+        }
+    }
+
+    getSnekBodyLocations() {
+        const locations: Vector[] = [];
+        for (let i=0; i < this.snekBody.length; i++) {
+            const bodySegment = this.snekBody[i];
+            const location = new Vector(Math.floor(bodySegment.pos.x / config.TileWidth), Math.floor(bodySegment.pos.y / config.TileWidth));
+            locations[i] = location;
+        }
+        console.log({locations});
+        return locations;
     }
 }

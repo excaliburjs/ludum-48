@@ -20,5 +20,6 @@ RockDigDelay: 100,
   SnekAcceleration: 0.05, // seconds per tile when user is further away
   SnekCatchUpAcceleration: 2,
   SnekDistanceBeforeCatchUp: 10,
-  SnekMaxSpeed: 1
+  SnekMaxSpeed: 1,
+  SnekBodyLength: 7, // head is 1 tile, this is the rest
 }
