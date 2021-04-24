@@ -23,7 +23,6 @@ import {
   RockTerrain,
   Terrain,
 } from "./terrain";
-import { Dictionary } from "underscore";
 
 class WeightPair {
   constructor(weight: number, terrain: Terrain) {
