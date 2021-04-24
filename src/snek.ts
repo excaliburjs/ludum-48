@@ -26,9 +26,9 @@ export class Snek extends Actor {
 
 
     onPreUpdate(_engine: Engine, _delta: number): void {
-        this.timer += _delta;
+        this.timer += _delta / 1000;
         if (this.timer >= config.SnekAdvanceTimer) {
-            this.timer -= config.SnekAdvanceTimer;
+            this.timer = 0;
             const place = this.playerTrail.dequeue();
             if (place)
             {

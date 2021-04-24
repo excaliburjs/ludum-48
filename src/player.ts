@@ -131,7 +131,7 @@ export class Player extends Actor {
         .callMethod(() => {
           this.moving = false;
         });
-      this.trail.enqueue(this.pos);
+      this.trail.enqueue(this.pos.clone());
     }
   }
 }
