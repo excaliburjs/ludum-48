@@ -1,4 +1,13 @@
-import { Axis, Cell, Engine, Scene, TileMap, vec } from "excalibur";
+import {
+  Axis,
+  Cell,
+  Engine,
+  Graphics,
+  Random,
+  Scene,
+  TileMap,
+  vec,
+} from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
@@ -8,6 +17,10 @@ export class Level extends Scene {
   start = 5; // tiles down
   chunkWidth = config.ChunkWidth;
   chunkHeight = config.ChunkHeight; // full screen
+  random = new Random(1337);
+
+  dirtSprite!: Graphics.Sprite;
+  rockSprite!: Graphics.Sprite;
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -17,6 +30,8 @@ export class Level extends Scene {
   snek: Snek | null = null;
 
   onInitialize(engine: Engine) {
+    this.dirtSprite = Resources.Dirt.toSprite();
+    this.rockSprite = Resources.Rock.toSprite();
     this.player = new Player(this);
     this.snek = new Snek(this);
 
@@ -61,7 +76,6 @@ export class Level extends Scene {
   }
 
   generateChunk(yPos: number): TileMap {
-    const tileSprite = Resources.Dirt.toSprite();
     const tileMap = new TileMap({
       x: 0, // always the left
       y: yPos,
@@ -72,7 +86,13 @@ export class Level extends Scene {
     });
 
     for (let cell of tileMap.data) {
-      cell.addSprite(tileSprite);
+      if (this.random.next() < 0.2) {
+        cell.addSprite(this.rockSprite);
+        cell.addTag("rock");
+      } else {
+        cell.addSprite(this.dirtSprite);
+        cell.addTag("dirt");
+      }
     }
 
     return tileMap;
@@ -112,5 +132,17 @@ export class Level extends Scene {
       this.previousChunk = newChunk;
       this.add(newChunk);
     }
+  }
+
+  finishDig(xpos: number, ypos: number): void {
+    var tilemap = this.currentChunk;
+    var tile = tilemap?.getCellByPoint(xpos, ypos);
+    if (!tile) {
+      tilemap = this.previousChunk;
+      tile = tilemap?.getCellByPoint(xpos, ypos);
+    }
+    if (!tile) return;
+
+    tile.clearSprites();
   }
 }

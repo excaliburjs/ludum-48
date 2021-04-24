@@ -129,6 +129,7 @@ export class Player extends Actor {
       // TODO play digging animation
 
       const tile = this.level.getTile(worldPos.x, worldPos.y);
+
       if (tile?.sprites.length) {
         this.actions.rotateTo(
           Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
@@ -136,22 +137,31 @@ export class Player extends Actor {
           100,
           RotationType.ShortestPath
         );
-        Resources.DigSound.play();
-        this.actions.delay(400).callMethod(() => {
-          tile?.clearSprites();
-        });
+        // Cant move through rock
+        if (tile?.hasTag("rock")) {
+          Resources.ClankSound.play();
+          this.actions.delay(100).callMethod(() => {
+            this.moving = false;
+          });
+        } else if (tile?.hasTag("dirt")) {
+          Resources.DigSound.play();
+          this.actions.delay(400).callMethod(() => {
+            tile?.clearSprites();
+          });
+          this.actions
+            .easeTo(
+              tileX * config.TileWidth + config.TileWidth / 2,
+              tileY * config.TileWidth + config.TileWidth / 2,
+              500,
+              EasingFunctions.EaseInOutCubic
+            )
+            .callMethod(() => {
+              this.level.finishDig(this.pos.x, this.pos.y);
+              this.moving = false;
+            });
+          this.trail.enqueue(this.pos.clone());
+        }
       }
-      this.actions
-        .easeTo(
-          tileX * config.TileWidth + config.TileWidth / 2,
-          tileY * config.TileWidth + config.TileWidth / 2,
-          500,
-          EasingFunctions.EaseInOutCubic
-        )
-        .callMethod(() => {
-          this.moving = false;
-        });
-      this.trail.enqueue(this.pos.clone());
     }
   }
 }

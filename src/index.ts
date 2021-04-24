@@ -28,7 +28,7 @@ class Game extends Engine {
     this.goToScene("main");
     
     game.input.keyboard.on("press", (e) => {
-      if (e.key === Input.Keys.D) {
+      if (e.key === Input.Keys.Semicolon) {
         this.toggleDebug();
       }
     });
