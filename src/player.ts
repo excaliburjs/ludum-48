@@ -1,13 +1,17 @@
 import { Actor, Color, EasingFunctions, Engine, vec, Vector } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
+import config from "./config";
 
 export class Player extends Actor {
   constructor(public level: Level) {
     super({
-      pos: vec(64 * 5 - 32, 64 * 5 - 32),
-      width: 64,
-      height: 64,
+      pos: vec(
+        config.TileWidth * 5 - config.TileWidth / 2,
+        config.TileWidth * 5 - config.TileWidth / 2
+      ),
+      width: config.TileWidth,
+      height: config.TileWidth,
     });
     this.z = 10;
     this.rotation = Math.PI / 2 + Math.PI / 4;
@@ -16,13 +20,7 @@ export class Player extends Actor {
 
   onInitialize(engine: Engine) {
     this.graphics.add(Resources.Sword.toSprite());
-    let isFirstClick = true;
     engine.input.pointers.primary.on("down", (evt) => {
-      // Hack for excalibur bug
-      if (isFirstClick) {
-        isFirstClick = false;
-        return;
-      }
       this.moveToNearestTile(evt.pos);
     });
   }
@@ -34,8 +32,8 @@ export class Player extends Actor {
   }
 
   isValidMove(tileX: number, tileY: number) {
-    const playerTileX = Math.floor(this.pos.x / 64);
-    const playerTileY = Math.floor(this.pos.y / 64);
+    const playerTileX = Math.floor(this.pos.x / config.TileWidth);
+    const playerTileY = Math.floor(this.pos.y / config.TileWidth);
 
     const distX = Math.abs(playerTileX - tileX);
     const distY = Math.abs(playerTileY - tileY);
@@ -46,16 +44,16 @@ export class Player extends Actor {
   }
 
   moveToNearestTile(worldPos: Vector) {
-    const tileX = Math.floor(worldPos.x / 64);
-    const tileY = Math.floor(worldPos.y / 64);
+    const tileX = Math.floor(worldPos.x / config.TileWidth);
+    const tileY = Math.floor(worldPos.y / config.TileWidth);
 
     // TODO is this a valid move
     const validMove = this.isValidMove(tileX, tileY);
 
     if (validMove) {
       this.actions.easeTo(
-        tileX * 64 + 32,
-        tileY * 64 + 32,
+        tileX * config.TileWidth + config.TileWidth / 2,
+        tileY * config.TileWidth + config.TileWidth / 2,
         500,
         EasingFunctions.EaseInOutCubic
       );
