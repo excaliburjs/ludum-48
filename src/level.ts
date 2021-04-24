@@ -12,6 +12,7 @@ import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
+import { GameOver } from "./gameOver";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -28,15 +29,18 @@ export class Level extends Scene {
 
   player: Player | null = null;
   snek: Snek | null = null;
+  gameOver: GameOver | null = null;
 
   onInitialize(engine: Engine) {
     this.dirtSprite = Resources.Dirt.toSprite();
     this.rockSprite = Resources.Rock.toSprite();
     this.player = new Player(this);
     this.snek = new Snek(this);
+    this.gameOver = new GameOver(engine.halfCanvasWidth, engine.halfCanvasHeight);
 
     this.add(this.player);
     this.add(this.snek);
+    this.add(this.gameOver);
 
     // Camera follows actor's Y Axis
     this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
