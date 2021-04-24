@@ -8,7 +8,6 @@ export class Snek extends Actor {
     private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
     private currentSnekAdvance: number = config.SnekAdvanceTimer;
     private calculatedSnekSpeed: number = config.SnekAdvanceTimer;
-    private timer: number = 0;
     private moving: Boolean = false;
     private moveSnekTimer = new Every.Second(() => { this.moveSnek(); }, config.SnekAdvanceTimer);
     private updateSnekTimer = new Every.Second(() => {this.updateSnekSpeed();}, 1);
@@ -21,7 +20,7 @@ export class Snek extends Actor {
     constructor(public level: Level) {
         super({
             pos: vec(
-                config.TileWidth * 5 - config.TileWidth / 2,
+                0,
                 config.TileWidth * 5 - config.TileWidth / 2
             ),
             width: config.TileWidth,
