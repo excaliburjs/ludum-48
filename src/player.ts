@@ -19,7 +19,7 @@ import { GlobalState } from "./globalState";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
-  private state:GlobalState = GlobalState.GetInstance();
+  private state: GlobalState = GlobalState.GetInstance();
   private moving = false;
   constructor(public level: Level) {
     super({
@@ -43,7 +43,7 @@ export class Player extends Actor {
     this.graphics.add(Resources.Sword.toSprite());
 
     engine.input.keyboard.on("hold", (evt) => {
-      if(this.state.GameOver) return;
+      if (this.state.GameOver) return;
       let dir = Vector.Down;
       switch (evt.key) {
         case Input.Keys.A:
@@ -70,7 +70,7 @@ export class Player extends Actor {
     });
 
     engine.input.pointers.primary.on("down", (evt) => {
-      if(this.state.GameOver) return;
+      if (this.state.GameOver) return;
       // Find the best cardinal
       let dir = evt.pos.sub(this.pos).normalize();
       let bestDir = this.bestDirection(dir);
@@ -141,7 +141,7 @@ export class Player extends Actor {
 
       this.actions.rotateTo(
         Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
-        Math.PI / 4,
+          Math.PI / 4,
         100,
         RotationType.ShortestPath
       );
@@ -164,7 +164,7 @@ export class Player extends Actor {
           .easeTo(
             tileX * config.TileWidth + config.TileWidth / 2,
             tileY * config.TileWidth + config.TileWidth / 2,
-            500,
+            config.SpaceMoveDuration,
             EasingFunctions.EaseInOutCubic
           )
           .callMethod(() => {
