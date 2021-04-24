@@ -10,6 +10,14 @@ body {
   flex-direction: column;
 }
 
+#menu {
+  position: fixed;
+  border: solid;
+  padding: 0.5em;
+  border-radius: 5px;
+  background-color: #111;
+}
+
 ul#menu {
   list-style-type: none;
   font-size: 1.5em;
@@ -18,7 +26,7 @@ ul#menu {
 
 ul#menu li {
   display: inline-block;
-  margin: 0 1em;
+  margin: 0 0.5em;
 }
 
 h1 {
@@ -28,7 +36,7 @@ h1 {
 }
 
 a {
-  color: #c92727;
+  color: #c94105;
 }
 
 #commitRef {
