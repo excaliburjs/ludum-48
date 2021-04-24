@@ -122,7 +122,12 @@ export class Player extends Actor {
       }
 
       // TODO play digging animation
-      // TODO after time remove tile
+
+      const tile = this.level.getTile(worldPos.x, worldPos.y);
+      if (tile?.sprites.length) {
+        Resources.DigSound.play();
+        tile?.clearSprites();
+      }
       this.actions
         .easeTo(
           tileX * config.TileWidth + config.TileWidth / 2,
