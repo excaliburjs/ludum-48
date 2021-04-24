@@ -57,6 +57,11 @@ export class Player extends Actor {
   }
 
   isValidMove(posX: number, posY: number) {
+    // if you are moving we wait otherwise weird things happen and players can make invalid moves
+    if (this.vel.size !== 0) {
+      return false;
+    }
+
     const tileX = Math.floor(posX / config.TileWidth);
     const tileY = Math.floor(posY / config.TileWidth);
 
@@ -66,7 +71,7 @@ export class Player extends Actor {
     const distX = Math.abs(playerTileX - tileX);
     const distY = Math.abs(playerTileY - tileY);
 
-    let isDistanceOne = distX + distY === 1;
+    let isDistanceOne = Math.sqrt(distX * distX + distY * distY) === 1;
     let tile = this.level.getTile(posX, posY);
     return isDistanceOne && !!tile;
   }
