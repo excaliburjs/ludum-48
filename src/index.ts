@@ -4,14 +4,15 @@ import { DisplayMode, Engine, Flags, Loader } from "excalibur";
 import { Player } from "./player";
 import { Resources } from "./resources";
 import { Level } from "./level";
+import config from "./config";
 
 Flags.enable("use-webgl");
 class Game extends Engine {
   constructor() {
     super({
       canvasElementId: "game",
-      width: 64 * 9, // cell width * 9
-      height: 64 * 16, // cell width * 16
+      width: config.TileWidth * config.ChunkWidth,
+      height: config.TileWidth * config.ChunkHeight,
       displayMode: DisplayMode.Fit,
     });
   }
