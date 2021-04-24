@@ -13,11 +13,11 @@ import config from "./config";
 import { Resources } from "./resources";
 import { Level } from "./level";
 import { GraphicsComponent } from "../lib/excalibur/build/dist/Graphics";
-
 export class GameOver extends Actor {
   private card!: DialogCard;
   private backShadow!: Graphics.Rectangle;
   private backShadowLayer!: Graphics.GraphicsLayer;
+  
   constructor(public gameWidth: number, public gameHeight: number) {
     super(gameWidth / 2, gameHeight * 2, 600, 600);
   }

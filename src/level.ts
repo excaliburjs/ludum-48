@@ -7,6 +7,7 @@ import {
   Scene,
   TileMap,
   vec,
+  Vector,
 } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
@@ -28,7 +29,7 @@ export class Level extends Scene {
   chunkHeight = config.ChunkHeight; // full screen
   random = new Random(1337);
 
-  dirtSprite!: Graphics.Sprite;
+    dirtSprite!: Graphics.Sprite;
   rockSprite!: Graphics.Sprite;
 
   onScreenChunkId = 0;
@@ -37,7 +38,9 @@ export class Level extends Scene {
 
   player: Player | null = null;
   snek: Snek | null = null;
+  
   gameOver: GameOver | null = null;
+  gameOverOccured: boolean = false;
 
   onInitialize(engine: Engine) {
     Terrain.Initialize();
@@ -76,6 +79,16 @@ export class Level extends Scene {
         this.loadPrevChunk();
       }
     }
+    this.checkGameOver();
+  }
+
+  checkGameOver(){
+    if(this.gameOverOccured) return;
+    if(this.player?.pos.x == this.snek?.pos.x && this.player?.pos.y == this.snek?.pos.y) {
+      this.gameOver?.updateEndScreen();
+      this.gameOver?.show();
+    }
+    this.gameOverOccured = true;
   }
 
   getTile(xpos: number, ypos: number): Cell | null {
