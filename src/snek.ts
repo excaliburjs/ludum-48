@@ -27,9 +27,9 @@ export class Snek extends Actor {
 
 
     onPreUpdate(_engine: Engine, _delta: number): void {
-        this.timer += _delta;
-        if (this.timer >= config.SnekAdvanceTimer*1000) {
-            this.timer -= config.SnekAdvanceTimer*1000;
+        this.timer += _delta / 1000;
+        if (this.timer >= config.SnekAdvanceTimer) {
+            this.timer = 0;
             this.moveSnek();
         }
         if (this.vel.size !== 0) {
@@ -41,15 +41,11 @@ export class Snek extends Actor {
         if (this.moving) {
             return;
         }
-        else
-        {
-            this.moving = true;
-        }
         const place = this.playerTrail.dequeue();
         if (!place) {
-            this.moving = false;
             return;
         }
+        this.moving = true;
         const tileX = Math.floor(place.x / config.TileWidth);
         const tileY = Math.floor(place.y / config.TileWidth);
         this.actions.easeTo(
