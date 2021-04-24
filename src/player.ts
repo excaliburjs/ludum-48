@@ -15,10 +15,11 @@ import { Resources } from "./resources";
 import config from "./config";
 import { PlayerTrail } from "./playerTrail";
 import { EmptyTag, Terrain } from "./terrain";
+import { GlobalState } from "./globalState";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
-
+  private state:GlobalState = GlobalState.GetInstance();
   private moving = false;
   constructor(public level: Level) {
     super({
@@ -42,6 +43,7 @@ export class Player extends Actor {
     this.graphics.add(Resources.Sword.toSprite());
 
     engine.input.keyboard.on("hold", (evt) => {
+      if(this.state.GameOver) return;
       let dir = Vector.Down;
       switch (evt.key) {
         case Input.Keys.A:
@@ -68,6 +70,7 @@ export class Player extends Actor {
     });
 
     engine.input.pointers.primary.on("down", (evt) => {
+      if(this.state.GameOver) return;
       // Find the best cardinal
       let dir = evt.pos.sub(this.pos).normalize();
       let bestDir = this.bestDirection(dir);

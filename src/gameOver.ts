@@ -51,7 +51,7 @@ export class GameOver extends Actor {
     this.pos = vec(0, 0);
     this.card.actions.easeTo(
       this.gameWidth / 2,
-      this.gameHeight / 4,
+      this.gameHeight / 3,
       500,
       EasingFunctions.EaseInOutCubic
     );

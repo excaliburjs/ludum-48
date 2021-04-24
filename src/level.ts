@@ -23,6 +23,7 @@ import {
   RockTerrain,
   Terrain,
 } from "./terrain";
+import { GlobalState } from "./globalState";
 
 class WeightPair {
   constructor(weight: number, terrain: Terrain) {
@@ -79,9 +80,10 @@ export class Level extends Scene {
   snek: Snek | null = null;
 
   gameOver: GameOver | null = null;
-  gameOverOccured: boolean = false;
 
   chunks: TileMap[] = [];
+
+  state: GlobalState = GlobalState.GetInstance();
 
   onInitialize(engine: Engine) {
     Terrain.Initialize();
@@ -134,14 +136,14 @@ export class Level extends Scene {
   }
 
   checkGameOver() {
-    if (this.gameOverOccured) return;
+    if (this.state.GameOver) return;
     if (
       this.player?.pos.x == this.snek?.pos.x &&
       this.player?.pos.y == this.snek?.pos.y
     ) {
       this.gameOver?.updateEndScreen();
       this.gameOver?.show();
-      this.gameOverOccured = true;
+      this.state.GameOver = true;
     }
   }
 
