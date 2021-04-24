@@ -105,6 +105,7 @@ export class Level extends Scene {
 
     this.previousChunk = null;
     this.add((this.currentChunk = tileMap));
+    this.chunks.push(this.currentChunk);
   }
 
   buildTerrainWeightMap(): void {
@@ -202,12 +203,20 @@ export class Level extends Scene {
 
   loadNextChunk(): void {
     this.onScreenChunkId++;
+
+    let newChunk: TileMap;
     console.log("Loading chunk id: ", this.onScreenChunkId);
-    // TODO level generation logic in generate chunk
-    const newChunk = this.generateChunk(
-      this.onScreenChunkId * (config.TileWidth * config.ChunkHeight) +
-        this.start * config.TileWidth
-    );
+
+    if (this.chunks[this.onScreenChunkId]) {
+      newChunk = this.chunks[this.onScreenChunkId];
+    } else {
+      newChunk = this.generateChunk(
+        this.onScreenChunkId * (config.TileWidth * config.ChunkHeight) +
+          this.start * config.TileWidth
+      );
+      this.chunks.push(newChunk);
+    }
+
     if (this.previousChunk) {
       this.remove(this.previousChunk);
       console.log("Removing previous chunk");
@@ -218,21 +227,24 @@ export class Level extends Scene {
   }
 
   loadPrevChunk(): void {
-    if (this.onScreenChunkId > 0) {
+    if (this.onScreenChunkId !== 0) {
       this.onScreenChunkId--;
       console.log("Loading chunk id: ", this.onScreenChunkId);
-      const newChunk = this.generateChunk(
-        this.onScreenChunkId * (config.TileWidth * config.ChunkHeight) +
-          this.start * config.TileWidth
-      );
+      // We need to store away chunks that we've interacted with
+      const newChunk = this.chunks[this.onScreenChunkId];
 
+      //   const currentChunkId = this.chunks.indexOf(this.currentChunk as TileMap);
       if (this.currentChunk) {
         this.remove(this.currentChunk);
       }
 
-      this.currentChunk = this.previousChunk;
-      this.previousChunk = newChunk;
+      this.currentChunk = newChunk;
+      this.previousChunk = this.chunks[this.onScreenChunkId - 1] ?? null;
       this.add(newChunk);
+      this.add(this.previousChunk);
+    } else {
+      this.currentChunk = this.chunks[0];
+      this.previousChunk = null;
     }
   }
 
