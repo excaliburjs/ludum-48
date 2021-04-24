@@ -7,6 +7,8 @@
 
 ### Local Dev
 
+Updating your local copy with `git pull -r` to rebase your local commits on top of upstream, makes the `main` easy to follow and merges less cray.
+
 1. Clone the repo
 
         git clone https://github.com/excaliburjs/ludum-48.git
