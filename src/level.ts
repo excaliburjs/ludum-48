@@ -12,6 +12,14 @@ import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
+import {
+  DirtTag,
+  DirtTerrain,
+  EmptyTag,
+  RockTag,
+  RockTerrain,
+  Terrain,
+} from "./terrain";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -30,8 +38,7 @@ export class Level extends Scene {
   snek: Snek | null = null;
 
   onInitialize(engine: Engine) {
-    this.dirtSprite = Resources.Dirt.toSprite();
-    this.rockSprite = Resources.Rock.toSprite();
+    Terrain.Initialize();
     this.player = new Player(this);
     this.snek = new Snek(this);
 
@@ -87,11 +94,17 @@ export class Level extends Scene {
 
     for (let cell of tileMap.data) {
       if (this.random.next() < 0.2) {
-        cell.addSprite(this.rockSprite);
-        cell.addTag("rock");
+        var sprite = RockTerrain.sprite();
+        if (sprite) {
+          cell.addSprite(sprite);
+        }
+        cell.addTag(RockTag);
       } else {
-        cell.addSprite(this.dirtSprite);
-        cell.addTag("dirt");
+        var sprite = DirtTerrain.sprite();
+        if (sprite) {
+          cell.addSprite(sprite);
+        }
+        cell.addTag(DirtTag);
       }
     }
 
@@ -143,8 +156,9 @@ export class Level extends Scene {
     }
     if (!tile) return;
 
+    var terrain = Terrain.GetTerrain(tile);
     tile.clearSprites();
-    tile.removeComponent("dirt", true);
-    tile.addTag("empty");
+    tile.removeComponent(terrain.tag(), true);
+    tile.addTag(EmptyTag);
   }
 }

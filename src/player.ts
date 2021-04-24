@@ -14,6 +14,7 @@ import { Level } from "./level";
 import { Resources } from "./resources";
 import config from "./config";
 import { PlayerTrail } from "./playerTrail";
+import { EmptyTag, Terrain } from "./terrain";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
@@ -134,46 +135,42 @@ export class Player extends Actor {
       // TODO play digging animation
 
       const tile = this.level.getTile(worldPos.x, worldPos.y);
-      
+
       this.actions.rotateTo(
         Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
           Math.PI / 4,
         100,
         RotationType.ShortestPath
       );
-    
 
-      // Cant move through rock
-      if (tile?.hasTag("rock")) {
-        Resources.ClankSound.play();
-        this.actions.delay(config.RockDigDelay).callMethod(() => {
-          this.moving = false;
-        });
-      // Can move through dirt or empty space
-      } else if (tile?.hasTag("dirt") || tile?.hasTag("empty")) {
-
-        if (tile.hasTag("dirt")) {
-          Resources.DigSound.play();
-          this.actions.delay(config.DigTime).callMethod(() => {
-            tile.removeComponent('dirt', true);
-            tile.addTag('empty');
+      if (tile) {
+        var terrain = Terrain.GetTerrain(tile);
+        terrain.playSound();
+        if (!terrain.mineable()) {
+          this.actions.delay(terrain.delay()).callMethod(() => {
+            this.moving = false;
+          });
+          return;
+        } else {
+          this.actions.delay(terrain.delay()).callMethod(() => {
+            tile.removeComponent(terrain.tag(), true);
+            tile.addTag(EmptyTag);
             tile.clearSprites();
           });
-
         }
 
         this.actions
-        .easeTo(
-          tileX * config.TileWidth + config.TileWidth / 2,
-          tileY * config.TileWidth + config.TileWidth / 2,
-          500,
-          EasingFunctions.EaseInOutCubic
+          .easeTo(
+            tileX * config.TileWidth + config.TileWidth / 2,
+            tileY * config.TileWidth + config.TileWidth / 2,
+            500,
+            EasingFunctions.EaseInOutCubic
           )
           .callMethod(() => {
             this.level.finishDig(this.pos.x, this.pos.y);
             this.moving = false;
           });
-          this.trail.enqueue(this.pos.clone());
+        this.trail.enqueue(this.pos.clone());
       }
     }
   }
