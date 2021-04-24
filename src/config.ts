@@ -16,10 +16,10 @@ export default {
   /**************************
    * Snek Config
    **************************/
-  SnekAdvanceTimer: 5, // seconds per tile
+  SnekStartingSecondsPerSquare: 5, // seconds per tile
   SnekAcceleration: 0.05, // seconds per tile when user is further away
-  SnekCatchUpAcceleration: 2,
-  SnekDistanceBeforeCatchUp: 10,
-  SnekMaxSpeed: 1,
+  SnekCatchUpSecondsPerSquare: 2,
+  SnekSquaresDistanceBeforeCatchUpSpeed: 10,
+  SnekMinSecondsPerSquare: 1,
   SnekBodyLength: 7, // head is 1 tile, this is the rest
 };

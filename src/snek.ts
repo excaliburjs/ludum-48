@@ -6,15 +6,15 @@ import { PlayerTrail } from "./playerTrail";
 import { Every } from "./every";
 export class Snek extends Actor {
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
-  private currentSnekAdvance: number = config.SnekAdvanceTimer;
-  private calculatedSnekSpeed: number = config.SnekAdvanceTimer;
+  private snekCurrentSecondsPerSquare: number = config.SnekStartingSecondsPerSquare;
+  private snekCalculatedSecondsPerSquare: number = config.SnekStartingSecondsPerSquare;
   private moving: Boolean = false;
 
   private snekBody: Actor[] = [];
 
   private moveSnekTimer = new Every.Second(() => {
     this.moveSnek();
-  }, config.SnekAdvanceTimer);
+  }, config.SnekStartingSecondsPerSquare);
   private updateSnekTimer = new Every.Second(() => {
     this.updateSnekSpeed();
   }, 1);
@@ -39,7 +39,7 @@ export class Snek extends Actor {
   }
 
   onPreUpdate(_engine: Engine, _delta: number): void {
-    this.moveSnekTimer.UpdateInterval(this.currentSnekAdvance);
+    this.moveSnekTimer.UpdateInterval(this.snekCurrentSecondsPerSquare);
 
     this.updateFunctions.forEach((fun) => fun.Update(_delta));
 
@@ -49,21 +49,21 @@ export class Snek extends Actor {
   }
 
   updateSnekSpeed() {
-    this.calculatedSnekSpeed -= config.SnekAcceleration;
+    this.snekCalculatedSecondsPerSquare -= config.SnekAcceleration;
     const playerPos = this.playerTrail.peekLast();
     if (!!playerPos) {
       const distX = Math.abs(playerPos.x - this.pos.x);
       const distY = Math.abs(playerPos.y - this.pos.y);
       const distance = Math.sqrt(distX * distX + distY * distY);
-      if (distance >= config.SnekDistanceBeforeCatchUp) {
-        this.currentSnekAdvance = Math.min(
-          config.SnekCatchUpAcceleration,
-          this.calculatedSnekSpeed
+      if (distance >= config.SnekSquaresDistanceBeforeCatchUpSpeed) {
+        this.snekCurrentSecondsPerSquare = Math.min(
+          config.SnekCatchUpSecondsPerSquare,
+          this.snekCalculatedSecondsPerSquare
         );
       }
     }
-    if (this.currentSnekAdvance >= config.SnekMaxSpeed) {
-      this.currentSnekAdvance = config.SnekMaxSpeed;
+    if (this.snekCurrentSecondsPerSquare <= config.SnekMinSecondsPerSquare) {
+      this.snekCurrentSecondsPerSquare = config.SnekMinSecondsPerSquare;
     }
   }
 
