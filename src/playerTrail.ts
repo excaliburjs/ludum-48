@@ -15,6 +15,10 @@ interface IQueue<T> {
       }
       this.storage.push(item);
     }
+
+    peekLast(): T | undefined {
+        return this.storage[this.size() - 1];
+    }
     
     dequeue(): T | undefined {
       return this.storage.shift();
