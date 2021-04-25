@@ -19,6 +19,7 @@ import speedPowerUp from "./images/meerkat_avatars.png";
 import progressMeter from "./images/meter.png";
 import spriteFont from "./images/spritefont.png";
 import avatar from "./images/meerkat_avatars.png";
+import digging from "./images/digging.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -38,6 +39,7 @@ let Resources = {
   ProgressMeter: new Graphics.ImageSource(progressMeter),
   SpriteFont: new Graphics.ImageSource(spriteFont),
   Avatar: new Graphics.ImageSource(avatar),
+  Digging: new Graphics.ImageSource(digging),
 };
 
 Resources.BackgroundMusic.loop = true;

@@ -11,6 +11,7 @@ import {
   RotationType,
   Traits,
   Timer,
+  Graphics,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -28,6 +29,8 @@ export class Player extends Actor {
   private pointerScreenPos = vec(0, 0);
   private engine!: Engine;
 
+  private startAngle = Math.PI / 2;
+
   constructor(public level: Level) {
     super({
       pos: vec(
@@ -39,14 +42,33 @@ export class Player extends Actor {
     });
 
     this.z = 10;
-    this.rotation = Math.PI / 2 + Math.PI / 4;
+    this.rotation = 0; // Math.PI;// Math.PI / 2 + Math.PI / 4;
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
   }
 
   onInitialize(engine: Engine) {
-    this.graphics.add(Resources.Sword.toSprite());
+    const spriteSheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.Digging,
+      grid: {
+        spriteWidth: 48,
+        spriteHeight: 48,
+        rows: 1,
+        columns: 4,
+      },
+    });
+
+    const anim = Graphics.Animation.fromSpriteSheet(
+      spriteSheet,
+      [0, 1, 2, 3],
+      100,
+      Graphics.AnimationStrategy.PingPong
+    );
+    anim.rotation = Math.PI;
+
+    this.graphics.add(anim);
+    // this.graphics.add(Resources.Sword.toSprite());
     this.engine = engine;
     engine.input.keyboard.on("hold", (evt) => {
       if (this.state.GameOver) return;
@@ -113,7 +135,7 @@ export class Player extends Actor {
 
   onPreUpdate() {
     if (this.vel.size !== 0) {
-      this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
+      this.rotation = Math.atan2(this.vel.y, this.vel.x) + this.startAngle; // + Math.PI ; /* + Math.PI / 4*/;
     }
 
     if (this.pointerHeld) {
@@ -167,7 +189,7 @@ export class Player extends Actor {
 
       this.actions.rotateTo(
         Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
-        Math.PI / 4,
+          this.startAngle,
         100,
         RotationType.ShortestPath
       );

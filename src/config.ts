@@ -3,7 +3,7 @@ export default {
   CollectibleRandomSeed: 7331,
 
   // Progress meter
-  DistanceToComplete: 100,
+  DistanceToComplete: 200,
   MeterTilesHigh: 20,
 
   // Board Layout
