@@ -324,6 +324,12 @@ export class Level extends Scene {
         new TunnelTerrain(this.determineTunnelSidesForCell(neighbors.north))
       );
     }
+    if (neighbors.south?.hasTag(EmptyTag)) {
+      this.setCellToTerrain(
+        neighbors.south,
+        new TunnelTerrain(this.determineTunnelSidesForCell(neighbors.south))
+      );
+    }
     if (neighbors.west?.hasTag(EmptyTag)) {
       this.setCellToTerrain(
         neighbors.west,
