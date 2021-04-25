@@ -3,6 +3,7 @@ import sword from "./images/sword.png";
 import dirt from "./images/dirt_001.png";
 import dirtBackground from "./images/dirt_back.png";
 import dirtTunnel from "./images/dirt_tunnel.png";
+import dirtSide from "./images/dirt_side.png";
 import dirtAngle from "./images/dirt_angle.png";
 import rock from "./images/rock_001.png";
 import digWav from "./sound/dig.wav";
@@ -17,6 +18,7 @@ import snek from "./images/snek.png";
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
+  DirtSide: new Graphics.ImageSource(dirtSide),
   DirtBackground: new Graphics.ImageSource(dirtBackground),
   DirtTunnel: new Graphics.ImageSource(dirtTunnel),
   DirtAngle: new Graphics.ImageSource(dirtAngle),
