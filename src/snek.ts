@@ -62,6 +62,10 @@ export class Snek extends Actor {
   }
 
   onPreUpdate(_engine: Engine, _delta: number): void {
+    if (this.vel.size !== 0) {
+      this.rotation = Math.atan2(this.vel.y, this.vel.x);
+    }
+
     this.moveSnekTimer.UpdateInterval(this.snekCurrentSecondsPerSquare);
 
     this.updateFunctions.forEach((fun) => fun.Update(_delta));
@@ -129,6 +133,15 @@ export class Snek extends Actor {
       bodySegment.graphics.add(
         this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
       );
+      bodySegment.onPreUpdate = () => {
+        if (bodySegment.vel.size !== 0) {
+          bodySegment.rotation = Math.atan2(
+            bodySegment.vel.y,
+            bodySegment.vel.x
+          );
+        }
+      };
+
       this.snekBody.push(bodySegment);
       this.scene.add(bodySegment);
     }
