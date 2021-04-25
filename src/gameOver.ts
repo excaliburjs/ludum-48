@@ -9,7 +9,7 @@ import {
   ExitTriggerEvent,
   Traits,
   CoordPlane,
-  Vector,
+  Vector
 } from "excalibur";
 import { DialogCard } from "./dialogueCard";
 import config from "./config";
@@ -26,6 +26,8 @@ export class GameOver extends Actor {
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
+
+    this.transform.coordPlane = CoordPlane.Screen;
   }
 
   onInitialize(engine: Engine) {
@@ -34,9 +36,11 @@ export class GameOver extends Actor {
       height: this.gameHeight * 2,
       color: Color.fromRGB(51, 51, 51, 0.5),
     });
+    this.graphics.anchor = vec(0, 0);
     this.backShadowLayer = this.graphics.layers.create({
       name: "backshadow",
       order: 1,
+      offset: vec(0, 0),
     });
   }
 

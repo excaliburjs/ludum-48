@@ -5,6 +5,7 @@ import {
   ElasticToActorStrategy,
   Engine,
   Graphics,
+  Input,
   LimitCameraBoundsStrategy,
   LockCameraToActorAxisStrategy,
   Random,
@@ -90,10 +91,18 @@ export class Level extends Scene {
   state: GlobalState = GlobalState.GetInstance();
 
   onInitialize(engine: Engine) {
+    // engine.input.keyboard.on('press', (evt) => {
+    //     if (evt.key === Input.Keys.L) {
+    //         this.gameOver?.updateEndScreen();
+    //         this.gameOver?.show();
+    //         this.state.GameOver = true;
+    //     }
+    // });
+
     Terrain.Initialize();
     this.player = new Player(this);
     this.snek = new Snek(this);
-    this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
+    this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
 
     this.add(this.player);
     this.add(this.snek);
