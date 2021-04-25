@@ -6,13 +6,14 @@ import {
   Color,
   Traits,
   CoordPlane,
+  ScreenElement,
 } from "excalibur";
 import { Resources } from "./resources";
 
 export interface DialogCardOptions {
   topPadding?: number;
 }
-export class DialogCard extends Actor {
+export class DialogCard extends ScreenElement {
   private topPadding: number;
 
   constructor(private text: string[], options: ActorArgs & DialogCardOptions) {
