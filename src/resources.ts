@@ -10,6 +10,7 @@ import clankMp3 from "./sound/clank.mp3";
 import backgroundMp3 from "./sound/background.mp3";
 import backgroundWav from "./sound/background.mp3";
 import modal from "./images/modal.png";
+import snek from "./images/snek.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -20,6 +21,7 @@ let Resources = {
   ClankSound: new Sound(clankMp3, clankWav),
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
   Modal: new Graphics.ImageSource(modal),
+  Snek: new Graphics.ImageSource(snek),
 };
 
 Resources.BackgroundMusic.loop = true;
