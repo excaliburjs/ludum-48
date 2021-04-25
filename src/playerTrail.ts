@@ -27,6 +27,9 @@ class Queue<T> implements IQueue<T> {
     size(): number {
         return this.storage.length;
     }
+    clear(): void {
+        this.storage = [];
+    }
 }
 export class PlayerTrail extends Queue<Vector> {
     static instance: PlayerTrail;

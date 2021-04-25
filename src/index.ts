@@ -63,6 +63,7 @@ class Game extends Engine {
   public NewGame(): void {
     this.state.GameOver = false;
     const startY = config.TileWidth * 5 - config.TileWidth / 2;
+    this.trail.clear();
     this.trail.enqueue(new Vector(1 * config.TileWidth, startY));
     this.trail.enqueue(new Vector(2 * config.TileWidth, startY));
     this.trail.enqueue(new Vector(3 * config.TileWidth, startY));
@@ -78,11 +79,15 @@ class Game extends Engine {
       }
     });
 
-    game.input.keyboard.on("press", (e) =>{
-      if(this.state.GameOver) {
-        if(e.key === Input.Keys.R){
+    game.input.keyboard.on("press", (e) => {
+      if (this.state.GameOver) {
+        if (e.key === Input.Keys.R) {
           const sceneKeys = this.scenes.Keys;
-          for(let sceneKey in sceneKeys){
+          for (let sceneKey in sceneKeys) {
+            for (let actor of this.scenes[sceneKey].actors) {
+              actor.kill();
+            }
+
             this.removeScene(sceneKey);
           }
           this.NewGame();
