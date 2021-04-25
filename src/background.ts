@@ -43,14 +43,12 @@ export class Background {
   }
 
   setCurrentChunkId(id: number) {
-    const tileMap = this.useTop ? this.top : this.bottom;
     const startOffset = config.TileWidth * 5;
     if (id > 0) {
       this.top.y =
-        (id - 1) * config.TileWidth * config.ChunkHeight + startOffset;
-      this.bottom.y = id * config.TileWidth * config.ChunkHeight + startOffset;
-    } else {
-      this.bottom.y = id * config.TileWidth * config.ChunkHeight + startOffset;
+        (id - 1) * (config.TileWidth * config.ChunkHeight) + startOffset;
+      this.bottom.y =
+        id * (config.TileWidth * config.ChunkHeight) + startOffset;
     }
   }
 }
