@@ -1,8 +1,12 @@
 import {
   Axis,
+  BoundingBox,
   Cell,
+  ElasticToActorStrategy,
   Engine,
   Graphics,
+  LimitCameraBoundsStrategy,
+  LockCameraToActorAxisStrategy,
   Random,
   Scene,
   TileMap,
@@ -25,40 +29,40 @@ import {
 } from "./terrain";
 import { GlobalState } from "./globalState";
 
-class WeightPair {
-  constructor(weight: number, terrain: Terrain) {
+class WeightPair<T> {
+  constructor(weight: number, obj: T) {
     this.weight = weight;
-    this.terrain = terrain;
+    this.obj = obj;
   }
   weight: number;
-  terrain: Terrain;
+  obj: T;
 }
-class TerrainWeightMap {
+class WeightMap<T> {
   total: number = 0;
-  pairs: WeightPair[] = [];
+  pairs: WeightPair<T>[] = [];
   random: Random;
 
   constructor(random: Random) {
     this.random = random;
   }
 
-  add(weight: number, terrain: Terrain) {
+  add(weight: number, obj: T) {
     this.total += weight;
-    this.pairs.push(new WeightPair(weight, terrain));
+    this.pairs.push(new WeightPair<T>(weight, obj));
   }
 
-  randomSelect(): Terrain {
+  randomSelect(defObj: T): T {
     const roll = this.random.next() * this.total;
     var total = 0;
-    var terrain: Terrain | null = null;
+    var obj: T | null = null;
     this.pairs.forEach((a) => {
-      if (terrain) return;
+      if (obj) return;
       if (roll - total <= a.weight) {
-        terrain = a.terrain;
+        obj = a.obj;
       }
       total += a.weight;
     });
-    return terrain ?? EmptyTerrain;
+    return obj ?? defObj;
   }
 }
 
@@ -67,10 +71,7 @@ export class Level extends Scene {
   chunkWidth = config.ChunkWidth;
   chunkHeight = config.ChunkHeight; // full screen
   random = new Random(config.RandomSeed);
-  terrainWeightMap: TerrainWeightMap = new TerrainWeightMap(this.random);
-
-  dirtSprite!: Graphics.Sprite;
-  rockSprite!: Graphics.Sprite;
+  terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.random);
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -87,8 +88,6 @@ export class Level extends Scene {
 
   onInitialize(engine: Engine) {
     Terrain.Initialize();
-    this.dirtSprite = Resources.Dirt.toSprite();
-    this.rockSprite = Resources.Rock.toSprite();
     this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
@@ -97,8 +96,14 @@ export class Level extends Scene {
     this.add(this.snek);
     this.add(this.gameOver);
 
-    // Camera follows actor's Y Axis
-    this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
+    this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
+    this.camera.on("postupdate", (e) => {
+      this.camera.pos.x = this.camera.viewport.width / 2;
+    });
+
+    // this.camera.strategy.lockToActorAxis(this.player, Axis.X);
+
+    // this.camera.strategy.elasticToActor(this.player, .2, .2);
 
     this.buildTerrainWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);
@@ -166,7 +171,7 @@ export class Level extends Scene {
     });
 
     for (let cell of tileMap.data) {
-      var terrain = this.terrainWeightMap.randomSelect();
+      var terrain = this.terrainWeightMap.randomSelect(EmptyTerrain);
       this.setCellToTerrain(cell, terrain);
     }
 

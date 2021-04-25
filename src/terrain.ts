@@ -1,4 +1,4 @@
-import { Cell, Engine, Graphics, Sound, Sprite, TileMap } from "excalibur";
+import { Cell, Engine, Graphics, Sound, TileMap } from "excalibur";
 import { ImageSource } from "../lib/excalibur/build/dist/Graphics";
 import { Resources } from "./resources";
 import config from "./config";
