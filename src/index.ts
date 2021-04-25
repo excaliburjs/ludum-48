@@ -8,12 +8,15 @@ import {
   Input,
   PostUpdateEvent,
   Physics,
+  Vector,
 } from "excalibur";
 import dat from "dat.gui";
 
 import { Resources } from "./resources";
 import { Level } from "./level";
 import config from "./config";
+import { GlobalState } from "./globalState";
+import { PlayerTrail } from "./playerTrail";
 Physics.enabled = false;
 
 const gui = new dat.GUI({ name: "Ludum 48 Debug" });
@@ -35,6 +38,8 @@ for (let key in config as any) {
 
 Flags.enable("use-webgl");
 class Game extends Engine {
+  private state: GlobalState = GlobalState.GetInstance();
+  private trail: PlayerTrail = PlayerTrail.GetInstance();
   constructor() {
     super({
       canvasElementId: "game",
@@ -49,6 +54,19 @@ class Game extends Engine {
     for (const resource of Object.values(Resources)) {
       loader.addResource(resource);
     }
+    this.start(loader).then(() => {
+      Resources.BackgroundMusic.play();
+    });
+    this.NewGame();
+  }
+
+  public NewGame(): void {
+    this.state.GameOver = false;
+    const startY = config.TileWidth * 5 - config.TileWidth / 2;
+    this.trail.enqueue(new Vector(1 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(2 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(3 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(4 * config.TileWidth, startY));
 
     const level = new Level();
     this.addScene("main", level);
@@ -59,8 +77,17 @@ class Game extends Engine {
         this.toggleDebug();
       }
     });
-    this.start(loader).then(() => {
-      Resources.BackgroundMusic.play();
+
+    game.input.keyboard.on("press", (e) =>{
+      if(this.state.GameOver) {
+        if(e.key === Input.Keys.R){
+          const sceneKeys = this.scenes.Keys;
+          for(let sceneKey in sceneKeys){
+            this.removeScene(sceneKey);
+          }
+          this.NewGame();
+        }
+      }
     });
   }
 }

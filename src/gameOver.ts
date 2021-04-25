@@ -39,7 +39,7 @@ export class GameOver extends Actor {
 
   public updateEndScreen() {
     const cardPos = vec(this.pos.x, this.pos.y);
-    let text = "The audience was not impressed";
+    let text = "Press 'R' to reset.";
     this.card = new DialogCard([text], {
       pos: cardPos,
       topPadding: 30,
