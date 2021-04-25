@@ -28,6 +28,7 @@ import {
   Terrain,
 } from "./terrain";
 import { GlobalState } from "./globalState";
+import { Background } from "background";
 
 class WeightPair<T> {
   constructor(weight: number, obj: T) {
@@ -77,6 +78,8 @@ export class Level extends Scene {
   previousChunk: TileMap | null = null;
   currentChunk: TileMap | null = null;
 
+  background!: Background;
+
   player: Player | null = null;
   snek: Snek | null = null;
 
@@ -104,6 +107,8 @@ export class Level extends Scene {
     // this.camera.strategy.lockToActorAxis(this.player, Axis.X);
 
     // this.camera.strategy.elasticToActor(this.player, .2, .2);
+
+    this.background = new Background(this);
 
     this.buildTerrainWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);

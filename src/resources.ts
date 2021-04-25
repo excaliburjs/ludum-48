@@ -1,4 +1,4 @@
-import { Resource, Texture, Graphics, Sound } from "excalibur";
+import { Graphics, Sound } from "excalibur";
 import sword from "./images/sword.png";
 import dirt from "./images/dirt_001.png";
 import dirtBackground from "./images/dirt_back.png";
