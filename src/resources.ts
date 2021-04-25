@@ -11,6 +11,8 @@ import digWav from "./sound/dig.wav";
 import digMp3 from "./sound/dig.mp3";
 import clankWav from "./sound/clank.wav";
 import clankMp3 from "./sound/clank.mp3";
+import pickupMp3 from "./sound/getitem.mp3";
+import pickupWav from "./sound/getitem.wav";
 import backgroundMp3 from "./sound/background.mp3";
 import backgroundWav from "./sound/background.mp3";
 import modal from "./images/modal.png";
@@ -33,6 +35,7 @@ let Resources = {
   Rock2: new Graphics.ImageSource(rock2),
   DigSound: new Sound(digMp3, digWav),
   ClankSound: new Sound(clankMp3, clankWav),
+  PickUpSound: new Sound(pickupMp3, pickupWav),
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
   Modal: new Graphics.ImageSource(modal),
   Snek: new Graphics.ImageSource(snek),

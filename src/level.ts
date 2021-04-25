@@ -310,7 +310,10 @@ export class Level extends Scene {
     );
 
     this.setCellToTerrain(tile, tunnelTerrain);
-    if (tile.tags.indexOf("speedPowerUp") !== -1) this.speedPowerUp.apply();
+    if (tile.tags.indexOf("speedPowerUp") !== -1) {
+      this.speedPowerUp.apply();
+      Resources.PickUpSound.play();
+    }
 
     //
     // Clean up edges from neighboring cells
