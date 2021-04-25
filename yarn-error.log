@@ -1,0 +1,81 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add dat.gui
+
+PATH: 
+  C:\Users\Kamran.000\AppData\Roaming\nvm\v12.16.3\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;E:\Development\Contrib\excaliburjs\ludum-48\node_modules\.bin;C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Python27\;C:\Python27\Scripts;c:\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Program Files (x86)\AMD\ATI.ACE\Core-Static;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files (x86)\PuTTY\;C:\Program Files (x86)\Skype\Phone\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\Kamran\AppData\Roaming\npm;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Program Files\OpenVPN\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Users\Kamran.000\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files (x86)\Yarn\bin\;C:\Program Files (x86)\dotnet\;C:\Program Files\Git\bin;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Ruby26-x64\bin;C:\Users\Kamran\.dnx\bin;C:\Ruby22\bin;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\Kamran\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Docker Toolbox;C:\Users\Kamran\AppData\Local\Wyam;C:\Program Files (x86)\Markdown Monster;C:\Users\Kamran\AppData\Roaming\npm;C:\Users\Kamran\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Kamran\.dotnet\tools;C:\Users\Kamran\AppData\Local\now-cli;C:\Windows\twain_32\CNQ8400;C:\Users\Kamran\AppData\Local\hyper\app-3.0.2\resources\bin;C:\Users\Kamran\AppData\Local\GitHubDesktop\bin;C:\Users\Kamran.000\AppData\Local\Microsoft\WindowsApps;C:\Users\Kamran.000\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Kamran.000\AppData\Local\hyper\app-3.0.2\resources\bin;C:\Users\Kamran.000\AppData\Local\GitHubDesktop\bin;C:\Users\Kamran.000\.dotnet\tools;C:\Users\Kamran.000\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Kamran.000\AppData\Local\Yarn\bin;C:\Users\Kamran.000\AppData\Local\Microsoft\WindowsApps;C:\Users\Kamran.000\.dotnet\tools
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  12.16.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'E:\Development\Contrib\excaliburjs\ludum-48\node_modules\deasync\bin\win32-x64-node-12\deasync.node'
+
+npm manifest: 
+  {
+    "name": "ludum-48",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Ludum Dare 48 Game Jam",
+    "main": "dist/index.js",
+    "scripts": {
+      "start": "parcel index.html --no-autoinstall",
+      "test": "npm run build && node ./test/test.js",
+      "typecheck": "tsc -p . --noEmit",
+      "build": "npm run build:excalibur && parcel build index.html",
+      "build:excalibur": "cd lib/excalibur && npm install && npm run core && cd ../../",
+      "build:excalibur-tiled": "cd lib/excalibur-tiled && npm install && npm run build && cd ../../"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/excaliburjs/ludum-48.git"
+    },
+    "author": "",
+    "license": "BSD-2",
+    "bugs": {
+      "url": "https://github.com/excaliburjs/ludum-48/issues"
+    },
+    "homepage": "https://github.com/excaliburjs/tludum-48#readme",
+    "assetsPath": "static/",
+    "alias": {
+      "excalibur": "./lib/excalibur/build/dist/",
+      "excalibur-tiled": "./lib/excalibur-tiled/"
+    },
+    "devDependencies": {
+      "@types/dat.gui": "^0.7.6",
+      "husky": "4.2.5",
+      "lint-staged": "10.5.4",
+      "node-static": "0.7.11",
+      "parcel-bundler": "1.12.5",
+      "parcel-plugin-asset-copier": "1.1.0",
+      "pixelmatch": "5.2.1",
+      "pngjs": "6.0.0",
+      "posthtml-expressions": "1.7.1",
+      "prettier": "2.2.1",
+      "puppeteer": "5.5.0",
+      "sass": "^1.26.10",
+      "typescript": "4.2.4"
+    },
+    "husky": {
+      "hooks": {
+        "pre-commit": "lint-staged"
+      }
+    },
+    "lint-staged": {
+      "*.{js,ts,css,scss,md}": "prettier --write"
+    },
+    "dependencies": {
+      "dat.gui": "^0.7.7"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

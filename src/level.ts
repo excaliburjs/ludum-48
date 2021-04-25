@@ -1,18 +1,10 @@
 import {
-  Axis,
-  BoundingBox,
   Cell,
   ElasticToActorStrategy,
   Engine,
-  Graphics,
-  Input,
-  LimitCameraBoundsStrategy,
-  LockCameraToActorAxisStrategy,
   Random,
   Scene,
   TileMap,
-  vec,
-  Vector,
 } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
@@ -21,13 +13,12 @@ import { Snek } from "./snek";
 import { GameOver } from "./gameOver";
 import { PowerUp } from "./powerup";
 import {
-  DirtTag,
   DirtTerrain,
-  EmptyTag,
   EmptyTerrain,
-  RockTag,
   RockTerrain,
   Terrain,
+  EmptyTag,
+  TerrainSides,
 } from "./terrain";
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
@@ -316,21 +307,102 @@ export class Level extends Scene {
     }
     if (!tile) return;
 
-    this.setCellToTerrain(tile, EmptyTerrain);
+    const terrainImages = [];
+    let rotateSides = false;
+    let rotateSide = 0; // bottom side
+    const northCell = this.getTile(xpos, ypos - tile.height);
+    const southCell = this.getTile(xpos, ypos + tile.height);
+    const eastCell = this.getTile(xpos + tile.width, ypos);
+    const westCell = this.getTile(xpos - tile.width, ypos);
+
+    // Top of map
+    //   O
+    // |  |
+    // |  |
+
+    // Vertical tunnel
+    // | x|
+    // |  |
+    if (!eastCell?.hasTag(EmptyTag) && !westCell?.hasTag(EmptyTag)) {
+      terrainImages.push(Resources.DirtTunnel);
+    }
+
+    // Vertical end
+    // |  |
+    // |_x|
+    if (!southCell?.hasTag(EmptyTag)) {
+      terrainImages.push(Resources.DirtSide);
+    }
+
+    // Horizontal tunnel
+    // ____
+    //   x
+    // ----
+    if (
+      northCell &&
+      southCell &&
+      !northCell.hasTag(EmptyTag) &&
+      !southCell.hasTag(EmptyTag)
+    ) {
+      terrainImages.push(Resources.DirtTunnel);
+      rotateSides = true;
+    }
+
+    // Horizontal left end
+    // ____
+    // |x
+    // ----
+
+    // Horizontal right end
+    // ____
+    //   x|
+    // ----
+
+    //
+    // Clean up edges from neighboring cells
+    //
+    if (northCell?.hasTag(EmptyTag)) {
+      this.removeCellDirtEdge(northCell);
+    }
+    if (eastCell?.hasTag(EmptyTag)) {
+      this.removeCellDirtEdge(eastCell);
+    }
+    if (westCell?.hasTag(EmptyTag)) {
+      this.removeCellDirtEdge(westCell);
+    }
+
+    const tunnelTerrain = new TerrainSides(
+      terrainImages,
+      rotateSides,
+      rotateSide
+    );
+
+    this.setCellToTerrain(tile, tunnelTerrain);
+  }
+
+  removeCellDirtEdge(cell: Cell) {
+    // remove side sprite
+    const sideSprite = cell.sprites.find(
+      (sprite) => sprite.image === Resources.DirtSide
+    );
+
+    if (sideSprite) {
+      cell.removeSprite(sideSprite);
+    }
   }
 
   setCellToTerrain(cell: Cell, terrain: Terrain) {
     const curTerrain = Terrain.GetTerrain(cell);
-    if (terrain === EmptyTerrain) {
-      if (curTerrain === EmptyTerrain) {
+    if (terrain.tag() === EmptyTag) {
+      if (curTerrain.tag() === EmptyTag) {
         return;
       }
       cell.clearSprites();
     }
     cell.removeComponent(curTerrain.tag(), true);
-    var sprite = terrain.sprite();
-    if (sprite) {
-      cell.addSprite(sprite);
+    var sprites = terrain.sprites();
+    if (sprites) {
+      sprites.forEach((sprite) => cell.addSprite(sprite));
     }
     cell.addTag(terrain.tag());
   }
