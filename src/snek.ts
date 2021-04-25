@@ -146,8 +146,8 @@ export class Snek extends Actor {
             prior = this.snekBody[i - 1];
             next = bodySegment;
           } else {
-            prior = this.snekBody[i + 1];
-            next = this.snekBody[i - 1];
+            prior = this.snekBody[i - 1];
+            next = this.snekBody[i + 1];
           }
           bodySegment.rotation = Math.atan2(
             prior.pos.y - next.pos.y,
