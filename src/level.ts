@@ -6,7 +6,7 @@ import {
   Scene,
   TileMap,
   Color,
-  Graphics
+  Graphics,
 } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
@@ -25,7 +25,7 @@ import {
 } from "./terrain";
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
-import { WeightMap } from "./weightmap"
+import { WeightMap } from "./weightmap";
 import { CellImpl } from "../lib/excalibur/build/dist/TileMap";
 
 export class Level extends Scene {
@@ -35,7 +35,9 @@ export class Level extends Scene {
   terrainRandom = new Random(config.TerrainRandomSeed);
   collectibleRandom = new Random(config.CollectibleRandomSeed);
   terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.terrainRandom);
-  collectibleWeightMap: WeightMap<Collectible> = new WeightMap(this.collectibleRandom);
+  collectibleWeightMap: WeightMap<Collectible> = new WeightMap(
+    this.collectibleRandom
+  );
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -52,7 +54,6 @@ export class Level extends Scene {
 
   state: GlobalState = GlobalState.GetInstance();
   speedPowerUp!: PowerUp;
-
 
   onInitialize(engine: Engine) {
     // engine.input.keyboard.on('press', (evt) => {
@@ -111,10 +112,14 @@ export class Level extends Scene {
   }
 
   buildCollectibleWeightMap(speedPowerUpTimer: PowerUpTimer): void {
-    let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite()
-    this.speedPowerUp = new PowerUp(speedPowerUpSprite, speedPowerUpTimer)
-    this.collectibleWeightMap.add(1, this.speedPowerUp)
-    this.collectibleWeightMap.add(99, null)
+    let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite();
+    this.speedPowerUp = new PowerUp(
+      speedPowerUpSprite,
+      "speedPowerUp",
+      speedPowerUpTimer
+    );
+    this.collectibleWeightMap.add(1, this.speedPowerUp);
+    this.collectibleWeightMap.add(99, null);
   }
 
   onPostUpdate() {
@@ -173,7 +178,7 @@ export class Level extends Scene {
       this.setCellToTerrain(cell, terrain!);
       if (terrain!.tag() === "dirt") {
         var collectible = this.collectibleWeightMap.randomSelect(null);
-        this.setCellCollectible(cell, collectible)
+        this.setCellCollectible(cell, collectible);
       }
     }
 
@@ -296,6 +301,7 @@ export class Level extends Scene {
     );
 
     this.setCellToTerrain(tile, tunnelTerrain);
+    if (tile.tags.indexOf("speedPowerUp") !== -1) this.speedPowerUp.apply();
 
     //
     // Clean up edges from neighboring cells
@@ -387,7 +393,8 @@ export class Level extends Scene {
 
   setCellCollectible(cell: Cell, collectible: Collectible | null) {
     if (collectible) {
-      cell.addSprite(collectible.sprite)
+      cell.addSprite(collectible.sprite);
+      cell.addTag(collectible.name);
     }
   }
 }
