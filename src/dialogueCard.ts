@@ -1,4 +1,4 @@
-import { Actor, ActorArgs, Graphics, vec, Color } from "excalibur";
+import { Actor, ActorArgs, Graphics, vec, Color, Traits } from "excalibur";
 import { Resources } from "./resources";
 
 export interface DialogCardOptions {
@@ -10,6 +10,9 @@ export class DialogCard extends Actor {
   constructor(private text: string[], options: ActorArgs & DialogCardOptions) {
     super({ ...options, width: 837, height: 480 });
     this.topPadding = options.topPadding || 0;
+    this.traits = this.traits.filter(
+      (t) => !(t instanceof Traits.TileMapCollisionDetection)
+    );
   }
 
   onInitialize() {

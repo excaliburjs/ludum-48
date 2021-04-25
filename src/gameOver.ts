@@ -7,12 +7,12 @@ import {
   Graphics,
   vec,
   ExitTriggerEvent,
+  Traits,
 } from "excalibur";
 import { DialogCard } from "./dialogueCard";
 import config from "./config";
 import { Resources } from "./resources";
 import { Level } from "./level";
-import { GraphicsComponent } from "../lib/excalibur/build/dist/Graphics";
 export class GameOver extends Actor {
   private card!: DialogCard;
   private backShadow!: Graphics.Rectangle;
@@ -20,6 +20,9 @@ export class GameOver extends Actor {
 
   constructor(public gameWidth: number, public gameHeight: number) {
     super(gameWidth / 2, gameHeight / 2, 600, 600);
+    this.traits = this.traits.filter(
+      (t) => !(t instanceof Traits.TileMapCollisionDetection)
+    );
   }
 
   onInitialize(engine: Engine) {

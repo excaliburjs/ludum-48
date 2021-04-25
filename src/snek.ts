@@ -5,6 +5,7 @@ import {
   Graphics,
   vec,
   Vector,
+  Traits
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -50,6 +51,9 @@ export class Snek extends Actor {
       height: config.TileWidth,
     });
     this.z = 11;
+    this.traits = this.traits.filter(
+      (t) => !(t instanceof Traits.TileMapCollisionDetection)
+    );
   }
 
   onInitialize(engine: Engine) {
@@ -119,6 +123,9 @@ export class Snek extends Actor {
         width: config.TileWidth,
         height: config.TileWidth,
       });
+      bodySegment.traits = bodySegment.traits.filter(
+        (t) => !(t instanceof Traits.TileMapCollisionDetection)
+      );
       bodySegment.graphics.add(
         this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
       );

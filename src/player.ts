@@ -9,6 +9,7 @@ import {
   Util,
   Input,
   RotationType,
+  Traits,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -40,6 +41,9 @@ export class Player extends Actor {
     this.trail.enqueue(new Vector(4 * config.TileWidth, startY));
     this.z = 10;
     this.rotation = Math.PI / 2 + Math.PI / 4;
+    this.traits = this.traits.filter(
+      (t) => !(t instanceof Traits.TileMapCollisionDetection)
+    );
   }
 
   onInitialize(engine: Engine) {
