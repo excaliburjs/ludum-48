@@ -167,7 +167,7 @@ export class Player extends Actor {
 
       this.actions.rotateTo(
         Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x) +
-          Math.PI / 4,
+        Math.PI / 4,
         100,
         RotationType.ShortestPath
       );
@@ -196,7 +196,11 @@ export class Player extends Actor {
           )
           .callMethod(() => {
             this.moving = false;
-            this.trail.enqueue(this.pos.clone());
+            if (!this.trail.Contains(this.pos.clone())) {
+              this.trail.enqueue(this.pos.clone());
+            } else {
+              this.trail.RemoveLast();
+            }
           });
       }
     }

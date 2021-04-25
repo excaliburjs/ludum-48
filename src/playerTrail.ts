@@ -5,7 +5,7 @@ interface IQueue<T> {
     size(): number;
 }
 class Queue<T> implements IQueue<T> {
-    private storage: T[] = [];
+    protected storage: T[] = [];
 
     constructor(private capacity: number = Infinity) { }
 
@@ -16,17 +16,18 @@ class Queue<T> implements IQueue<T> {
         this.storage.push(item);
     }
 
-    peekLast(): T | undefined {
-        return this.storage[this.size() - 1];
-    }
-
     dequeue(): T | undefined {
         return this.storage.shift();
+    }
+
+    peekLast(): T | undefined {
+        return this.storage[this.size() - 1];
     }
 
     size(): number {
         return this.storage.length;
     }
+
     clear(): void {
         this.storage = [];
     }
@@ -42,5 +43,17 @@ export class PlayerTrail extends Queue<Vector> {
             PlayerTrail.instance = new PlayerTrail();
         }
         return PlayerTrail.instance;
+    }
+
+    Remove(item: Vector) {
+        this.storage = this.storage.filter((path) => !(path.y === item.y && path.x === item.x));
+    }
+    
+    RemoveLast(){
+        this.storage.pop();
+    }
+
+    Contains(item: Vector): boolean {
+        return this.storage.findIndex((path) => path.x === item.x && path.y === item.y) !== -1;
     }
 }
