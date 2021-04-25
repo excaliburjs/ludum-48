@@ -23,6 +23,11 @@ const gui = new dat.GUI({ name: "Ludum 48 Debug" });
 for (let key in config as any) {
   if (typeof (config as any)[key] === "number") {
     switch (key) {
+      case "DigTime":
+      case "SpaceMoveDuration":
+      case "SnakeMoveDuration":
+        gui.add(config, key, 0, config[key] * 10, 50);
+        break;
       case "SnekMinSecondsPerSquare":
       case "SnekCatchUpSecondsPerSquare":
         // tenth
