@@ -26,7 +26,11 @@ import {
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
 import { WeightMap } from "./weightmap";
+<<<<<<< HEAD
+import { CellImpl } from "../lib/excalibur/build/dist/TileMap";
+=======
 import { ProgressMeter } from "./progress-meter";
+>>>>>>> bc1400258fc3c70f6547238a0826e1eb19a69258
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -117,11 +121,15 @@ export class Level extends Scene {
 
   buildCollectibleWeightMap(speedPowerUpTimer: PowerUpTimer): void {
     let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite();
+<<<<<<< HEAD
     this.speedPowerUp = new PowerUp(
       speedPowerUpSprite,
       "speedPowerUp",
       speedPowerUpTimer
     );
+=======
+    this.speedPowerUp = new PowerUp(speedPowerUpSprite, speedPowerUpTimer);
+>>>>>>> bc1400258fc3c70f6547238a0826e1eb19a69258
     this.collectibleWeightMap.add(1, this.speedPowerUp);
     this.collectibleWeightMap.add(99, null);
   }
@@ -407,7 +415,10 @@ export class Level extends Scene {
   setCellCollectible(cell: Cell, collectible: Collectible | null) {
     if (collectible) {
       cell.addSprite(collectible.sprite);
+<<<<<<< HEAD
       cell.addTag(collectible.name);
+=======
+>>>>>>> bc1400258fc3c70f6547238a0826e1eb19a69258
     }
   }
 }
