@@ -15,7 +15,7 @@ import backgroundMp3 from "./sound/background.mp3";
 import backgroundWav from "./sound/background.mp3";
 import modal from "./images/modal.png";
 import snek from "./images/snek.png";
-import speedPowerUp from "./images/meerkat_avatars.png";
+import speedPowerUp from "./images/energy-drink.png";
 import progressMeter from "./images/meter.png";
 import spriteFont from "./images/spritefont.png";
 import avatar from "./images/meerkat_avatars.png";
