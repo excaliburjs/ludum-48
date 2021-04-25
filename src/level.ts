@@ -8,7 +8,6 @@ import {
   Color,
   Graphics
 } from "excalibur";
-import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
@@ -26,7 +25,7 @@ import {
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
 import { WeightMap } from "./weightmap"
-import { CellImpl } from "../lib/excalibur/build/dist/TileMap";
+import { ProgressMeter } from "./progress-meter";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -45,6 +44,8 @@ export class Level extends Scene {
 
   player: Player | null = null;
   snek: Snek | null = null;
+
+  progressMeter: ProgressMeter | null = null;
 
   gameOver: GameOver | null = null;
 
@@ -79,10 +80,12 @@ export class Level extends Scene {
     this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
+    this.progressMeter = new ProgressMeter();
 
     this.add(this.player);
     this.add(this.snek);
     this.add(this.gameOver);
+    this.add(this.progressMeter);
 
     this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
     this.camera.on("postupdate", (e) => {
@@ -135,7 +138,16 @@ export class Level extends Scene {
         this.loadPrevChunk();
       }
     }
+    this.updateProgress();
     this.checkGameOver();
+  }
+
+  updateProgress() {
+    // Each tile is a "M"
+    const progress =
+      Math.max(this.player!.pos.y - this.start * config.TileWidth, 0) /
+      config.TileWidth;
+    this.progressMeter!.updateProgress(progress);
   }
 
   checkGameOver() {
