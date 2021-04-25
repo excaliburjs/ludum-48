@@ -127,7 +127,7 @@ export class Level extends Scene {
   onPostUpdate() {
     if (this.currentChunk && this.player) {
       if (
-        this.player.pos.y >
+        this.camera.pos.y >
         this.currentChunk.y + (config.TileWidth * config.ChunkHeight) / 2
       ) {
         this.loadNextChunk();
@@ -136,7 +136,7 @@ export class Level extends Scene {
 
     if (this.previousChunk && this.player) {
       if (
-        this.player.pos.y <=
+        this.camera.pos.y <=
         this.previousChunk.y + (config.TileWidth * config.ChunkHeight) / 2
       ) {
         this.loadPrevChunk();
@@ -256,6 +256,8 @@ export class Level extends Scene {
     }
     this.previousChunk = this.currentChunk;
     this.currentChunk = newChunk;
+    this.background.setCurrentChunkId(this.onScreenChunkId);
+
     this.add(this.currentChunk);
   }
 
@@ -273,6 +275,7 @@ export class Level extends Scene {
 
       this.currentChunk = newChunk;
       this.previousChunk = this.chunks[this.onScreenChunkId - 1] ?? null;
+      this.background.setCurrentChunkId(this.onScreenChunkId);
       this.add(newChunk);
       this.add(this.previousChunk);
     } else {
