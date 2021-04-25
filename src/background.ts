@@ -5,14 +5,13 @@ import { Resources } from "./resources";
 
 export class Background {
   parallaxFactor = 0.25;
-  top!: TileMap;
-  bottom!: TileMap;
-
+  backgrounds: TileMap[] = [];
+  lastChunkId = 0;
   useTop = true;
 
   constructor(level: Level) {
     const backgroundSprite = Resources.DirtBackground.toSprite();
-    this.top = new TileMap({
+    const top = new TileMap({
       x: 0,
       y: config.TileWidth * 5,
       rows: config.ChunkHeight,
@@ -20,12 +19,12 @@ export class Background {
       cellWidth: config.TileWidth,
       cellHeight: config.TileWidth,
     });
-    this.top.z = -1;
-    this.top.data.forEach((c) => {
+    top.z = -1;
+    top.data.forEach((c) => {
       c.addSprite(backgroundSprite);
     });
 
-    this.bottom = new TileMap({
+    const bottom = new TileMap({
       x: 0,
       y: config.TileWidth * (5 + config.ChunkHeight),
       rows: config.ChunkHeight,
@@ -33,22 +32,36 @@ export class Background {
       cellWidth: config.TileWidth,
       cellHeight: config.TileWidth,
     });
-    this.bottom.z = -1;
-    this.bottom.data.forEach((c) => {
+    bottom.z = -1;
+    bottom.data.forEach((c) => {
       c.addSprite(backgroundSprite);
     });
 
-    level.add(this.top);
-    level.add(this.bottom);
+    level.add(top);
+    level.add(bottom);
+
+    this.backgrounds = [top, bottom];
   }
 
   setCurrentChunkId(id: number) {
     const startOffset = config.TileWidth * 5;
-    if (id > 0) {
-      this.top.y =
-        (id - 1) * (config.TileWidth * config.ChunkHeight) + startOffset;
-      this.bottom.y =
-        id * (config.TileWidth * config.ChunkHeight) + startOffset;
+    if (id <= 1) {
+      this.lastChunkId = id;
+      return;
     }
+
+    if (id - this.lastChunkId > 0) {
+      const first = this.backgrounds[0];
+      first.y = id * (config.TileWidth * config.ChunkHeight) + startOffset;
+    } else {
+      const second = this.backgrounds[1];
+      second.y = id * (config.TileWidth * config.ChunkHeight) + startOffset;
+    }
+
+    const tmp = this.backgrounds[0];
+    this.backgrounds[0] = this.backgrounds[1];
+    this.backgrounds[1] = tmp;
+
+    this.lastChunkId = id;
   }
 }
