@@ -1,4 +1,4 @@
-import { Actor, Color, EasingFunctions, Engine, vec, Vector } from "excalibur";
+import { Actor, EasingFunctions, Engine, Graphics, vec, Vector } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
 import config from "./config";
@@ -24,6 +24,16 @@ export class Snek extends Actor {
     this.updateSnekTimer,
   ];
 
+  private spritesheet = Graphics.SpriteSheet.fromGrid({
+    image: Resources.Snek,
+    grid: {
+      rows: 1,
+      columns: 8,
+      spriteHeight: 64,
+      spriteWidth: 64,
+    },
+  });
+
   constructor(public level: Level) {
     super({
       pos: vec(0, config.TileWidth * 5 - config.TileWidth / 2),
@@ -34,7 +44,7 @@ export class Snek extends Actor {
   }
 
   onInitialize(engine: Engine) {
-    this.graphics.add(Resources.Sword.toSprite());
+    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength])
     this.createSnekBody();
   }
 
@@ -42,10 +52,6 @@ export class Snek extends Actor {
     this.moveSnekTimer.UpdateInterval(this.snekCurrentSecondsPerSquare);
 
     this.updateFunctions.forEach((fun) => fun.Update(_delta));
-
-    if (this.vel.size !== 0) {
-      this.rotation = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 4;
-    }
   }
 
   updateSnekSpeed() {
@@ -99,12 +105,12 @@ export class Snek extends Actor {
   createSnekBody() {
     for (let i = 0; i < config.SnekBodyLength; i++) {
       const bodySegment = new Actor({
-        x: this.pos.x,
-        y: this.pos.y - (i + 1) * config.TileWidth,
+        x: this.pos.x - ((i + 1) * config.TileWidth),
+        y: this.pos.y,
         width: config.TileWidth,
         height: config.TileWidth,
-        color: Color.Green,
       });
+      bodySegment.graphics.add(this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]);
       this.snekBody.push(bodySegment);
       this.scene.add(bodySegment);
     }
@@ -121,6 +127,7 @@ export class Snek extends Actor {
       EasingFunctions.EaseInOutCubic
     );
 
+    // move each remaining segment to the position that the one ahead of it was occupying
     for (let i = 1; i < this.snekBody.length; i++) {
       this.snekBody[i].actions.easeTo(
         snekBodyLocations[i - 1].x * config.TileWidth + config.TileWidth / 2,
