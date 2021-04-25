@@ -6,6 +6,7 @@ import dirtTunnel from "./images/dirt_tunnel.png";
 import dirtSide from "./images/dirt_side.png";
 import dirtAngle from "./images/dirt_angle.png";
 import rock from "./images/rock_001.png";
+import rock2 from "./images/rock_002.png";
 import digWav from "./sound/dig.wav";
 import digMp3 from "./sound/dig.mp3";
 import clankWav from "./sound/clank.wav";
@@ -23,6 +24,7 @@ let Resources = {
   DirtTunnel: new Graphics.ImageSource(dirtTunnel),
   DirtAngle: new Graphics.ImageSource(dirtAngle),
   Rock: new Graphics.ImageSource(rock),
+  Rock2: new Graphics.ImageSource(rock2),
   DigSound: new Sound(digMp3, digWav),
   ClankSound: new Sound(clankMp3, clankWav),
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
