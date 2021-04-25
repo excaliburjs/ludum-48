@@ -20,6 +20,7 @@ import { GlobalState } from "./globalState";
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
   private state: GlobalState = GlobalState.GetInstance();
+  private hasSpeedPowerUp = true;
   private moving = false;
   private pointerHeld = false;
   private pointerScreenPos = vec(0, 0);
@@ -146,6 +147,9 @@ export class Player extends Actor {
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
     const validMove = this.isValidMove(worldPos.x, worldPos.y);
+    const movementBonus = this.hasSpeedPowerUp
+      ? config.PowerUpSpeedIncreaseFactor
+      : 1;
 
     if (validMove) {
       // if you are moving we wait otherwise weird things happen and players can make invalid moves
@@ -168,14 +172,15 @@ export class Player extends Actor {
 
       if (tile) {
         var terrain = Terrain.GetTerrain(tile);
+        let digDelay = terrain.delay() / movementBonus;
         terrain.playSound();
         if (!terrain.mineable()) {
-          this.actions.delay(terrain.delay()).callMethod(() => {
+          this.actions.delay(digDelay).callMethod(() => {
             this.moving = false;
           });
           return;
         } else {
-          this.actions.delay(terrain.delay()).callMethod(() => {
+          this.actions.delay(digDelay).callMethod(() => {
             this.level.finishDig(worldPos.x, worldPos.y);
           });
         }
@@ -184,7 +189,7 @@ export class Player extends Actor {
           .easeTo(
             tileX * config.TileWidth + config.TileWidth / 2,
             tileY * config.TileWidth + config.TileWidth / 2,
-            config.SpaceMoveDuration,
+            config.SpaceMoveDuration / movementBonus,
             EasingFunctions.EaseInOutCubic
           )
           .callMethod(() => {
