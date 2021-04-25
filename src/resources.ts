@@ -31,8 +31,8 @@ let Resources = {
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
   Modal: new Graphics.ImageSource(modal),
   Snek: new Graphics.ImageSource(snek),
-  SpeedPowerUp: new Graphics.ImageSource(speedPowerUp);
-};
+  SpeedPowerUp: new Graphics.ImageSource(speedPowerUp),
+}
 
 Resources.BackgroundMusic.loop = true;
 Resources.BackgroundMusic.volume = 0.1;
