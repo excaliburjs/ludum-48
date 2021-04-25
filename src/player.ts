@@ -172,6 +172,7 @@ export class Player extends Actor {
   }
 
   moveToNearestTile(worldPos: Vector) {
+    this.graphics.use(this.digAnimation);
     const tileX = Math.floor(worldPos.x / config.TileWidth);
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
