@@ -1,4 +1,11 @@
-import { Actor, EasingFunctions, Engine, Graphics, vec, Vector } from "excalibur";
+import {
+  Actor,
+  EasingFunctions,
+  Engine,
+  Graphics,
+  vec,
+  Vector,
+} from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
 import config from "./config";
@@ -6,8 +13,10 @@ import { PlayerTrail } from "./playerTrail";
 import { Every } from "./every";
 export class Snek extends Actor {
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
-  private snekCurrentSecondsPerSquare: number = config.SnekStartingSecondsPerSquare;
-  private snekCalculatedSecondsPerSquare: number = config.SnekStartingSecondsPerSquare;
+  private snekCurrentSecondsPerSquare: number =
+    config.SnekStartingSecondsPerSquare;
+  private snekCalculatedSecondsPerSquare: number =
+    config.SnekStartingSecondsPerSquare;
   private moving: Boolean = false;
 
   private snekBody: Actor[] = [];
@@ -44,7 +53,7 @@ export class Snek extends Actor {
   }
 
   onInitialize(engine: Engine) {
-    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength])
+    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]);
     this.createSnekBody();
   }
 
@@ -92,7 +101,7 @@ export class Snek extends Actor {
       .easeTo(
         tileX * config.TileWidth + config.TileWidth / 2,
         tileY * config.TileWidth + config.TileWidth / 2,
-        500,
+        config.SnakeMoveDuration,
         EasingFunctions.EaseInOutCubic
       )
       .callMethod(() => {
@@ -105,12 +114,14 @@ export class Snek extends Actor {
   createSnekBody() {
     for (let i = 0; i < config.SnekBodyLength; i++) {
       const bodySegment = new Actor({
-        x: this.pos.x - ((i + 1) * config.TileWidth),
+        x: this.pos.x - (i + 1) * config.TileWidth,
         y: this.pos.y,
         width: config.TileWidth,
         height: config.TileWidth,
       });
-      bodySegment.graphics.add(this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]);
+      bodySegment.graphics.add(
+        this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+      );
       this.snekBody.push(bodySegment);
       this.scene.add(bodySegment);
     }
@@ -123,7 +134,7 @@ export class Snek extends Actor {
     this.snekBody[0].actions.easeTo(
       prevHeadX * config.TileWidth + config.TileWidth / 2,
       prevHeadY * config.TileWidth + config.TileWidth / 2,
-      500,
+      config.SnakeMoveDuration,
       EasingFunctions.EaseInOutCubic
     );
 
@@ -132,7 +143,7 @@ export class Snek extends Actor {
       this.snekBody[i].actions.easeTo(
         snekBodyLocations[i - 1].x * config.TileWidth + config.TileWidth / 2,
         snekBodyLocations[i - 1].y * config.TileWidth + config.TileWidth / 2,
-        500,
+        config.SnakeMoveDuration,
         EasingFunctions.EaseInOutCubic
       );
     }
