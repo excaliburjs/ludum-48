@@ -30,6 +30,8 @@ export class Player extends Actor {
   private engine!: Engine;
 
   private startAngle = Math.PI / 2;
+  private frontFacing!: Graphics.Sprite;
+  private digAnimation!: Graphics.Animation;
 
   constructor(public level: Level) {
     super({
@@ -49,11 +51,14 @@ export class Player extends Actor {
   }
 
   onInitialize(engine: Engine) {
+    this.frontFacing = Resources.FrontFacing.toSprite();
+    this.graphics.add(this.frontFacing);
+
     const spriteSheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.Digging,
       grid: {
-        spriteWidth: 48,
-        spriteHeight: 48,
+        spriteWidth: 64,
+        spriteHeight: 64,
         rows: 1,
         columns: 4,
       },
@@ -66,9 +71,8 @@ export class Player extends Actor {
       Graphics.AnimationStrategy.PingPong
     );
     anim.rotation = Math.PI;
+    this.digAnimation = anim;
 
-    this.graphics.add(anim);
-    // this.graphics.add(Resources.Sword.toSprite());
     this.engine = engine;
     engine.input.keyboard.on("hold", (evt) => {
       if (this.state.GameOver) return;
@@ -136,6 +140,7 @@ export class Player extends Actor {
   onPreUpdate() {
     if (this.vel.size !== 0) {
       this.rotation = Math.atan2(this.vel.y, this.vel.x) + this.startAngle; // + Math.PI ; /* + Math.PI / 4*/;
+      this.graphics.use(this.digAnimation);
     }
 
     if (this.pointerHeld) {
