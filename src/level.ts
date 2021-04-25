@@ -228,7 +228,7 @@ export class Level extends Scene {
         const upperLeftTile = x != 0 ? prevRow[x - 1] : null;
         const upperRightTile = x != curRow.length - 1 ? prevRow[x + 1] : null;
         if (!upperLeftTile || !upperRightTile) {
-          if (!curTerrain.mineable()) {
+          if (curTerrain.mineable()) {
             this.setCellToTerrain(curCell, defaultPathable);
           }
           continue;
