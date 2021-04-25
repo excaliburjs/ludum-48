@@ -6,11 +6,11 @@ import {
   Scene,
   TileMap,
   Color,
-  Graphics
+  Graphics,
 } from "excalibur";
-import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
+import { Resources } from "./resources";
 import { Snek } from "./snek";
 import { GameOver } from "./gameOver";
 import { PowerUpTimer, PowerUp, Collectible } from "./powerup";
@@ -25,8 +25,8 @@ import {
 } from "./terrain";
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
-import { WeightMap } from "./weightmap"
-import { CellImpl } from "../lib/excalibur/build/dist/TileMap";
+import { WeightMap } from "./weightmap";
+import { ProgressMeter } from "./progress-meter";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -35,7 +35,9 @@ export class Level extends Scene {
   terrainRandom = new Random(config.TerrainRandomSeed);
   collectibleRandom = new Random(config.CollectibleRandomSeed);
   terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.terrainRandom);
-  collectibleWeightMap: WeightMap<Collectible> = new WeightMap(this.collectibleRandom);
+  collectibleWeightMap: WeightMap<Collectible> = new WeightMap(
+    this.collectibleRandom
+  );
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -46,13 +48,14 @@ export class Level extends Scene {
   player: Player | null = null;
   snek: Snek | null = null;
 
+  progressMeter: ProgressMeter | null = null;
+
   gameOver: GameOver | null = null;
 
   chunks: TileMap[] = [];
 
   state: GlobalState = GlobalState.GetInstance();
   speedPowerUp!: PowerUp;
-
 
   onInitialize(engine: Engine) {
     // engine.input.keyboard.on('press', (evt) => {
@@ -79,10 +82,12 @@ export class Level extends Scene {
     this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
+    this.progressMeter = new ProgressMeter();
 
     this.add(this.player);
     this.add(this.snek);
     this.add(this.gameOver);
+    this.add(this.progressMeter);
 
     this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
     this.camera.on("postupdate", (e) => {
@@ -111,10 +116,10 @@ export class Level extends Scene {
   }
 
   buildCollectibleWeightMap(speedPowerUpTimer: PowerUpTimer): void {
-    let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite()
-    this.speedPowerUp = new PowerUp(speedPowerUpSprite, speedPowerUpTimer)
-    this.collectibleWeightMap.add(1, this.speedPowerUp)
-    this.collectibleWeightMap.add(99, null)
+    let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite();
+    this.speedPowerUp = new PowerUp(speedPowerUpSprite, speedPowerUpTimer);
+    this.collectibleWeightMap.add(1, this.speedPowerUp);
+    this.collectibleWeightMap.add(99, null);
   }
 
   onPostUpdate() {
@@ -135,7 +140,16 @@ export class Level extends Scene {
         this.loadPrevChunk();
       }
     }
+    this.updateProgress();
     this.checkGameOver();
+  }
+
+  updateProgress() {
+    // Each tile is a "M"
+    const progress =
+      Math.max(this.player!.pos.y - this.start * config.TileWidth, 0) /
+      config.TileWidth;
+    this.progressMeter!.updateProgress(progress);
   }
 
   checkGameOver() {
@@ -173,7 +187,7 @@ export class Level extends Scene {
       this.setCellToTerrain(cell, terrain!);
       if (terrain!.tag() === "dirt") {
         var collectible = this.collectibleWeightMap.randomSelect(null);
-        this.setCellCollectible(cell, collectible)
+        this.setCellCollectible(cell, collectible);
       }
     }
 
@@ -387,7 +401,7 @@ export class Level extends Scene {
 
   setCellCollectible(cell: Cell, collectible: Collectible | null) {
     if (collectible) {
-      cell.addSprite(collectible.sprite)
+      cell.addSprite(collectible.sprite);
     }
   }
 }

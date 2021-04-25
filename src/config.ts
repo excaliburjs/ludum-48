@@ -2,6 +2,10 @@ export default {
   TerrainRandomSeed: 1337,
   CollectibleRandomSeed: 7331,
 
+  // Progress meter
+  DistanceToComplete: 100,
+  MeterTilesHigh: 20,
+
   // Board Layout
   TileWidth: 64, // pixels
 
