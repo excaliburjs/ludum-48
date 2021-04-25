@@ -1,6 +1,8 @@
 export class GlobalState {
   static instance: GlobalState;
-  private constructor() { }
+  HasSpeedPowerUp = false;
+
+  private constructor() {}
   public static GetInstance(): GlobalState {
     if (!GlobalState.instance) {
       GlobalState.instance = new GlobalState();

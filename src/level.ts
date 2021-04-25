@@ -90,6 +90,7 @@ export class Level extends Scene {
   chunks: TileMap[] = [];
 
   state: GlobalState = GlobalState.GetInstance();
+  speedPowerUp!: PowerUp;
 
   onInitialize(engine: Engine) {
     // engine.input.keyboard.on('press', (evt) => {
@@ -102,7 +103,18 @@ export class Level extends Scene {
 
     Terrain.Initialize();
 
-    this.player = new Player(this);
+    let speedPowerUp = new PowerUp(
+      this,
+      () => {
+        this.state.HasSpeedPowerUp = true;
+      },
+      () => {
+        this.state.HasSpeedPowerUp = false;
+      },
+      config.PowerUpDurationSeconds
+    );
+
+    this.player = new Player(this, speedPowerUp);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
 

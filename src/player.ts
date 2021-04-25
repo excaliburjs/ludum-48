@@ -27,7 +27,8 @@ export class Player extends Actor {
   private pointerHeld = false;
   private pointerScreenPos = vec(0, 0);
   private engine!: Engine;
-  constructor(public level: Level) {
+
+  constructor(public level: Level, private speedPowerUp: PowerUp) {
     super({
       pos: vec(
         config.TileWidth * 5 - config.TileWidth / 2,
@@ -148,7 +149,9 @@ export class Player extends Actor {
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
     const validMove = this.isValidMove(worldPos.x, worldPos.y);
-    const movementBonus = true ? config.PowerUpSpeedIncreaseFactor : 1;
+    const movementBonus = this.state.HasSpeedPowerUp
+      ? config.PowerUpSpeedIncreaseFactor
+      : 1;
 
     if (validMove) {
       // if you are moving we wait otherwise weird things happen and players can make invalid moves
