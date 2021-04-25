@@ -2,33 +2,35 @@ import { Timer, Scene, Actor, Engine, Vector, Graphics } from "excalibur";
 import { Player } from "./player";
 import config from "./config";
 
-
 export abstract class Collectible {
-    
-    sprite!: Graphics.Sprite;
-    
-    constructor(sprite: Graphics.Sprite) {
-       this.sprite = sprite
-    }
+  sprite!: Graphics.Sprite;
+  name!: string;
+
+  constructor(sprite: Graphics.Sprite, name: string) {
+    this.sprite = sprite;
+    this.name = name;
+  }
 }
 
 export class PowerUp extends Collectible {
+  constructor(
+    sprite: Graphics.Sprite,
+    name: string,
+    private powerUpTimer: PowerUpTimer
+  ) {
+    super(sprite, name);
+  }
 
-    constructor(
-        sprite: Graphics.Sprite,
-        private powerUpTimer: PowerUpTimer) {
-        super(sprite);
-    }
-
-    apply() {
-        this.powerUpTimer.addPowerUp();
-    }
+  apply() {
+    this.powerUpTimer.addPowerUp();
+  }
 }
 
 export class PowerUpTimer {
   private timer!: Timer;
   private _timeRemaining: number = 0;
   private _enabled = false;
+  private _outerDisabled: () => void;
   constructor(
     private scene: Scene,
     private onEnable: () => void,
@@ -37,11 +39,13 @@ export class PowerUpTimer {
   ) {
     this.timer = new Timer({ interval: this.durationSeconds * 1000 });
     this.scene.addTimer(this.timer);
+    this._outerDisabled = this.disable.bind(this);
   }
 
   private disable() {
     this.onDisable();
     this._enabled = false;
+    this.timer.off(this._outerDisabled);
   }
 
   enabled(): Boolean {
@@ -56,7 +60,7 @@ export class PowerUpTimer {
     this._timeRemaining = this.timeRemaining() + this.durationSeconds;
     this.onEnable();
     this._enabled = true;
-    this.timer.on(this.disable);
+    this.timer.on(this._outerDisabled);
     this.timer.unpause();
   }
 

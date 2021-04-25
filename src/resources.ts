@@ -18,6 +18,7 @@ import snek from "./images/snek.png";
 import speedPowerUp from "./images/meerkat_avatars.png";
 import progressMeter from "./images/meter.png";
 import spriteFont from "./images/spritefont.png";
+import avatar from "./images/meerkat_avatars.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -36,6 +37,7 @@ let Resources = {
   SpeedPowerUp: new Graphics.ImageSource(speedPowerUp),
   ProgressMeter: new Graphics.ImageSource(progressMeter),
   SpriteFont: new Graphics.ImageSource(spriteFont),
+  Avatar: new Graphics.ImageSource(avatar),
 };
 
 Resources.BackgroundMusic.loop = true;
