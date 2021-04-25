@@ -178,27 +178,41 @@ export class Level extends Scene {
   ValidateTileMap(tile: TileMap) {
     var y = tile.y;
     var prevRow: Cell[] | null = null;
+    const defaultPathable = DirtTerrain;
+
     for (var i = 0; i < tile.rows; ++i) {
-      const row = tile.data.filter((c) => {
+      const curRow = tile.data.filter((c) => {
         return c.y === y;
       });
-      const pathable = row.filter((c) => {
-        const terr = Terrain.GetTerrain(c);
-        return terr.mineable();
-      });
 
-      // TODO add more checks
-      if (pathable.length == 0) {
-        const index = Math.floor(this.random.next() * row.length);
-        const makePathable = row[index];
-        this.setCellToTerrain(makePathable, DirtTerrain);
 
-        if (prevRow) {
-          this.setCellToTerrain(prevRow[index], DirtTerrain);
+      for(let x = 0; x < curRow.length; x++) {
+        //only validate if there's a previous row
+        if(!prevRow) { continue; }
+
+        const curCell = curRow[x];
+        const curTerrain = Terrain.GetTerrain(curRow[x]);
+        const upperLeftTile = x != 0 ? prevRow[x-1] : null;
+        const upperRightTile = x != curRow.length -1 ? prevRow[x+1] : null;
+        if(!upperLeftTile || !upperRightTile) {
+          if(Terrain.SolidTerrain().includes(curTerrain)) {
+            this.setCellToTerrain(curCell, defaultPathable);
+          }
+          continue;
+        }
+        const upperLeftTerrain = Terrain.GetTerrain(upperLeftTile);  
+        const upperRightTerrain = Terrain.GetTerrain(upperRightTile); 
+        if(
+          Terrain.SolidTerrain().includes(upperLeftTerrain)
+          && Terrain.SolidTerrain().includes(upperRightTerrain)
+          && Terrain.SolidTerrain().includes(curTerrain)
+        ) {
+          this.setCellToTerrain(curCell, defaultPathable);
         }
       }
+
       y += tile.cellHeight;
-      prevRow = row;
+      prevRow = curRow;
     }
   }
 
