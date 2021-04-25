@@ -14,7 +14,7 @@ import clankMp3 from "./sound/clank.mp3";
 import pickupMp3 from "./sound/getitem.mp3";
 import pickupWav from "./sound/getitem.wav";
 import backgroundMp3 from "./sound/background.mp3";
-import backgroundWav from "./sound/background.mp3";
+import backgroundWav from "./sound/background.wav";
 import modal from "./images/modal.png";
 import snek from "./images/snek.png";
 import speedPowerUp from "./images/energy-drink.png";
