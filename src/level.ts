@@ -18,7 +18,8 @@ import {
   RockTerrain,
   Terrain,
   EmptyTag,
-  TerrainSides,
+  TunnelTerrain,
+  TunnelSides,
 } from "./terrain";
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
@@ -307,96 +308,84 @@ export class Level extends Scene {
     }
     if (!tile) return;
 
-    const terrainImages = [];
-    let rotateSides = false;
-    let rotateSide = 0; // bottom side
-    const northCell = this.getTile(xpos, ypos - tile.height);
-    const southCell = this.getTile(xpos, ypos + tile.height);
-    const eastCell = this.getTile(xpos + tile.width, ypos);
-    const westCell = this.getTile(xpos - tile.width, ypos);
+    const tunnelTerrain = new TunnelTerrain(
+      this.determineTunnelSidesForCell(tile)
+    );
 
-    // Top of map
-    //   O
-    // |  |
-    // |  |
-
-    // Vertical tunnel
-    // | x|
-    // |  |
-    if (!eastCell?.hasTag(EmptyTag) && !westCell?.hasTag(EmptyTag)) {
-      terrainImages.push(Resources.DirtTunnel);
-    }
-
-    // Vertical end
-    // |  |
-    // |_x|
-    if (!southCell?.hasTag(EmptyTag)) {
-      terrainImages.push(Resources.DirtSide);
-    }
-
-    // Horizontal tunnel
-    // ____
-    //   x
-    // ----
-    if (
-      northCell &&
-      southCell &&
-      !northCell.hasTag(EmptyTag) &&
-      !southCell.hasTag(EmptyTag)
-    ) {
-      terrainImages.push(Resources.DirtTunnel);
-      rotateSides = true;
-    }
-
-    // Horizontal left end
-    // ____
-    // |x
-    // ----
-
-    // Horizontal right end
-    // ____
-    //   x|
-    // ----
+    this.setCellToTerrain(tile, tunnelTerrain);
 
     //
     // Clean up edges from neighboring cells
     //
-    if (northCell?.hasTag(EmptyTag)) {
-      this.removeCellDirtEdge(northCell);
+    const neighbors = this.getNeighbors(tile);
+    if (neighbors.north?.hasTag(EmptyTag)) {
+      this.setCellToTerrain(
+        neighbors.north,
+        new TunnelTerrain(this.determineTunnelSidesForCell(neighbors.north))
+      );
     }
-    if (eastCell?.hasTag(EmptyTag)) {
-      this.removeCellDirtEdge(eastCell);
+    if (neighbors.west?.hasTag(EmptyTag)) {
+      this.setCellToTerrain(
+        neighbors.west,
+        new TunnelTerrain(this.determineTunnelSidesForCell(neighbors.west))
+      );
     }
-    if (westCell?.hasTag(EmptyTag)) {
-      this.removeCellDirtEdge(westCell);
+    if (neighbors.east?.hasTag(EmptyTag)) {
+      this.setCellToTerrain(
+        neighbors.east,
+        new TunnelTerrain(this.determineTunnelSidesForCell(neighbors.east))
+      );
     }
-
-    const tunnelTerrain = new TerrainSides(
-      terrainImages,
-      rotateSides,
-      rotateSide
-    );
-
-    this.setCellToTerrain(tile, tunnelTerrain);
   }
 
-  removeCellDirtEdge(cell: Cell) {
-    // remove side sprite
-    const sideSprite = cell.sprites.find(
-      (sprite) => sprite.image === Resources.DirtSide
-    );
+  getNeighbors(cell: Cell) {
+    const north = this.getTile(cell.x, cell.y - cell.height);
+    const south = this.getTile(cell.x, cell.y + cell.height);
+    const east = this.getTile(cell.x + cell.width, cell.y);
+    const west = this.getTile(cell.x - cell.width, cell.y);
 
-    if (sideSprite) {
-      cell.removeSprite(sideSprite);
+    return {
+      north,
+      south,
+      east,
+      west,
+    };
+  }
+
+  determineTunnelSidesForCell(cell: Cell) {
+    const sides: TunnelSides = {
+      north: false,
+      south: false,
+      east: false,
+      west: false,
+    };
+    const { north, south, east, west } = this.getNeighbors(cell);
+
+    if (east && !east.hasTag(EmptyTag)) {
+      sides.east = true;
     }
+
+    if (west && !west.hasTag(EmptyTag)) {
+      sides.west = true;
+    }
+
+    if (south && !south?.hasTag(EmptyTag)) {
+      sides.south = true;
+    }
+
+    if (north && !north.hasTag(EmptyTag)) {
+      sides.north = true;
+    }
+
+    return sides;
   }
 
   setCellToTerrain(cell: Cell, terrain: Terrain) {
     const curTerrain = Terrain.GetTerrain(cell);
     if (terrain.tag() === EmptyTag) {
-      if (curTerrain.tag() === EmptyTag) {
-        return;
-      }
+      // if (curTerrain.tag() === EmptyTag) {
+      //   return;
+      // }
       cell.clearSprites();
     }
     cell.removeComponent(curTerrain.tag(), true);

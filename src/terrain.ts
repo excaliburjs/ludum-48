@@ -84,32 +84,42 @@ export class Terrain implements ITerrain {
   }
 }
 
-export class TerrainSides extends Terrain {
-  constructor(
-    spriteImages: Graphics.ImageSource[],
-    private rotateSides: boolean,
-    private rotateSide: number = 0
-  ) {
-    super(EmptyTag, true, () => 0, spriteImages, null);
+export interface TunnelSides {
+  north: boolean;
+  south: boolean;
+  east: boolean;
+  west: boolean;
+}
+
+export class TunnelTerrain extends Terrain {
+  constructor(private sides: TunnelSides) {
+    super(EmptyTag, true, () => 0, null, null);
   }
 
   sprites(): Graphics.Sprite[] | null {
     if (this.blockSprites) return this.blockSprites;
-    if (this.spriteImages) {
-      this.blockSprites = this.spriteImages.map((image) => {
-        const sprite = image.toSprite();
 
-        if (this.rotateSides && image === Resources.DirtTunnel) {
-          sprite.rotation = toRadians(90);
-        }
+    this.blockSprites = [];
 
-        if (this.rotateSide !== 0 && image === Resources.DirtSide) {
-          sprite.rotation = this.rotateSide;
-        }
-
-        return sprite;
-      });
+    if (this.sides.north) {
+      const northEdge = Resources.DirtSide.toSprite();
+      northEdge.rotation = toRadians(180);
+      this.blockSprites.push(northEdge);
     }
+    if (this.sides.east) {
+      const eastEdge = Resources.DirtSide.toSprite();
+      eastEdge.rotation = toRadians(-90);
+      this.blockSprites.push(eastEdge);
+    }
+    if (this.sides.west) {
+      const westEdge = Resources.DirtSide.toSprite();
+      westEdge.rotation = toRadians(90);
+      this.blockSprites.push(westEdge);
+    }
+    if (this.sides.south) {
+      this.blockSprites.push(Resources.DirtSide.toSprite());
+    }
+
     return this.blockSprites;
   }
 }
