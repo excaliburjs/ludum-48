@@ -49,5 +49,6 @@ let Resources = {
 
 Resources.BackgroundMusic.loop = true;
 Resources.BackgroundMusic.volume = 0.1;
+Resources.PickUpSound.volume = 0.3;
 
 export { Resources };
