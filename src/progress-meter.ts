@@ -14,6 +14,7 @@ export class ProgressMeter extends ScreenElement {
 
   spriteFont!: Graphics.SpriteFont;
   text!: Graphics.Text;
+  avatar!: Graphics.Sprite;
 
   constructor() {
     super({
@@ -23,6 +24,7 @@ export class ProgressMeter extends ScreenElement {
   }
 
   onInitialize() {
+    this.avatar = Resources.Avatar.toSprite();
     const spriteSheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.ProgressMeter,
       grid: {
@@ -78,12 +80,17 @@ export class ProgressMeter extends ScreenElement {
   }
 
   buildMeterGraphics() {
-    let tileHeight = 8;
+    let tileHeight = 8; // pixels
     let totalTiles = config.MeterTilesHigh;
 
     // init
     let currentTile = 0;
     this.graphics.hide();
+
+    // Show avatar portrait
+    this.graphics.show(this.avatar, {
+      offset: vec(48 + tileHeight, tileHeight * 4),
+    });
 
     // Show sprite font text
     this.graphics.show(
