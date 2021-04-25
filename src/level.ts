@@ -1,8 +1,12 @@
 import {
   Axis,
+  BoundingBox,
   Cell,
+  ElasticToActorStrategy,
   Engine,
   Graphics,
+  LimitCameraBoundsStrategy,
+  LockCameraToActorAxisStrategy,
   Random,
   Scene,
   TileMap,
@@ -92,8 +96,14 @@ export class Level extends Scene {
     this.add(this.snek);
     this.add(this.gameOver);
 
-    // Camera follows actor's Y Axis
-    this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
+    this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
+    this.camera.on("postupdate", (e) => {
+      this.camera.pos.x = this.camera.viewport.width / 2;
+    });
+
+    // this.camera.strategy.lockToActorAxis(this.player, Axis.X);
+
+    // this.camera.strategy.elasticToActor(this.player, .2, .2);
 
     this.buildTerrainWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);
