@@ -291,6 +291,7 @@ export class Level extends Scene {
       this.currentChunk = newChunk;
       this.previousChunk = this.chunks[this.onScreenChunkId - 1] ?? null;
       this.background.setCurrentChunkId(this.onScreenChunkId);
+      this.background.setCurrentChunkId(this.onScreenChunkId - 1);
       this.add(newChunk);
       this.add(this.previousChunk);
     } else {

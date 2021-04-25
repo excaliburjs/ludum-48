@@ -45,22 +45,17 @@ export class Background {
 
   setCurrentChunkId(id: number) {
     const startOffset = config.TileWidth * 5;
-    if (id <= 1) {
-      this.lastChunkId = id;
+    if (id < 0) {
       return;
     }
 
-    if (id - this.lastChunkId > 0) {
+    if (id % 2 === 0) {
       const first = this.backgrounds[0];
       first.y = id * (config.TileWidth * config.ChunkHeight) + startOffset;
     } else {
       const second = this.backgrounds[1];
       second.y = id * (config.TileWidth * config.ChunkHeight) + startOffset;
     }
-
-    const tmp = this.backgrounds[0];
-    this.backgrounds[0] = this.backgrounds[1];
-    this.backgrounds[1] = tmp;
 
     this.lastChunkId = id;
   }
