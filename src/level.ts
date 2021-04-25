@@ -5,13 +5,15 @@ import {
   Random,
   Scene,
   TileMap,
+  Color,
+  Graphics
 } from "excalibur";
 import { Resources } from "./resources";
 import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
 import { GameOver } from "./gameOver";
-import { PowerUp } from "./powerup";
+import { PowerUpTimer, PowerUp, Collectible } from "./powerup";
 import {
   DirtTerrain,
   EmptyTerrain,
@@ -23,50 +25,17 @@ import {
 } from "./terrain";
 import { GlobalState } from "./globalState";
 import { Background } from "./background";
-
-class WeightPair<T> {
-  constructor(weight: number, obj: T) {
-    this.weight = weight;
-    this.obj = obj;
-  }
-  weight: number;
-  obj: T;
-}
-class WeightMap<T> {
-  total: number = 0;
-  pairs: WeightPair<T>[] = [];
-  random: Random;
-
-  constructor(random: Random) {
-    this.random = random;
-  }
-
-  add(weight: number, obj: T) {
-    this.total += weight;
-    this.pairs.push(new WeightPair<T>(weight, obj));
-  }
-
-  randomSelect(defObj: T): T {
-    const roll = this.random.next() * this.total;
-    var total = 0;
-    var obj: T | null = null;
-    this.pairs.forEach((a) => {
-      if (obj) return;
-      if (roll - total <= a.weight) {
-        obj = a.obj;
-      }
-      total += a.weight;
-    });
-    return obj ?? defObj;
-  }
-}
+import { WeightMap } from "./weightmap"
+import { CellImpl } from "../lib/excalibur/build/dist/TileMap";
 
 export class Level extends Scene {
   start = 5; // tiles down
   chunkWidth = config.ChunkWidth;
   chunkHeight = config.ChunkHeight; // full screen
-  random = new Random(config.RandomSeed);
-  terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.random);
+  terrainRandom = new Random(config.TerrainRandomSeed);
+  collectibleRandom = new Random(config.CollectibleRandomSeed);
+  terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.terrainRandom);
+  collectibleWeightMap: WeightMap<Collectible> = new WeightMap(this.collectibleRandom);
 
   onScreenChunkId = 0;
   previousChunk: TileMap | null = null;
@@ -84,6 +53,7 @@ export class Level extends Scene {
   state: GlobalState = GlobalState.GetInstance();
   speedPowerUp!: PowerUp;
 
+
   onInitialize(engine: Engine) {
     // engine.input.keyboard.on('press', (evt) => {
     //     if (evt.key === Input.Keys.L) {
@@ -95,7 +65,7 @@ export class Level extends Scene {
 
     Terrain.Initialize();
 
-    let speedPowerUp = new PowerUp(
+    let speedPowerUpTimer = new PowerUpTimer(
       this,
       () => {
         this.state.HasSpeedPowerUp = true;
@@ -106,7 +76,7 @@ export class Level extends Scene {
       config.PowerUpDurationSeconds
     );
 
-    this.player = new Player(this, speedPowerUp);
+    this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
 
@@ -126,6 +96,7 @@ export class Level extends Scene {
     this.background = new Background(this);
 
     this.buildTerrainWeightMap();
+    this.buildCollectibleWeightMap(speedPowerUpTimer);
     const tileMap = this.generateChunk(config.TileWidth * this.start);
     this.setCellToTerrain(tileMap.getCellByIndex(4), DirtTerrain); // Make sure the player entry is always allowed.
 
@@ -137,6 +108,13 @@ export class Level extends Scene {
   buildTerrainWeightMap(): void {
     this.terrainWeightMap.add(20, RockTerrain);
     this.terrainWeightMap.add(80, DirtTerrain);
+  }
+
+  buildCollectibleWeightMap(speedPowerUpTimer: PowerUpTimer): void {
+    let speedPowerUpSprite = Resources.SpeedPowerUp.toSprite()
+    this.speedPowerUp = new PowerUp(speedPowerUpSprite, speedPowerUpTimer)
+    this.collectibleWeightMap.add(1, this.speedPowerUp)
+    this.collectibleWeightMap.add(99, null)
   }
 
   onPostUpdate() {
@@ -192,7 +170,11 @@ export class Level extends Scene {
 
     for (let cell of tileMap.data) {
       var terrain = this.terrainWeightMap.randomSelect(EmptyTerrain);
-      this.setCellToTerrain(cell, terrain);
+      this.setCellToTerrain(cell, terrain!);
+      if (terrain!.tag() === "dirt") {
+        var collectible = this.collectibleWeightMap.randomSelect(null);
+        this.setCellCollectible(cell, collectible)
+      }
     }
 
     this.ValidateTileMap(tileMap, this.currentChunk);
@@ -401,5 +383,11 @@ export class Level extends Scene {
       sprites.forEach((sprite) => cell.addSprite(sprite));
     }
     cell.addTag(terrain.tag());
+  }
+
+  setCellCollectible(cell: Cell, collectible: Collectible | null) {
+    if (collectible) {
+      cell.addSprite(collectible.sprite)
+    }
   }
 }

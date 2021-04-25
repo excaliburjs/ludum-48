@@ -18,7 +18,7 @@ import config from "./config";
 import { PlayerTrail } from "./playerTrail";
 import { EmptyTag, Terrain } from "./terrain";
 import { GlobalState } from "./globalState";
-import { PowerUp } from "powerup";
+import { PowerUpTimer } from "powerup";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
@@ -28,7 +28,7 @@ export class Player extends Actor {
   private pointerScreenPos = vec(0, 0);
   private engine!: Engine;
 
-  constructor(public level: Level, private speedPowerUp: PowerUp) {
+  constructor(public level: Level) {
     super({
       pos: vec(
         config.TileWidth * 5 - config.TileWidth / 2,

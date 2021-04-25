@@ -1,8 +1,8 @@
-import { Cell, Engine, Graphics, Sound, TileMap } from "excalibur";
-import { ImageSource } from "../lib/excalibur/build/dist/Graphics";
+import { Cell, Engine, Graphics, Sound, TileMap, Util } from "excalibur";
 import { Resources } from "./resources";
 import config from "./config";
-import { toRadians } from "../lib/excalibur/build/dist/Util/Util";
+import {PowerUp, Collectible} from "./powerup"
+import {WeightMap} from "./weightmap"
 
 interface ITerrain {
   mineable(): Boolean;
@@ -18,7 +18,7 @@ export class Terrain implements ITerrain {
     tag: string,
     mineable: Boolean,
     delay: () => number,
-    spriteImages: ImageSource[] | null,
+    spriteImages: Graphics.ImageSource[] | null,
     digSound: Sound | null
   ) {
     this.actorTag = tag;
@@ -33,7 +33,7 @@ export class Terrain implements ITerrain {
   private isMineable: Boolean;
   private mineDelay: () => number;
   private digSound: Sound | null;
-  protected spriteImages: ImageSource[] | null;
+  protected spriteImages: Graphics.ImageSource[] | null;
   protected blockSprites: Graphics.Sprite[] | null;
 
   playSound() {
@@ -46,6 +46,7 @@ export class Terrain implements ITerrain {
   mineable(): Boolean {
     return this.isMineable;
   }
+
   delay(): number {
     return this.mineDelay();
   }
@@ -100,6 +101,9 @@ export class TunnelTerrain extends Terrain {
     if (this.blockSprites) return this.blockSprites;
 
     this.blockSprites = [];
+        if (this.rotateSides && image === Resources.DirtTunnel) {
+          sprite.rotation = Util.toRadians(90);
+        }
 
     if (this.sides.north) {
       const northEdge = Resources.DirtSide.toSprite();

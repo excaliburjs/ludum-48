@@ -1,7 +1,31 @@
-import { Timer, Scene } from "excalibur";
+import { Timer, Scene, Actor, Engine, Vector, Graphics } from "excalibur";
 import { Player } from "./player";
+import config from "./config";
 
-export class PowerUp {
+
+export abstract class Collectible {
+    
+    sprite!: Graphics.Sprite;
+    
+    constructor(sprite: Graphics.Sprite) {
+       this.sprite = sprite
+    }
+}
+
+export class PowerUp extends Collectible {
+
+    constructor(
+        sprite: Graphics.Sprite,
+        private powerUpTimer: PowerUpTimer) {
+        super(sprite);
+    }
+
+    apply() {
+        this.powerUpTimer.addPowerUp();
+    }
+}
+
+export class PowerUpTimer {
   private timer!: Timer;
   private _timeRemaining: number = 0;
   private _enabled = false;
@@ -29,7 +53,7 @@ export class PowerUp {
   addPowerUp() {
     this.timer.pause();
     this.timer.reset();
-    this._timeRemaining += this.durationSeconds;
+    this._timeRemaining = this.timeRemaining() + this.durationSeconds;
     this.onEnable();
     this._enabled = true;
     this.timer.on(this.disable);

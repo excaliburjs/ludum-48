@@ -15,6 +15,7 @@ import backgroundMp3 from "./sound/background.mp3";
 import backgroundWav from "./sound/background.mp3";
 import modal from "./images/modal.png";
 import snek from "./images/snek.png";
+import speedPowerUp from "./images/meerkat_avatars.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -30,6 +31,7 @@ let Resources = {
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
   Modal: new Graphics.ImageSource(modal),
   Snek: new Graphics.ImageSource(snek),
+  SpeedPowerUp: new Graphics.ImageSource(speedPowerUp);
 };
 
 Resources.BackgroundMusic.loop = true;

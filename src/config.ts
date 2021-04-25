@@ -1,5 +1,6 @@
 export default {
-  RandomSeed: 1337,
+  TerrainRandomSeed: 1337,
+  CollectibleRandomSeed: 7331,
 
   // Board Layout
   TileWidth: 64, // pixels

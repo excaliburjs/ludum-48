@@ -1,3 +1,5 @@
+import {Scene} from "excalibur"
+
 export class GlobalState {
   static instance: GlobalState;
   HasSpeedPowerUp = false;
