@@ -5,7 +5,7 @@ import {
   Graphics,
   vec,
   Vector,
-  Traits
+  Traits,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -134,10 +134,24 @@ export class Snek extends Actor {
         this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
       );
       bodySegment.onPreUpdate = () => {
+        const first = i === 0;
+        const last = i === config.SnekBodyLength - 1;
         if (bodySegment.vel.size !== 0) {
+          var prior: Actor; // Towards the head
+          var next: Actor; // Towards the tail
+          if (first) {
+            prior = this; // Snake head
+            next = this.snekBody[1];
+          } else if (last) {
+            prior = this.snekBody[i - 1];
+            next = bodySegment;
+          } else {
+            prior = this.snekBody[i - 1];
+            next = this.snekBody[i + 1];
+          }
           bodySegment.rotation = Math.atan2(
-            bodySegment.vel.y,
-            bodySegment.vel.x
+            prior.pos.y - next.pos.y,
+            prior.pos.x - next.pos.x
           );
         }
       };

@@ -5,6 +5,7 @@ import {
   ElasticToActorStrategy,
   Engine,
   Graphics,
+  Input,
   LimitCameraBoundsStrategy,
   LockCameraToActorAxisStrategy,
   Random,
@@ -91,11 +92,19 @@ export class Level extends Scene {
   state: GlobalState = GlobalState.GetInstance();
 
   onInitialize(engine: Engine) {
+    // engine.input.keyboard.on('press', (evt) => {
+    //     if (evt.key === Input.Keys.L) {
+    //         this.gameOver?.updateEndScreen();
+    //         this.gameOver?.show();
+    //         this.state.GameOver = true;
+    //     }
+    // });
+
     Terrain.Initialize();
 
     this.player = new Player(this);
     this.snek = new Snek(this);
-    this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);
+    this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
 
     this.add(this.player);
     this.add(this.snek);
@@ -129,7 +138,7 @@ export class Level extends Scene {
   onPostUpdate() {
     if (this.currentChunk && this.player) {
       if (
-        this.player.pos.y >
+        this.camera.pos.y >
         this.currentChunk.y + (config.TileWidth * config.ChunkHeight) / 2
       ) {
         this.loadNextChunk();
@@ -138,7 +147,7 @@ export class Level extends Scene {
 
     if (this.previousChunk && this.player) {
       if (
-        this.player.pos.y <=
+        this.camera.pos.y <=
         this.previousChunk.y + (config.TileWidth * config.ChunkHeight) / 2
       ) {
         this.loadPrevChunk();
@@ -258,6 +267,8 @@ export class Level extends Scene {
     }
     this.previousChunk = this.currentChunk;
     this.currentChunk = newChunk;
+    this.background.setCurrentChunkId(this.onScreenChunkId);
+
     this.add(this.currentChunk);
   }
 
@@ -275,6 +286,7 @@ export class Level extends Scene {
 
       this.currentChunk = newChunk;
       this.previousChunk = this.chunks[this.onScreenChunkId - 1] ?? null;
+      this.background.setCurrentChunkId(this.onScreenChunkId);
       this.add(newChunk);
       this.add(this.previousChunk);
     } else {

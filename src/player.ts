@@ -36,11 +36,7 @@ export class Player extends Actor {
       width: config.TileWidth,
       height: config.TileWidth,
     });
-    const startY = config.TileWidth * 5 - config.TileWidth / 2;
-    this.trail.enqueue(new Vector(1 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(2 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(3 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(4 * config.TileWidth, startY));
+
     this.z = 10;
     this.rotation = Math.PI / 2 + Math.PI / 4;
     this.traits = this.traits.filter(

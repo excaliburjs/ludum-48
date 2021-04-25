@@ -8,6 +8,8 @@ import {
   vec,
   ExitTriggerEvent,
   Traits,
+  CoordPlane,
+  Vector
 } from "excalibur";
 import { DialogCard } from "./dialogueCard";
 import config from "./config";
@@ -20,9 +22,12 @@ export class GameOver extends Actor {
 
   constructor(public gameWidth: number, public gameHeight: number) {
     super(gameWidth / 2, gameHeight / 2, 600, 600);
+    this.transform.coordPlane = CoordPlane.Screen;
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
+
+    this.transform.coordPlane = CoordPlane.Screen;
   }
 
   onInitialize(engine: Engine) {
@@ -31,19 +36,22 @@ export class GameOver extends Actor {
       height: this.gameHeight * 2,
       color: Color.fromRGB(51, 51, 51, 0.5),
     });
+    this.graphics.anchor = vec(0, 0);
     this.backShadowLayer = this.graphics.layers.create({
       name: "backshadow",
       order: 1,
+      offset: vec(0, 0),
     });
   }
 
   public updateEndScreen() {
     const cardPos = vec(this.pos.x, this.pos.y);
-    let text = "The audience was not impressed";
+    let text = "Press 'R' to reset.";
     this.card = new DialogCard([text], {
       pos: cardPos,
       topPadding: 30,
     });
+    this.card.transform.coordPlane = CoordPlane.Screen;
     this.scene.add(this.card);
     this.card.z = 100;
     this.z = 100;
@@ -51,7 +59,6 @@ export class GameOver extends Actor {
 
   show() {
     this.backShadowLayer.show(this.backShadow);
-    this.pos = vec(0, 0);
     this.card.actions.easeTo(
       this.gameWidth / 2,
       this.gameHeight / 3,

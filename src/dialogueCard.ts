@@ -1,4 +1,12 @@
-import { Actor, ActorArgs, Graphics, vec, Color, Traits } from "excalibur";
+import {
+  Actor,
+  ActorArgs,
+  Graphics,
+  vec,
+  Color,
+  Traits,
+  CoordPlane,
+} from "excalibur";
 import { Resources } from "./resources";
 
 export interface DialogCardOptions {
@@ -13,6 +21,7 @@ export class DialogCard extends Actor {
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
+    this.transform.coordPlane = CoordPlane.Screen;
   }
 
   onInitialize() {
