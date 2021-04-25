@@ -18,6 +18,7 @@ import { Player } from "./player";
 import config from "./config";
 import { Snek } from "./snek";
 import { GameOver } from "./gameOver";
+import { PowerUp } from "./powerup";
 import {
   DirtTag,
   DirtTerrain,
@@ -91,6 +92,7 @@ export class Level extends Scene {
 
   onInitialize(engine: Engine) {
     Terrain.Initialize();
+
     this.player = new Player(this);
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.canvasWidth, engine.canvasHeight);

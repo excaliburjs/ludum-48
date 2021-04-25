@@ -10,6 +10,7 @@ import {
   Input,
   RotationType,
   Traits,
+  Timer,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -17,11 +18,11 @@ import config from "./config";
 import { PlayerTrail } from "./playerTrail";
 import { EmptyTag, Terrain } from "./terrain";
 import { GlobalState } from "./globalState";
+import { PowerUp } from "powerup";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
   private state: GlobalState = GlobalState.GetInstance();
-  private hasSpeedPowerUp = true;
   private moving = false;
   private pointerHeld = false;
   private pointerScreenPos = vec(0, 0);
@@ -151,9 +152,7 @@ export class Player extends Actor {
     const tileY = Math.floor(worldPos.y / config.TileWidth);
 
     const validMove = this.isValidMove(worldPos.x, worldPos.y);
-    const movementBonus = this.hasSpeedPowerUp
-      ? config.PowerUpSpeedIncreaseFactor
-      : 1;
+    const movementBonus = true ? config.PowerUpSpeedIncreaseFactor : 1;
 
     if (validMove) {
       // if you are moving we wait otherwise weird things happen and players can make invalid moves

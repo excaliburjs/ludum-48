@@ -13,6 +13,7 @@ export default {
   DigTime: 400,
   SpaceMoveDuration: 500,
   PowerUpSpeedIncreaseFactor: 2,
+  PowerUpDurationSeconds: 5,
 
   RockDigDelay: 100,
 
