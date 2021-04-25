@@ -19,7 +19,7 @@ import config from "./config";
 import { PlayerTrail } from "./playerTrail";
 import { EmptyTag, Terrain } from "./terrain";
 import { GlobalState } from "./globalState";
-import { PowerUpTimer } from "powerup";
+import { digEffect } from "./effects";
 
 export class Player extends Actor {
   private trail: PlayerTrail = PlayerTrail.GetInstance();
@@ -28,6 +28,7 @@ export class Player extends Actor {
   private pointerHeld = false;
   private pointerScreenPos = vec(0, 0);
   private engine!: Engine;
+  private digSprite: Graphics.Sprite = Resources.Rock2.toSprite();
 
   private startAngle = Math.PI / 2;
   private frontFacing!: Graphics.Sprite;
@@ -210,6 +211,7 @@ export class Player extends Actor {
           });
           return;
         } else {
+          digEffect(this.engine, tile, this.digSprite);
           this.actions.delay(digDelay).callMethod(() => {
             this.level.finishDig(worldPos.x, worldPos.y);
           });
