@@ -28,7 +28,7 @@ import {
   Terrain,
 } from "./terrain";
 import { GlobalState } from "./globalState";
-import { Background } from "background";
+import { Background } from "./background";
 
 class WeightPair<T> {
   constructor(weight: number, obj: T) {
