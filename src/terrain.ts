@@ -1,4 +1,4 @@
-import { Cell, Engine, Graphics, Sound, Sprite, TileMap } from "excalibur";
+import { Cell, Engine, Graphics, Sound, TileMap } from "excalibur";
 import { ImageSource } from "../lib/excalibur/build/dist/Graphics";
 import { Resources } from "./resources";
 import config from "./config";
@@ -56,7 +56,8 @@ export class Terrain implements ITerrain {
     return this.blockSprite;
   }
 
-  static GetTerrain(cell: Cell): Terrain {
+  static GetTerrain(cell: Cell | null): Terrain {
+    if (!cell) return EmptyTerrain;
     if (cell.hasTag(EmptyTag)) return EmptyTerrain;
     else if (cell.hasTag(RockTag)) return RockTerrain;
     else if (cell.hasTag(DirtTag)) return DirtTerrain;

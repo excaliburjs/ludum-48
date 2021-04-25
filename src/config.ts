@@ -25,4 +25,5 @@ export default {
   SnekSquaresDistanceBeforeCatchUpSpeed: 10,
   SnekMinSecondsPerSquare: 1,
   SnekBodyLength: 7, // head is 1 tile, this is the rest
+  SnakeMoveDuration: 500,
 };

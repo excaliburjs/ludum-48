@@ -1,8 +1,12 @@
 import {
   Axis,
+  BoundingBox,
   Cell,
+  ElasticToActorStrategy,
   Engine,
   Graphics,
+  LimitCameraBoundsStrategy,
+  LockCameraToActorAxisStrategy,
   Random,
   Scene,
   TileMap,
@@ -24,6 +28,7 @@ import {
   Terrain,
 } from "./terrain";
 import { GlobalState } from "./globalState";
+import { Background } from "./background";
 
 class WeightPair<T> {
   constructor(weight: number, obj: T) {
@@ -73,6 +78,8 @@ export class Level extends Scene {
   previousChunk: TileMap | null = null;
   currentChunk: TileMap | null = null;
 
+  background!: Background;
+
   player: Player | null = null;
   snek: Snek | null = null;
 
@@ -92,8 +99,16 @@ export class Level extends Scene {
     this.add(this.snek);
     this.add(this.gameOver);
 
-    // Camera follows actor's Y Axis
-    this.camera.strategy.lockToActorAxis(this.player, Axis.Y);
+    this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
+    this.camera.on("postupdate", (e) => {
+      this.camera.pos.x = this.camera.viewport.width / 2;
+    });
+
+    // this.camera.strategy.lockToActorAxis(this.player, Axis.X);
+
+    // this.camera.strategy.elasticToActor(this.player, .2, .2);
+
+    this.background = new Background(this);
 
     this.buildTerrainWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);
@@ -165,35 +180,57 @@ export class Level extends Scene {
       this.setCellToTerrain(cell, terrain);
     }
 
-    this.ValidateTileMap(tileMap);
+    this.ValidateTileMap(tileMap, this.currentChunk);
 
     return tileMap;
   }
 
-  ValidateTileMap(tile: TileMap) {
+  ValidateTileMap(tile: TileMap, prev: TileMap | null) {
     var y = tile.y;
     var prevRow: Cell[] | null = null;
+
+    if (prev) {
+      prevRow = prev.data.filter((c) => {
+        return c.y === y - tile.cellHeight;
+      });
+    }
+
+    const defaultPathable = DirtTerrain;
+
     for (var i = 0; i < tile.rows; ++i) {
-      const row = tile.data.filter((c) => {
+      const curRow = tile.data.filter((c) => {
         return c.y === y;
       });
-      const pathable = row.filter((c) => {
-        const terr = Terrain.GetTerrain(c);
-        return terr.mineable();
-      });
 
-      // TODO add more checks
-      if (pathable.length == 0) {
-        const index = Math.floor(this.random.next() * row.length);
-        const makePathable = row[index];
-        this.setCellToTerrain(makePathable, DirtTerrain);
+      for (let x = 0; x < curRow.length; x++) {
+        //only validate if there's a previous row
+        if (!prevRow) {
+          continue;
+        }
 
-        if (prevRow) {
-          this.setCellToTerrain(prevRow[index], DirtTerrain);
+        const curCell = curRow[x];
+        const curTerrain = Terrain.GetTerrain(curRow[x]);
+        const upperLeftTile = x != 0 ? prevRow[x - 1] : null;
+        const upperRightTile = x != curRow.length - 1 ? prevRow[x + 1] : null;
+        if (!upperLeftTile || !upperRightTile) {
+          if (!curTerrain.mineable()) {
+            this.setCellToTerrain(curCell, defaultPathable);
+          }
+          continue;
+        }
+        const upperLeftTerrain = Terrain.GetTerrain(upperLeftTile);
+        const upperRightTerrain = Terrain.GetTerrain(upperRightTile);
+        if (
+          !upperLeftTerrain.mineable() &&
+          !upperRightTerrain.mineable() &&
+          !curTerrain.mineable()
+        ) {
+          this.setCellToTerrain(curCell, defaultPathable);
         }
       }
+
       y += tile.cellHeight;
-      prevRow = row;
+      prevRow = curRow;
     }
   }
 
