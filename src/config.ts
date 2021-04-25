@@ -10,8 +10,8 @@ export default {
   AspectRatio: 9 / 16, // 9:16
   InvAspectRatio: 1 / (9 / 16),
 
-  DigTime: 400,
-  SpaceMoveDuration: 500,
+  DigTime: 200,
+  SpaceMoveDuration: 200,
   PowerUpSpeedIncreaseFactor: 2,
   PowerUpDurationSeconds: 5,
 
@@ -22,9 +22,9 @@ export default {
    **************************/
   SnekStartingSecondsPerSquare: 5, // seconds per tile
   SnekAcceleration: 0.05, // seconds per tile when user is further away
-  SnekCatchUpSecondsPerSquare: 2,
+  SnekCatchUpSecondsPerSquare: 0.5,
   SnekSquaresDistanceBeforeCatchUpSpeed: 10,
-  SnekMinSecondsPerSquare: 1,
+  SnekMinSecondsPerSquare: 250 / 1000,
   SnekBodyLength: 7, // head is 1 tile, this is the rest
-  SnakeMoveDuration: 500,
+  SnakeMoveDuration: 100,
 };
