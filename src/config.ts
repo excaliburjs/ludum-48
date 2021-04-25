@@ -1,6 +1,6 @@
 export default {
-  TerrainRandomSeed: 1337,
-  CollectibleRandomSeed: 7331,
+  TerrainRandomSeed: Math.floor(10000 * Math.random()), //1337,
+  CollectibleRandomSeed: Math.floor(10000 * Math.random()),//7331,
 
   // Progress meter
   DistanceToComplete: 200,
