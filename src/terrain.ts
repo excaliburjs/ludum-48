@@ -48,7 +48,7 @@ export class Terrain implements ITerrain {
   delay(): number {
     return this.mineDelay();
   }
-  sprite(): Graphics.Sprite | null{
+  sprite(): Graphics.Sprite | null {
     if (this.blockSprite) return this.blockSprite;
     if (this.spriteImage) {
       this.blockSprite = this.spriteImage.toSprite();
@@ -56,7 +56,7 @@ export class Terrain implements ITerrain {
     return this.blockSprite;
   }
 
-  static GetTerrain(cell: Cell | null): Terrain{
+  static GetTerrain(cell: Cell | null): Terrain {
     if (!cell) return EmptyTerrain;
     if (cell.hasTag(EmptyTag)) return EmptyTerrain;
     else if (cell.hasTag(RockTag)) return RockTerrain;
@@ -81,11 +81,6 @@ export class Terrain implements ITerrain {
       Resources.DigSound
     );
   }
-
-  static SolidTerrain(): Terrain[] {
-    return [RockTerrain]
-  }
-
 }
 
 export const RockTag = "rock";
@@ -95,4 +90,3 @@ export const EmptyTag = "empty";
 export var EmptyTerrain: Terrain;
 export var RockTerrain: Terrain;
 export var DirtTerrain: Terrain;
-

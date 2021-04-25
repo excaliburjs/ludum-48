@@ -175,14 +175,21 @@ export class Level extends Scene {
       this.setCellToTerrain(cell, terrain);
     }
 
-    this.ValidateTileMap(tileMap);
+    this.ValidateTileMap(tileMap, this.currentChunk);
 
     return tileMap;
   }
 
-  ValidateTileMap(tile: TileMap) {
+  ValidateTileMap(tile: TileMap, prev: TileMap | null) {
     var y = tile.y;
     var prevRow: Cell[] | null = null;
+
+    if (prev) {
+      prevRow = prev.data.filter((c) => {
+        return c.y === y - tile.cellHeight;
+      });
+    }
+
     const defaultPathable = DirtTerrain;
 
     for (var i = 0; i < tile.rows; ++i) {
@@ -190,27 +197,28 @@ export class Level extends Scene {
         return c.y === y;
       });
 
-
-      for(let x = 0; x < curRow.length; x++) {
+      for (let x = 0; x < curRow.length; x++) {
         //only validate if there's a previous row
-        if(!prevRow) { continue; }
+        if (!prevRow) {
+          continue;
+        }
 
         const curCell = curRow[x];
         const curTerrain = Terrain.GetTerrain(curRow[x]);
-        const upperLeftTile = x != 0 ? prevRow[x-1] : null;
-        const upperRightTile = x != curRow.length -1 ? prevRow[x+1] : null;
-        if(!upperLeftTile || !upperRightTile) {
-          if(Terrain.SolidTerrain().includes(curTerrain)) {
+        const upperLeftTile = x != 0 ? prevRow[x - 1] : null;
+        const upperRightTile = x != curRow.length - 1 ? prevRow[x + 1] : null;
+        if (!upperLeftTile || !upperRightTile) {
+          if (!curTerrain.mineable()) {
             this.setCellToTerrain(curCell, defaultPathable);
           }
           continue;
         }
-        const upperLeftTerrain = Terrain.GetTerrain(upperLeftTile);  
-        const upperRightTerrain = Terrain.GetTerrain(upperRightTile); 
-        if(
-          Terrain.SolidTerrain().includes(upperLeftTerrain)
-          && Terrain.SolidTerrain().includes(upperRightTerrain)
-          && Terrain.SolidTerrain().includes(curTerrain)
+        const upperLeftTerrain = Terrain.GetTerrain(upperLeftTile);
+        const upperRightTerrain = Terrain.GetTerrain(upperRightTile);
+        if (
+          !upperLeftTerrain.mineable() &&
+          !upperRightTerrain.mineable() &&
+          !curTerrain.mineable()
         ) {
           this.setCellToTerrain(curCell, defaultPathable);
         }
