@@ -1,8 +1,8 @@
 import { Cell, Engine, Graphics, Sound, TileMap, Util } from "excalibur";
 import { Resources } from "./resources";
 import config from "./config";
-import {PowerUp, Collectible} from "./powerup"
-import {WeightMap} from "./weightmap"
+import { PowerUp, Collectible } from "./powerup";
+import { WeightMap } from "./weightmap";
 
 interface ITerrain {
   mineable(): Boolean;
@@ -101,23 +101,20 @@ export class TunnelTerrain extends Terrain {
     if (this.blockSprites) return this.blockSprites;
 
     this.blockSprites = [];
-        if (this.rotateSides && image === Resources.DirtTunnel) {
-          sprite.rotation = Util.toRadians(90);
-        }
 
     if (this.sides.north) {
       const northEdge = Resources.DirtSide.toSprite();
-      northEdge.rotation = toRadians(180);
+      northEdge.rotation = Util.toRadians(180);
       this.blockSprites.push(northEdge);
     }
     if (this.sides.east) {
       const eastEdge = Resources.DirtSide.toSprite();
-      eastEdge.rotation = toRadians(-90);
+      eastEdge.rotation = Util.toRadians(-90);
       this.blockSprites.push(eastEdge);
     }
     if (this.sides.west) {
       const westEdge = Resources.DirtSide.toSprite();
-      westEdge.rotation = toRadians(90);
+      westEdge.rotation = Util.toRadians(90);
       this.blockSprites.push(westEdge);
     }
     if (this.sides.south) {
