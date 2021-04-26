@@ -275,11 +275,6 @@ export class Snek extends Actor {
 
   areNumbersApproximatelyEqual(value1: number, value2: number): boolean {
     const precision = 0.01;
-
-    if (Math.abs(value1 - value2) <= precision) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(value1 - value2) <= precision;
   }
 }
