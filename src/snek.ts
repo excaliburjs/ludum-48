@@ -15,6 +15,7 @@ import { Every } from "./every";
 export class Snek extends Actor {
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
   private timePerTile: number = config.SnekStartingSpeed;
+  private chuChuCooldown: number = 0;
 
   // private snekCalculatedSecondsPerSquare: number =
   //   config.SnekStartingSecondsPerSquare;
@@ -98,7 +99,7 @@ export class Snek extends Actor {
 
     // Steam roll
     const trail = this.playerTrail.trail;
-    if (trail.length >= 2) {
+    if (trail.length >= 2 && this.chuChuCooldown-- <= 0) {
       let sameXCoordinate = 0;
       for (let i = 0; i < trail.length - 1; i++) {
         if (trail[i].x === trail[i + 1].x) {
@@ -111,6 +112,7 @@ export class Snek extends Actor {
         console.log("CHU CHU!", sameXCoordinate);
         Resources.ChuChu.play();
         this.timePerTile -= config.SnekStraitPathBoost;
+        this.chuChuCooldown = config.SnekStraitPathBoostCooldown;
       }
     }
   }
@@ -218,20 +220,18 @@ export class Snek extends Actor {
     this.scene.add(this.snekBody[3]);
     this.scene.add(this.snekBody[5]);
     this.scene.add(this.snekBody[7]);
-
   }
 
   moveSnekBody(prevHeadX: number, prevHeadY: number) {
     const snekBodyLocations: Vector[] = this.getSnekBodyLocations();
 
     // move the first body segment to where the head just was
-    this.snekBody[0].actions
-    .easeTo(
+    this.snekBody[0].actions.easeTo(
       prevHeadX * config.TileWidth + config.TileWidth / 2,
       prevHeadY * config.TileWidth + config.TileWidth / 2,
       config.SnakeMoveDuration,
       EasingFunctions.EaseInOutCubic
-    );//todo play a cool steam animation or something on each joint
+    ); //todo play a cool steam animation or something on each joint
 
     // move each remaining segment to the position that the one ahead of it was occupying
     for (let i = 1; i < this.snekBody.length; i++) {
@@ -263,8 +263,7 @@ export class Snek extends Actor {
 
     if (Math.abs(value1 - value2) <= precision) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

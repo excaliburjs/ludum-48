@@ -37,6 +37,7 @@ export default {
 
   SnekStraitPathBoost: 30,
   SnekStraitDownCount: 5,
+  SnekStraitPathBoostCooldown: 5,
 
   /**************************
    * Snek Config
