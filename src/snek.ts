@@ -14,19 +14,23 @@ import { PlayerTrail } from "./playerTrail";
 import { Every } from "./every";
 export class Snek extends Actor {
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
-  private snekCurrentSecondsPerSquare: number =
-    config.SnekStartingSecondsPerSquare;
-  private snekCalculatedSecondsPerSquare: number =
-    config.SnekStartingSecondsPerSquare;
+  private timePerTile: number = config.SnekStartingSpeed;
+
+  private last5Positions: Vector[] = [];
+
+  // private snekCalculatedSecondsPerSquare: number =
+  //   config.SnekStartingSecondsPerSquare;
+
   private moving: Boolean = false;
 
   private snekBody: Actor[] = [];
 
   private moveSnekTimer = new Every.Second(() => {
     this.moveSnek();
-  }, config.SnekStartingSecondsPerSquare);
+  }, this.timePerTile / 1000);
+
   private updateSnekTimer = new Every.Second(() => {
-    this.updateSnekSpeed();
+    this.updateSnekSpeedv2();
   }, 1);
 
   private updateFunctions: Every.Interval[] = [
@@ -66,28 +70,51 @@ export class Snek extends Actor {
       this.rotation = Math.atan2(this.vel.y, this.vel.x);
     }
 
-    this.moveSnekTimer.UpdateInterval(this.snekCurrentSecondsPerSquare);
+    this.moveSnekTimer.UpdateInterval(this.timePerTile / 1000);
 
     this.updateFunctions.forEach((fun) => fun.Update(_delta));
   }
 
-  updateSnekSpeed() {
-    this.snekCalculatedSecondsPerSquare -= config.SnekAcceleration;
+  updateSnekSpeedv2() {
     const playerPos = this.playerTrail.peekLast();
     if (!!playerPos) {
-      const distX = Math.abs(playerPos.x - this.pos.x);
-      const distY = Math.abs(playerPos.y - this.pos.y);
+      const distX = playerPos.x - this.pos.x;
+      const distY = playerPos.y - this.pos.y;
       const distance = Math.sqrt(distX * distX + distY * distY);
-      if (distance >= config.SnekSquaresDistanceBeforeCatchUpSpeed) {
-        this.snekCurrentSecondsPerSquare = Math.min(
-          config.SnekCatchUpSecondsPerSquare,
-          this.snekCalculatedSecondsPerSquare
-        );
+      if (distance > config.SnekFasterSpeedDistance * config.TileWidth) {
+        console.log("FASTER SNEK");
+        this.timePerTile = config.SnekFasterSpeed;
+      }
+
+      if (distance > config.SnekFastestSpeedDistance * config.TileWidth) {
+        console.log("FASTEST SNEK");
+        this.timePerTile = config.SnekFastestSpeed;
+      }
+
+      if (distance < config.SnekSlowDownDistance * config.TileWidth) {
+        console.log("SLOW SNEK DOWN");
+        this.timePerTile += config.SnekSlowDownBy;
       }
     }
-    if (this.snekCurrentSecondsPerSquare <= config.SnekMinSecondsPerSquare) {
-      this.snekCurrentSecondsPerSquare = config.SnekMinSecondsPerSquare;
-    }
+  }
+
+  updateSnekSpeed() {
+    // this.snekCalculatedSecondsPerSquare -= config.SnekAcceleration;
+    // const playerPos = this.playerTrail.peekLast();
+    // if (!!playerPos) {
+    //   const distX = Math.abs(playerPos.x - this.pos.x);
+    //   const distY = Math.abs(playerPos.y - this.pos.y);
+    //   const distance = Math.sqrt(distX * distX + distY * distY);
+    //   if (distance >= config.SnekSquaresDistanceBeforeCatchUpSpeed) {
+    //     this.speedPerTile = Math.min(
+    //       config.SnekCatchUpSecondsPerSquare,
+    //       this.snekCalculatedSecondsPerSquare
+    //     );
+    //   }
+    // }
+    // if (this.speedPerTile <= config.SnekMinSecondsPerSquare) {
+    //   this.speedPerTile = config.SnekMinSecondsPerSquare;
+    // }
   }
 
   moveSnek() {

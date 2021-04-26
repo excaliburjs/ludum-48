@@ -1,6 +1,6 @@
 export default {
-  TerrainRandomSeed: Math.floor(10000 * Math.random()), //1337,
-  CollectibleRandomSeed: Math.floor(10000 * Math.random()), //7331,
+  TerrainRandomSeed: 6685, //Math.floor(10000 * Math.random()), //1337,
+  CollectibleRandomSeed: 7331, // Math.floor(10000 * Math.random()), //7331,
 
   BackgroundVolume: 0.1,
   SoundVolume: 0.3,
@@ -25,14 +25,26 @@ export default {
 
   RockDigDelay: 100,
 
+  SnekStartingSpeed: 800,
+  SnekFastestSpeed: 200,
+  SnekFastestSpeedDistance: 15,
+
+  SnekFasterSpeed: 350,
+  SnekFasterSpeedDistance: 8,
+
+  SnekSlowDownBy: 25,
+  SnekSlowDownDistance: 4,
+
+  SnekStraitPathBoost: 25,
+
   /**************************
    * Snek Config
    **************************/
-  SnekStartingSecondsPerSquare: 5, // seconds per tile
-  SnekAcceleration: 0.05, // seconds per tile when user is further away
-  SnekCatchUpSecondsPerSquare: 0.5,
-  SnekSquaresDistanceBeforeCatchUpSpeed: 10,
-  SnekMinSecondsPerSquare: 250 / 1000,
+  //   SnekStartingSecondsPerSquare: 5, // seconds per tile
+  //   SnekAcceleration: 0.05, // seconds per tile when user is further away
+  //   SnekCatchUpSecondsPerSquare: 0.5,
+  //   SnekSquaresDistanceBeforeCatchUpSpeed: 10,
+  //   SnekMinSecondsPerSquare: 250 / 1000,
   SnekBodyLength: 7, // head is 1 tile, this is the rest
   SnakeMoveDuration: 100,
 };
