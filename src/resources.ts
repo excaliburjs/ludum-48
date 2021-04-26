@@ -33,10 +33,10 @@ import vocalistMeerkatFrontFacing from "./images/meerkat_2_front-facing.png";
 import bassistMeerkatFrontFacing from "./images/meerkat_3_front-facing.png";
 import guitaristMeerkatFrontFacing from "./images/meerkat_4_front-facing.png";
 
-import drummerMeerkatPlaying from "./images/animated_meerkats/drums_animation.gif";
-import bassistMeerkatPlaying from "./images/animated_meerkats/bass_guitar_animation.gif";
-import guitaristMeerkatPlaying from "./images/animated_meerkats/guitar_animation.gif";
-import vocalistMeerkatPlaying from "./images/animated_meerkats/singer_jumping_animation.gif";
+import drummerMeerkatPlaying from "./images/animated_meerkats/drums_animation.png";
+import bassistMeerkatPlaying from "./images/animated_meerkats/bass_guitar_animation.png";
+import guitaristMeerkatPlaying from "./images/animated_meerkats/guitar_animation.png";
+import vocalistMeerkatPlaying from "./images/animated_meerkats/singer_jumping_animation.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),

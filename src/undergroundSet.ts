@@ -210,18 +210,18 @@ export class UndergroundSet extends Scene {
     const bandGridConfig = {
       rows: 1,
       columns: 3,
-      spriteWidth: 60,
+      spriteWidth: 32,
       spriteHeight: 40,
     };
     const drummerSpritesheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.MeerkatDrummerPlaying,
-      grid: bandGridConfig,
+      grid: { ...bandGridConfig, spriteWidth: 60 },
     });
 
     this.drummer.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         drummerSpritesheet,
-        [0],
+        [0, 1, 2],
         100,
         Graphics.AnimationStrategy.PingPong
       )
@@ -229,13 +229,13 @@ export class UndergroundSet extends Scene {
 
     const guitaristSpritesheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.MeerkatGuitaristPlaying,
-      grid: bandGridConfig,
+      grid: { ...bandGridConfig, spriteWidth: 40 },
     });
 
     this.guitarist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         guitaristSpritesheet,
-        [0],
+        [0, 1, 2],
         100,
         Graphics.AnimationStrategy.PingPong
       )
@@ -243,12 +243,12 @@ export class UndergroundSet extends Scene {
 
     const bassistSpritesheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.MeerkatBassistPlaying,
-      grid: bandGridConfig,
+      grid: { ...bandGridConfig, spriteWidth: 32 },
     });
     this.bassist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         bassistSpritesheet,
-        [0],
+        [0, 1, 2],
         100,
         Graphics.AnimationStrategy.PingPong
       )
@@ -256,12 +256,12 @@ export class UndergroundSet extends Scene {
 
     const vocalistSpritesheet = Graphics.SpriteSheet.fromGrid({
       image: Resources.MeerkatVocalistPlaying,
-      grid: bandGridConfig,
+      grid: { ...bandGridConfig, spriteWidth: 40 },
     });
     this.vocalist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         vocalistSpritesheet,
-        [0],
+        [0, 1, 2],
         100,
         Graphics.AnimationStrategy.PingPong
       )
