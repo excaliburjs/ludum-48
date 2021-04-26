@@ -25,6 +25,7 @@ import digging from "./images/digging.png";
 import frontFacing from "./images/meerkat_front-facing.png";
 import chuChuMp3 from "./sound/chuchu.mp3";
 import chuChuWav from "./sound/chuchu.wav";
+import beetle from "./images/beetle.png";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -48,6 +49,7 @@ let Resources = {
   Digging: new Graphics.ImageSource(digging),
   FrontFacing: new Graphics.ImageSource(frontFacing),
   ChuChu: new Sound(chuChuMp3, chuChuWav),
+  Beetle: new Graphics.ImageSource(beetle),
 };
 
 Resources.BackgroundMusic.loop = true;

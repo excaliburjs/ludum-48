@@ -3,6 +3,7 @@ import {
   Color,
   EasingFunctions,
   Engine,
+  Graphics,
   Random,
   RotationType,
   Traits,
@@ -12,12 +13,15 @@ import { Level } from "./level";
 import config from "./config";
 import { Terrain } from "./terrain";
 import { Every } from "./every";
+import { Resources } from "./resources";
 export class Beetle extends Actor {
   static random = new Random(1337);
   private moving = false;
   private moveBeetleTimer = new Every.Second(() => {
     this.moveBeetle();
   }, 1000 / 1000);
+
+  private sprite!: Graphics.Sprite;
 
   constructor(x: number, y: number, private level: Level) {
     super({
@@ -31,6 +35,11 @@ export class Beetle extends Actor {
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
+  }
+
+  onInitialize() {
+    this.sprite = Resources.Beetle.toSprite();
+    this.graphics.use(this.sprite);
   }
 
   moveBeetle() {
