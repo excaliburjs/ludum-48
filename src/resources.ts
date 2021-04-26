@@ -3,6 +3,7 @@ import { Graphics, Sound } from "excalibur";
 import instructions from "./images/instructions.png";
 import sword from "./images/sword.png";
 import dirt from "./images/dirt_001.png";
+import dirtBones from "./images/dirt_bones.png";
 import dirtBackground from "./images/dirt_back.png";
 import dirtTunnel from "./images/dirt_tunnel.png";
 import dirtSide from "./images/dirt_side.png";
@@ -60,6 +61,7 @@ let Resources = {
   Instructions: new Graphics.ImageSource(instructions),
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
+  DirtBones: new Graphics.ImageSource(dirtBones),
   DirtSide: new Graphics.ImageSource(dirtSide),
   DirtBackground: new Graphics.ImageSource(dirtBackground),
   DirtTunnel: new Graphics.ImageSource(dirtTunnel),

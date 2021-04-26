@@ -70,6 +70,8 @@ export class Level extends Scene {
   speedPowerUp!: PowerUp;
   cameraStrategy!: CameraStrategy<Actor>;
 
+  bones!: Graphics.Sprite;
+
   onInitialize(engine: Engine) {
     Terrain.Initialize();
 
@@ -83,6 +85,8 @@ export class Level extends Scene {
       },
       config.PowerUpDurationSeconds
     );
+
+    this.bones = Resources.DirtBones.toSprite();
 
     const instructions = new Actor({
       pos: vec(engine.halfDrawWidth + 50, 100),
@@ -280,6 +284,10 @@ export class Level extends Scene {
       if (terrain!.tag() === "dirt") {
         var collectible = this.collectibleWeightMap.randomSelect(null);
         this.setCellCollectible(cell, collectible);
+
+        if (!collectible && this.terrainRandom.next() < 0.04) {
+          cell.addSprite(this.bones);
+        }
 
         var beetle = this.beetleWeightMap.randomSelect(null);
         if (beetle) {
