@@ -9,10 +9,15 @@ export class SoundManager {
     Resources.BackgroundMusic.volume = Config.BackgroundVolume;
     Resources.PickUpSound.volume = Config.PickupSoundVolume;
     Resources.FallSound.volume = Config.BackgroundVolume;
-    // Resources.sndCardExpired.volume = Config.CueCardExpiredVolume;
-    // Resources.sndCardSuccess.volume = Config.CueCardSuccessVolume;
-    // Resources.sndDoorOpen.volume = Config.DoorOpenVolume;
-    // Resources.sndPickupItem.volume = Config.PickupItemVolume;
+
+    Resources.DigSound1.volume = Config.DigSoundVolume;
+    Resources.DigSound2.volume = Config.DigSoundVolume;
+    Resources.DigSound3.volume = Config.DigSoundVolume;
+    Resources.DigSound4.volume = Config.DigSoundVolume;
+    Resources.DigSound5.volume = Config.DigSoundVolume;
+    Resources.DigSound6.volume = Config.DigSoundVolume;
+    Resources.DigSound7.volume = Config.DigSoundVolume;
+    Resources.DigSound8.volume = Config.DigSoundVolume;
   }
 
   static init() {

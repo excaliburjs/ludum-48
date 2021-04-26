@@ -1,4 +1,12 @@
-import { Cell, Engine, Graphics, Sound, TileMap, Util } from "excalibur";
+import {
+  Cell,
+  Engine,
+  Graphics,
+  Random,
+  Sound,
+  TileMap,
+  Util,
+} from "excalibur";
 import { Resources } from "./resources";
 import config from "./config";
 import { PowerUp, Collectible } from "./powerup";
@@ -82,13 +90,28 @@ export class Terrain implements ITerrain {
       [Resources.Rock],
       Resources.ClankSound
     );
-    DirtTerrain = new Terrain(
-      DirtTag,
-      true,
-      () => config.DigTime,
-      [Resources.Dirt],
-      Resources.DigSound
-    );
+    DirtTerrain = new DirtTerrainImpl();
+  }
+}
+
+class DirtTerrainImpl extends Terrain {
+  constructor() {
+    super(DirtTag, true, () => config.DigTime, [Resources.Dirt], null);
+  }
+
+  playSound() {
+    const sound = new Random().pickOne([
+      Resources.DigSound1,
+      Resources.DigSound2,
+      Resources.DigSound3,
+      Resources.DigSound4,
+      Resources.DigSound5,
+      Resources.DigSound6,
+      Resources.DigSound7,
+      Resources.DigSound8,
+    ]);
+
+    sound.play();
   }
 }
 

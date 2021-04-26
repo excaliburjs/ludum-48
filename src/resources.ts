@@ -45,6 +45,15 @@ import setMusic2Wav from "./sound/set2.wav";
 import setMusic3LeadWav from "./sound/set3lead.wav";
 import setMusic3BgWav from "./sound/set3bg.wav";
 
+import dig1 from "./sound/dig chugs/HMRhyB Chug-A.wav";
+import dig2 from "./sound/dig chugs/HMRhyB Chug-B.wav";
+import dig3 from "./sound/dig chugs/HMRhyB Chug-C.wav";
+import dig4 from "./sound/dig chugs/HMRhyB Chug-D Hi.wav";
+import dig5 from "./sound/dig chugs/HMRhyB Chug-D Lo.wav";
+import dig6 from "./sound/dig chugs/HMRhyB Chug-E.wav";
+import dig7 from "./sound/dig chugs/HMRhyB Chug-F.wav";
+import dig8 from "./sound/dig chugs/HMRhyB Chug-G.wav";
+
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
@@ -54,7 +63,14 @@ let Resources = {
   DirtAngle: new Graphics.ImageSource(dirtAngle),
   Rock: new Graphics.ImageSource(rock),
   Rock2: new Graphics.ImageSource(rock2),
-  DigSound: new Sound(digMp3, digWav),
+  DigSound1: new Sound(dig1),
+  DigSound2: new Sound(dig2),
+  DigSound3: new Sound(dig3),
+  DigSound4: new Sound(dig4),
+  DigSound5: new Sound(dig5),
+  DigSound6: new Sound(dig6),
+  DigSound7: new Sound(dig7),
+  DigSound8: new Sound(dig8),
   ClankSound: new Sound(clankMp3, clankWav),
   PickUpSound: new Sound(pickupWav),
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
