@@ -21,13 +21,15 @@ const BAND_POSITION_VECTORS = {
 const UNDERGROUND_CONFIG = {
   fallDuration: 2000,
   fallRotationInDegreesPerSecond: 120,
+  setDuration: 5000,
+  leaveDuration: 1500,
 };
 
 export class UndergroundSet extends Scene {
-  private drummerFalling: Actor | undefined;
-  private guitaristFalling: Actor | undefined;
-  private bassistFalling: Actor | undefined;
-  private vocalistFalling: Actor | undefined;
+  private drummer: Actor | undefined;
+  private guitarist: Actor | undefined;
+  private bassist: Actor | undefined;
+  private vocalist: Actor | undefined;
 
   private drummerPos!: Vector;
   private guitaristPos!: Vector;
@@ -54,28 +56,28 @@ export class UndergroundSet extends Scene {
       vec(this.playerScreenPos.x, 0)
     );
 
-    this.drummerFalling = new Actor({
+    this.drummer = new Actor({
       x: spawnPos.x,
       y: spawnPos.y,
       scale: vec(2, 2),
       width: 20,
       height: 40,
     });
-    this.guitaristFalling = new Actor({
+    this.guitarist = new Actor({
       x: spawnPos.x,
       y: spawnPos.y,
       scale: vec(2, 2),
       width: 20,
       height: 40,
     });
-    this.bassistFalling = new Actor({
+    this.bassist = new Actor({
       x: spawnPos.x,
       y: spawnPos.y,
       scale: vec(2, 2),
       width: 20,
       height: 40,
     });
-    this.vocalistFalling = new Actor({
+    this.vocalist = new Actor({
       x: spawnPos.x,
       y: spawnPos.y,
       scale: vec(2, 2),
@@ -83,23 +85,17 @@ export class UndergroundSet extends Scene {
       height: 40,
     });
 
-    this.drummerFalling.graphics.add(
-      Resources.MeerkatDrummerFrontFacing.toSprite()
-    );
-    this.guitaristFalling.graphics.add(
+    this.drummer.graphics.add(Resources.MeerkatDrummerFrontFacing.toSprite());
+    this.guitarist.graphics.add(
       Resources.MeerkatGuitaristFrontFacing.toSprite()
     );
-    this.bassistFalling.graphics.add(
-      Resources.MeerkatBassistFrontFacing.toSprite()
-    );
-    this.vocalistFalling.graphics.add(
-      Resources.MeerkatVocalistFrontFacing.toSprite()
-    );
+    this.bassist.graphics.add(Resources.MeerkatBassistFrontFacing.toSprite());
+    this.vocalist.graphics.add(Resources.MeerkatVocalistFrontFacing.toSprite());
 
-    this.add(this.drummerFalling);
-    this.add(this.guitaristFalling);
-    this.add(this.bassistFalling);
-    this.add(this.vocalistFalling);
+    this.add(this.drummer);
+    this.add(this.guitarist);
+    this.add(this.bassist);
+    this.add(this.vocalist);
 
     this.drummerPos = this.engine.screenToWorldCoordinates(
       BAND_POSITION_VECTORS.drummer
@@ -130,38 +126,38 @@ export class UndergroundSet extends Scene {
    * Transition to new level (wipe?) from top of screen.
    */
   onActivate() {
-    this.drummerFalling!.rx = Util.toRadians(
+    this.drummer!.rx = Util.toRadians(
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
-    this.guitaristFalling!.rx = Util.toRadians(
+    this.guitarist!.rx = Util.toRadians(
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
-    this.vocalistFalling!.rx = Util.toRadians(
+    this.vocalist!.rx = Util.toRadians(
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
-    this.bassistFalling!.rx = Util.toRadians(
+    this.bassist!.rx = Util.toRadians(
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
 
-    this.drummerFalling!.actions.easeTo(
+    this.drummer!.actions.easeTo(
       this.drummerPos.x,
       this.drummerPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
-    this.guitaristFalling!.actions.easeTo(
+    this.guitarist!.actions.easeTo(
       this.guitaristPos.x,
       this.guitaristPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
-    this.vocalistFalling!.actions.easeTo(
+    this.vocalist!.actions.easeTo(
       this.vocalistPos.x,
       this.vocalistPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
-    this.bassistFalling!.actions.easeTo(
+    this.bassist!.actions.easeTo(
       this.bassistPos.x,
       this.bassistPos.y,
       UNDERGROUND_CONFIG.fallDuration,
@@ -177,33 +173,33 @@ export class UndergroundSet extends Scene {
   }
 
   swapToBand() {
-    this.remove(this.bassistFalling!);
-    this.remove(this.guitaristFalling!);
-    this.remove(this.vocalistFalling!);
-    this.remove(this.drummerFalling!);
+    this.remove(this.bassist!);
+    this.remove(this.guitarist!);
+    this.remove(this.vocalist!);
+    this.remove(this.drummer!);
 
-    const drummerPlaying = new Actor({
+    this.drummer = new Actor({
       x: this.drummerPos.x,
       y: this.drummerPos.y,
       width: 60,
       height: 40,
       scale: vec(2, 2),
     });
-    const guitaristPlaying = new Actor({
+    this.guitarist = new Actor({
       x: this.guitaristPos.x,
       y: this.guitaristPos.y,
       width: 60,
       height: 40,
       scale: vec(2, 2),
     });
-    const bassistPlaying = new Actor({
+    this.bassist = new Actor({
       x: this.bassistPos.x,
       y: this.bassistPos.y,
       width: 60,
       height: 40,
       scale: vec(2, 2),
     });
-    const vocalistPlaying = new Actor({
+    this.vocalist = new Actor({
       x: this.vocalistPos.x,
       y: this.vocalistPos.y,
       width: 60,
@@ -222,7 +218,7 @@ export class UndergroundSet extends Scene {
       grid: bandGridConfig,
     });
 
-    drummerPlaying.graphics.use(
+    this.drummer.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         drummerSpritesheet,
         [0],
@@ -236,7 +232,7 @@ export class UndergroundSet extends Scene {
       grid: bandGridConfig,
     });
 
-    guitaristPlaying.graphics.use(
+    this.guitarist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         guitaristSpritesheet,
         [0],
@@ -249,7 +245,7 @@ export class UndergroundSet extends Scene {
       image: Resources.MeerkatBassistPlaying,
       grid: bandGridConfig,
     });
-    bassistPlaying.graphics.use(
+    this.bassist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         bassistSpritesheet,
         [0],
@@ -262,7 +258,7 @@ export class UndergroundSet extends Scene {
       image: Resources.MeerkatVocalistPlaying,
       grid: bandGridConfig,
     });
-    vocalistPlaying.graphics.use(
+    this.vocalist.graphics.use(
       Graphics.Animation.fromSpriteSheet(
         vocalistSpritesheet,
         [0],
@@ -271,10 +267,35 @@ export class UndergroundSet extends Scene {
       )
     );
 
-    this.add(drummerPlaying);
-    this.add(guitaristPlaying);
-    this.add(bassistPlaying);
-    this.add(vocalistPlaying);
+    this.add(this.drummer);
+    this.add(this.guitarist);
+    this.add(this.bassist);
+    this.add(this.vocalist);
+
+    this.add(
+      new Timer({
+        fcn: () => this.digAndLeave(),
+        interval: UNDERGROUND_CONFIG.setDuration,
+        repeats: false,
+      })
+    );
+  }
+
+  digAndLeave() {
+    this.remove(this.bassist!);
+    this.remove(this.guitarist!);
+    this.remove(this.vocalist!);
+    this.remove(this.drummer!);
+
+    // tumble and merge back together to dig out of viewport
+
+    this.add(
+      new Timer({
+        fcn: () => this.engine.goToScene("main"),
+        interval: UNDERGROUND_CONFIG.leaveDuration,
+        repeats: false,
+      })
+    );
   }
 
   onDeactivate() {}

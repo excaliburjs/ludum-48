@@ -6,7 +6,8 @@ export default {
   SoundVolume: 0.3,
 
   // Progress meter
-  DistanceToComplete: 20,
+  DistanceToComplete: 60,
+  DistanceToRound: 20,
   MeterTilesHigh: 20,
 
   // Board Layout

@@ -122,6 +122,12 @@ export class Level extends Scene {
     this.chunks.push(this.currentChunk);
   }
 
+  onActivate(prevScene: Scene) {
+    if (prevScene instanceof UndergroundSet) {
+      this.transitionBackFromUndergroundSet();
+    }
+  }
+
   buildTerrainWeightMap(): void {
     this.terrainWeightMap.add(20, RockTerrain);
     this.terrainWeightMap.add(80, DirtTerrain);
@@ -155,7 +161,7 @@ export class Level extends Scene {
     // as we'll be transitioning to underground set
     if (
       this.camera.pos.y + (config.TileWidth * config.ChunkHeight) / 2 >=
-      config.DistanceToComplete * config.TileWidth +
+      config.DistanceToRound * this.state.Round * config.TileWidth +
         config.TileWidth * (this.start + 1)
     ) {
       this.camera.removeStrategy(this.cameraStrategy);
@@ -193,11 +199,15 @@ export class Level extends Scene {
   checkGameState() {
     if (this.state.GameOver) return;
     if (
-      (this.snek?.pos.x == this.player?.pos.x && this.snek?.pos.y == this.player?.pos.y) 
-      ||
-      this.snek?.getSnekBodyGridCoords().findIndex(snekBits => snekBits.x == this.player?.pos.x && snekBits.y == this.player.pos.y) !== -1
-     )
-    {
+      (this.snek?.pos.x == this.player?.pos.x &&
+        this.snek?.pos.y == this.player?.pos.y) ||
+      this.snek
+        ?.getSnekBodyGridCoords()
+        .findIndex(
+          (snekBits) =>
+            snekBits.x == this.player?.pos.x && snekBits.y == this.player.pos.y
+        ) !== -1
+    ) {
       this.gameOver?.updateEndScreen("Press 'R' to reset.");
       this.gameOver?.show();
       this.state.GameOver = true;
@@ -207,11 +217,14 @@ export class Level extends Scene {
     // Round over?
     //
     if (this.state.GameWon || this.state.RoundWon) return;
-    if (this.progressMeter!.progress >= config.DistanceToComplete) {
+    if (
+      this.progressMeter!.progress >=
+      config.DistanceToRound * this.state.Round
+    ) {
       this.state.RoundWon = true;
       this.state.GameOver = true;
 
-      if (this.state.Round === 3) {
+      if (this.progressMeter!.progress >= config.DistanceToComplete) {
         // transition to final flame set
         this.state.GameWon = true;
       }
@@ -230,8 +243,20 @@ export class Level extends Scene {
   }
 
   transitionBackFromUndergroundSet() {
+    // TODO: final screen / won / etc
+    if (this.state.GameWon) {
+      this.gameOver?.updateEndScreen("The snake's face melted 🤘🤘🤘");
+      this.gameOver?.show();
+      return;
+    }
+
     // Remove undergroundset scene
     this.engine.removeScene("set");
+    this.state.GameOver = false;
+    this.state.Round += 1;
+    this.state.RoundWon = false;
+
+    this.camera.addStrategy(this.cameraStrategy);
   }
 
   getTile(xpos: number, ypos: number): Cell | null {
@@ -339,7 +364,7 @@ export class Level extends Scene {
     } else {
       newChunk = this.generateChunk(
         this.onScreenChunkId * (config.TileWidth * config.ChunkHeight) +
-        this.start * config.TileWidth
+          this.start * config.TileWidth
       );
       this.chunks.push(newChunk);
     }

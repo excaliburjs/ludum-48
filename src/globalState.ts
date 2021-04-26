@@ -11,7 +11,7 @@ export class GlobalState {
   }
 
   public GameOver = false;
-  public Round = 0;
+  public Round = 1;
   public RoundWon = false;
   public GameWon = false;
 }

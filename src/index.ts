@@ -81,6 +81,10 @@ class Game extends Engine {
 
   public NewGame(): void {
     this.state.GameOver = false;
+    this.state.Round = 1;
+    this.state.RoundWon = false;
+    this.state.GameWon = false;
+
     const startY = config.TileWidth * 5 - config.TileWidth / 2;
     this.trail.clear();
     this.trail.enqueue(new Vector(1 * config.TileWidth, startY));

@@ -12,7 +12,9 @@ import { Resources } from "./resources";
 import config from "./config";
 import { PlayerTrail } from "./playerTrail";
 import { Every } from "./every";
+import { GlobalState } from "./globalState";
 export class Snek extends Actor {
+  private state: GlobalState;
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
   private timePerTile: number = config.SnekStartingSpeed;
   private chuChuCooldown: number = 0;
@@ -57,6 +59,7 @@ export class Snek extends Actor {
     this.traits = this.traits.filter(
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
+    this.state = GlobalState.GetInstance();
   }
 
   onInitialize(engine: Engine) {
@@ -69,6 +72,8 @@ export class Snek extends Actor {
     if (this.vel.size !== 0) {
       this.rotation = Math.atan2(this.vel.y, this.vel.x);
     }
+
+    if (this.state.GameOver) return;
 
     this.moveSnekTimer.UpdateInterval(this.timePerTile / 1000);
 
