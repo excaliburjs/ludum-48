@@ -178,6 +178,8 @@ export class Level extends Scene {
   checkGameState() {
     if (this.state.GameOver) return;
     if (
+      (this.snek?.pos.x == this.player?.pos.x && this.snek?.pos.y == this.player?.pos.y) 
+      ||
       this.snek?.getSnekBodyGridCoords().findIndex(snekBits => snekBits.x == this.player?.pos.x && snekBits.y == this.player.pos.y) !== -1
      )
     {
