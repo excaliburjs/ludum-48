@@ -26,6 +26,17 @@ import frontFacing from "./images/meerkat_front-facing.png";
 import chuChuMp3 from "./sound/chuchu.mp3";
 import chuChuWav from "./sound/chuchu.wav";
 import beetle from "./images/beetle.png";
+import undergroundSet from "./images/underground_set.png";
+
+import drummerMeerkatFrontFacing from "./images/meerkat_1_front-facing.png";
+import vocalistMeerkatFrontFacing from "./images/meerkat_2_front-facing.png";
+import bassistMeerkatFrontFacing from "./images/meerkat_3_front-facing.png";
+import guitaristMeerkatFrontFacing from "./images/meerkat_4_front-facing.png";
+
+import drummerMeerkatPlaying from "./images/animated_meerkats/drums_animation.gif";
+import bassistMeerkatPlaying from "./images/animated_meerkats/bass_guitar_animation.gif";
+import guitaristMeerkatPlaying from "./images/animated_meerkats/guitar_animation.gif";
+import vocalistMeerkatPlaying from "./images/animated_meerkats/singer_jumping_animation.gif";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -50,6 +61,26 @@ let Resources = {
   FrontFacing: new Graphics.ImageSource(frontFacing),
   ChuChu: new Sound(chuChuMp3, chuChuWav),
   Beetle: new Graphics.ImageSource(beetle),
+  UndergroundSet: new Graphics.ImageSource(undergroundSet),
+
+  // meerkatz
+  MeerkatDrummerFrontFacing: new Graphics.ImageSource(
+    drummerMeerkatFrontFacing
+  ),
+  MeerkatBassistFrontFacing: new Graphics.ImageSource(
+    bassistMeerkatFrontFacing
+  ),
+  MeerkatVocalistFrontFacing: new Graphics.ImageSource(
+    vocalistMeerkatFrontFacing
+  ),
+  MeerkatGuitaristFrontFacing: new Graphics.ImageSource(
+    guitaristMeerkatFrontFacing
+  ),
+
+  MeerkatDrummerPlaying: new Graphics.ImageSource(drummerMeerkatPlaying),
+  MeerkatBassistPlaying: new Graphics.ImageSource(bassistMeerkatPlaying),
+  MeerkatVocalistPlaying: new Graphics.ImageSource(vocalistMeerkatPlaying),
+  MeerkatGuitaristPlaying: new Graphics.ImageSource(guitaristMeerkatPlaying),
 };
 
 Resources.BackgroundMusic.loop = true;
