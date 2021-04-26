@@ -4,9 +4,9 @@ export default {
 
   BackgroundVolume: 0.3,
   SoundVolume: 0.3,
-  PickupSoundVolume: 0.2,
-  DigSoundVolume: 0.3,
-  ChuchuVolume: 0.2,
+  PickupSoundVolume: 0.1,
+  DigSoundVolume: 0.1,
+  ChuchuVolume: 0.1,
 
   // Progress meter
   DistanceToComplete: 60,
