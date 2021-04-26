@@ -44,7 +44,7 @@ export class Snek extends Actor {
     image: Resources.Snek,
     grid: {
       rows: 1,
-      columns: 24,
+      columns: 56,
       spriteHeight: 96,
       spriteWidth: 96,
     },
@@ -109,10 +109,67 @@ export class Snek extends Actor {
     500,
     Graphics.AnimationStrategy.PingPong
   );
+  
 
   // turbo animations
 
-  private bodyTurboAnimations = [];
+  private headTurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [31, 39, 47, 55],
+    300,
+    Graphics.AnimationStrategy.PingPong
+  );
+  private bodyTurboAnimations: Graphics.Animation[] = [];
+
+  private body1TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [30, 38, 46, 54],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body2TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [29, 37, 45, 53],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body3TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [28, 36, 44, 52],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body4TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [27, 35, 43, 51],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body5TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [26, 34, 42, 50],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body6TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [25, 33, 41, 49],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body7TurboAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [24, 32, 40, 48],
+    500,
+    Graphics.AnimationStrategy.PingPong
+  );
+
 
   constructor(public level: Level) {
     super({
@@ -135,12 +192,21 @@ export class Snek extends Actor {
       this.body6Anim,
       this.body7Anim,
     ];
-    this.bodyTurboAnimations = []; //TODO
+    this.bodyTurboAnimations = [
+      this.body1TurboAnim,
+      this.body2TurboAnim,
+      this.body3TurboAnim,
+      this.body4TurboAnim,
+      this.body5TurboAnim,
+      this.body6TurboAnim,
+      this.body7TurboAnim,
+    ];
   }
 
   onInitialize(engine: Engine) {
     // this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]); // add the graphic of the head
     this.graphics.add("default", this.headAnim);
+    this.graphics.add("turbo", this.headTurboAnim);
     // this.graphics.show("default");
     // console.log(this.spritesheet.sprites);
     this.createSnekBody();
@@ -167,22 +233,26 @@ export class Snek extends Actor {
       if (distance > config.SnekFasterSpeedDistance * config.TileWidth) {
         console.log("FASTER SNEK");
         this.timePerTile = Math.min(config.SnekFasterSpeed, this.timePerTile);
+        this.switchAnimation('turbo');
       }
 
       if (distance > config.SnekFastestSpeedDistance * config.TileWidth) {
         console.log("FASTEST SNEK");
         this.timePerTile = Math.min(config.SnekFastestSpeed, this.timePerTile);
+        this.switchAnimation('turbo');
       }
 
       if (distance < config.SnekSlowDownDistance * config.TileWidth) {
         console.log("SLOW SNEK DOWN");
         this.timePerTile += config.SnekSlowDownBy;
+        this.switchAnimation('default');
       }
 
       if (this.state.SnakePause) {
-        console.log("SNEK takes a recovery break");
+        console.log("SNEK slows down because your music was so cool");
         this.timePerTile += config.SnekSlowDownByAfterConcert;
         this.state.SnakePause = false;
+        this.switchAnimation('default');
       }
     }
 
@@ -223,6 +293,22 @@ export class Snek extends Actor {
     // if (this.speedPerTile <= config.SnekMinSecondsPerSquare) {
     //   this.speedPerTile = config.SnekMinSecondsPerSquare;
     // }
+  }
+
+  switchAnimation(key: string) {
+    if (key === 'turbo') {
+      this.graphics.show("turbo");
+      for (let i = 0; i < config.SnekBodyLength; i++) {
+        this.snekBody[i].graphics.hide();
+        this.snekBody[i].graphics.show("turbo");
+      }
+    } else {
+      this.graphics.show("default");
+      for (let i = 0; i < config.SnekBodyLength; i++) {
+        this.snekBody[i].graphics.hide();
+        this.snekBody[i].graphics.show("default");
+      }
+    }
   }
 
   moveSnek() {
@@ -284,6 +370,12 @@ export class Snek extends Actor {
         "default",
         // this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
         this.bodyDefaultAnimations[i]
+      );
+
+      bodySegment.graphics.add(
+        "turbo",
+        // this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+        this.bodyTurboAnimations[i]
       );
 
       bodySegment.onPreUpdate = () => {

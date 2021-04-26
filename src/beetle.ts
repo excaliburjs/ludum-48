@@ -17,6 +17,7 @@ import { Resources } from "./resources";
 export class Beetle extends Actor {
   static random = new Random(1337);
   private moving = false;
+  private dir: Vector | null = null;
   private moveBeetleTimer = new Every.Second(() => {
     this.moveBeetle();
   }, 1000 / 1000);
@@ -58,6 +59,16 @@ export class Beetle extends Actor {
   }
 
   moveBeetle() {
+    if (this.dir === null) {
+      this.dir = this.randomSelectValidDir();
+    }
+    if (this.dir !== null) {
+      this.moveToNearestTile(this.pos.add(this.dir.scale(config.TileWidth)));
+    }
+    this.dir = this.randomSelectValidDir();
+  }
+
+  randomSelectValidDir(): Vector | null {
     let dirs = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
 
     dirs = dirs.filter((d) => {
@@ -67,9 +78,9 @@ export class Beetle extends Actor {
 
     if (dirs.length > 0) {
       const randomDirIndex = Beetle.random.integer(0, dirs.length - 1);
-      const randomeDir = dirs[randomDirIndex];
-      this.moveToNearestTile(this.pos.add(randomeDir.scale(config.TileWidth)));
+      return dirs[randomDirIndex];
     }
+    return null;
   }
 
   onPreUpdate(_engine: Engine, delta: number) {
@@ -77,6 +88,9 @@ export class Beetle extends Actor {
       this.moveBeetleTimer.Update(delta);
       if (this.vel.size !== 0) {
         this.rotation = Math.atan2(this.vel.y, this.vel.x);
+      } else if (this.dir && !this.moving) {
+        const next = this.pos.add(this.dir.scale(config.TileWidth));
+        this.rotation = Math.atan2(next.y - this.pos.y, next.x - this.pos.x);
       }
     }
   }
@@ -106,6 +120,7 @@ export class Beetle extends Actor {
       if (!this.moving) {
         this.moving = true;
       } else {
+        this.moving = false;
         return;
       }
 
