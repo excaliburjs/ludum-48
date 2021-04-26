@@ -58,6 +58,13 @@ export class Terrain implements ITerrain {
     return this.blockSprites;
   }
 
+  static HasBeetle(cell: Cell | null): boolean {
+    if (cell) {
+      return cell.hasTag("beetle");
+    }
+    return false;
+  }
+
   static GetTerrain(cell: Cell | null): Terrain {
     if (!cell) return EmptyTerrain;
     if (cell.hasTag(EmptyTag)) return EmptyTerrain;

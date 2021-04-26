@@ -86,7 +86,9 @@ export class Beetle extends Actor {
       } else {
         return;
       }
-      const tile = this.level.getTile(worldPos.x, worldPos.y);
+
+      const currentTile = this.level.getTile(this.pos.x, this.pos.y);
+      const futureTile = this.level.getTile(worldPos.x, worldPos.y);
 
       this.actions.rotateTo(
         Math.atan2(worldPos.y - this.pos.y, worldPos.x - this.pos.x),
@@ -94,10 +96,11 @@ export class Beetle extends Actor {
         RotationType.ShortestPath
       );
 
-      if (tile) {
-        const terrain = Terrain.GetTerrain(tile);
+      if (futureTile) {
+        const terrain = Terrain.GetTerrain(futureTile);
         let digDelay = terrain.delay();
-        if (terrain.mineable()) {
+        if (terrain.mineable() && !Terrain.HasBeetle(futureTile)) {
+          futureTile.addTag("beetle");
           this.actions.delay(digDelay).callMethod(() => {
             this.level.finishDig(worldPos.x, worldPos.y);
           });
@@ -110,6 +113,7 @@ export class Beetle extends Actor {
             )
             .callMethod(() => {
               this.moving = false;
+              currentTile?.removeComponent("beetle", true);
             });
         }
       }

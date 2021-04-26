@@ -205,7 +205,10 @@ export class Player extends Actor {
         var terrain = Terrain.GetTerrain(tile);
         let digDelay = terrain.delay() / movementBonus;
         terrain.playSound();
-        if (!terrain.mineable()) {
+        if (Terrain.HasBeetle(tile)) {
+          Resources.ClankSound.play();
+        }
+        if (!terrain.mineable() || Terrain.HasBeetle(tile)) {
           this.actions.delay(digDelay).callMethod(() => {
             this.moving = false;
           });
