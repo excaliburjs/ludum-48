@@ -21,32 +21,36 @@ import { loadPreferences } from "./preferences";
 import { SoundManager } from "./sound-manager";
 Physics.enabled = false;
 
-const gui = new dat.GUI({ name: "Ludum 48 Debug" });
-for (let key in config as any) {
-  if (typeof (config as any)[key] === "number") {
-    switch (key) {
-      case "DigTime":
-      case "SpaceMoveDuration":
-      case "SnakeMoveDuration":
-        gui.add(config, key, 0, config[key] * 10, 50);
-        break;
-      case "SnekMinSecondsPerSquare":
-      case "SnekCatchUpSecondsPerSquare":
-        // tenth
-        gui.add(config, key, 0, config[key] * 10, 1 / 10);
-        break;
-      case "SnekSquaresDistanceBeforeCatchUpSpeed":
-        // ones
-        gui.add(config, key, 0, config[key] * 10, 1);
-        break;
-      default: {
-        gui.add(
-          config as any,
-          key,
-          0,
-          (config as any)[key] * 10,
-          ((config as any)[key] * 10) / 20
-        );
+const debugMenu = config.DebugMenuEnabled;
+
+if (debugMenu) {
+  const gui = new dat.GUI({ name: "Ludum 48 Debug" });
+  for (let key in config as any) {
+    if (typeof (config as any)[key] === "number") {
+      switch (key) {
+        case "DigTime":
+        case "SpaceMoveDuration":
+        case "SnakeMoveDuration":
+          gui.add(config, key, 0, config[key] * 10, 50);
+          break;
+        case "SnekMinSecondsPerSquare":
+        case "SnekCatchUpSecondsPerSquare":
+          // tenth
+          gui.add(config, key, 0, config[key] * 10, 1 / 10);
+          break;
+        case "SnekSquaresDistanceBeforeCatchUpSpeed":
+          // ones
+          gui.add(config, key, 0, config[key] * 10, 1);
+          break;
+        default: {
+          gui.add(
+            config as any,
+            key,
+            0,
+            (config as any)[key] * 10,
+            ((config as any)[key] * 10) / 20
+          );
+        }
       }
     }
   }
@@ -78,31 +82,6 @@ export class Game extends Engine {
     });
     this.state.newGameFun = this.NewGame.bind(this);
     this.state.newGameFun();
-  }
-
-  NewGame(): void {
-    for (let sceneKey in this.scenes) {
-      for (let actor of this.scenes[sceneKey].actors) {
-        actor.kill();
-      }
-      this.removeScene(sceneKey);
-    }
-    
-    this.state.GameOver = false;
-    this.state.Round = 1;
-    this.state.RoundWon = false;
-    this.state.GameWon = false;
-
-    const startY = config.TileWidth * 5 - config.TileWidth / 2;
-    this.trail.clear();
-    this.trail.enqueue(new Vector(1 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(2 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(3 * config.TileWidth, startY));
-    this.trail.enqueue(new Vector(4 * config.TileWidth, startY));
-
-    const level = new Level();
-    this.addScene("main", level);
-    this.goToScene("main");
 
     this.input.keyboard.on("press", (e) => {
       if (e.key === Input.Keys.Semicolon) {
@@ -119,6 +98,31 @@ export class Game extends Engine {
         }
       }
     });
+  }
+
+  NewGame(): void {
+    for (let sceneKey in this.scenes) {
+      for (let actor of this.scenes[sceneKey].actors) {
+        actor.kill();
+      }
+      this.removeScene(sceneKey);
+    }
+
+    this.state.GameOver = false;
+    this.state.Round = 1;
+    this.state.RoundWon = false;
+    this.state.GameWon = false;
+
+    const startY = config.TileWidth * 5 - config.TileWidth / 2;
+    this.trail.clear();
+    this.trail.enqueue(new Vector(1 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(2 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(3 * config.TileWidth, startY));
+    this.trail.enqueue(new Vector(4 * config.TileWidth, startY));
+
+    const level = new Level();
+    this.addScene("main", level);
+    this.goToScene("main");
   }
 }
 

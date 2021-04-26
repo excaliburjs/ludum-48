@@ -1,4 +1,5 @@
 export default {
+  DebugMenuEnabled: false,
   TerrainRandomSeed: Math.floor(10000 * Math.random()), //1337,
   CollectibleRandomSeed: Math.floor(10000 * Math.random()), //7331,
 

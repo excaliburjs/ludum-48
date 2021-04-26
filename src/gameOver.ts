@@ -67,9 +67,13 @@ export class GameOver extends ScreenElement {
       height: 100,
     });
     this.button.transform.coordPlane = CoordPlane.Screen;
-    this.button.on("pointerup", () => {
+    const endGame = this.state.newGameFun;
+    this.button.on("pointerdown", () => {
       if (this.button.isKilled()) return;
-      this.state.newGameFun();
+      if (this.state.GameOver) {
+        debugger;
+        endGame();
+      }
     });
     this.scene.add(this.button);
     this.button.z = 101;
