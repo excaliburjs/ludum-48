@@ -71,14 +71,7 @@ export class Level extends Scene {
   cameraStrategy!: CameraStrategy<Actor>;
 
   onInitialize(engine: Engine) {
-    // engine.input.keyboard.on('press', (evt) => {
-    //     if (evt.key === Input.Keys.L) {
-    //         this.gameOver?.updateEndScreen();
-    //         this.gameOver?.show();
-    //         this.state.GameOver = true;
-    //     }
-    // });
-
+    
     Terrain.Initialize();
 
     let speedPowerUpTimer = new PowerUpTimer(

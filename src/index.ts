@@ -56,7 +56,7 @@ loadPreferences();
 SoundManager.init();
 
 Flags.enable("use-webgl");
-class Game extends Engine {
+export class Game extends Engine {
   private state: GlobalState = GlobalState.GetInstance();
   private trail: PlayerTrail = PlayerTrail.GetInstance();
   constructor() {
@@ -76,10 +76,18 @@ class Game extends Engine {
     this.start(loader).then(() => {
       Resources.BackgroundMusic.play();
     });
-    this.NewGame();
+    this.state.newGameFun = this.NewGame.bind(this);
+    this.state.newGameFun();
   }
 
-  public NewGame(): void {
+  NewGame(): void {
+    for (let sceneKey in this.scenes) {
+      for (let actor of this.scenes[sceneKey].actors) {
+        actor.kill();
+      }
+      this.removeScene(sceneKey);
+    }
+    
     this.state.GameOver = false;
     this.state.Round = 1;
     this.state.RoundWon = false;
@@ -96,26 +104,18 @@ class Game extends Engine {
     this.addScene("main", level);
     this.goToScene("main");
 
-    game.input.keyboard.on("press", (e) => {
+    this.input.keyboard.on("press", (e) => {
       if (e.key === Input.Keys.Semicolon) {
         this.toggleDebug();
       }
     });
 
-    game.input.keyboard.on("press", (e) => {
+    this.input.keyboard.on("press", (e) => {
       if (this.state.RoundWon) return;
 
       if (this.state.GameOver) {
         if (e.key === Input.Keys.R) {
-          const sceneKeys = this.scenes.Keys;
-          for (let sceneKey in sceneKeys) {
-            for (let actor of this.scenes[sceneKey].actors) {
-              actor.kill();
-            }
-
-            this.removeScene(sceneKey);
-          }
-          this.NewGame();
+          this.state.newGameFun();
         }
       }
     });

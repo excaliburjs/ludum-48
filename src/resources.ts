@@ -27,6 +27,7 @@ import chuChuWav from "./sound/chuchu.wav";
 import beetle from "./images/beetle.png";
 import undergroundSet from "./images/underground_set.png";
 import undergroundSetInstruments from "./images/underground_set_instruments.png";
+import playAgainButton from "./images/play-again-button.png";
 
 import drummerMeerkatFrontFacing from "./images/meerkat_1_front-facing.png";
 import vocalistMeerkatFrontFacing from "./images/meerkat_2_front-facing.png";
@@ -70,6 +71,7 @@ let Resources = {
   UndergroundSetInstruments: new Graphics.ImageSource(
     undergroundSetInstruments
   ),
+  PlayAgainButton: new Graphics.ImageSource(playAgainButton),
 
   // meerkatz
   MeerkatDrummerFrontFacing: new Graphics.ImageSource(

@@ -14,4 +14,5 @@ export class GlobalState {
   public Round = 1;
   public RoundWon = false;
   public GameWon = false;
+  public newGameFun!: () => void;
 }

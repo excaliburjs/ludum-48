@@ -16,10 +16,15 @@ import { DialogCard } from "./dialogueCard";
 import config from "./config";
 import { Resources } from "./resources";
 import { Level } from "./level";
+import { Button } from "./button";
+import { Game } from ".";
+import { GlobalState } from "./globalState";
 export class GameOver extends ScreenElement {
   private card!: DialogCard;
   private backShadow!: Graphics.Rectangle;
   private backShadowLayer!: Graphics.GraphicsLayer;
+  private button!: Button;
+  private state: GlobalState = GlobalState.GetInstance();
 
   constructor(public gameWidth: number, public gameHeight: number) {
     super(gameWidth / 2, gameHeight / 2, 0, 0);
@@ -55,6 +60,19 @@ export class GameOver extends ScreenElement {
     this.scene.add(this.card);
     this.card.z = 100;
     this.z = 100;
+
+    this.button = new Button("Play Again?", {
+      pos: cardPos,
+      width: 200,
+      height: 100,
+    });
+    this.button.transform.coordPlane = CoordPlane.Screen;
+    this.button.on("pointerup", () => {
+      if (this.button.isKilled()) return;
+      this.state.newGameFun();
+    });
+    this.scene.add(this.button);
+    this.button.z = 101;
   }
 
   show() {
@@ -65,11 +83,23 @@ export class GameOver extends ScreenElement {
       500,
       EasingFunctions.EaseInOutCubic
     );
+    this.button.actions.easeTo(
+      this.gameWidth / 2,
+      this.gameHeight / 3 + 125,
+      500,
+      EasingFunctions.EaseInOutCubic
+    );
   }
 
   hide() {
     this.backShadowLayer.hide();
     this.card.actions.easeTo(
+      this.gameWidth / 2,
+      this.gameHeight * 2,
+      500,
+      EasingFunctions.EaseInOutCubic
+    );
+    this.button.actions.easeTo(
       this.gameWidth / 2,
       this.gameHeight * 2,
       500,
