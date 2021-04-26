@@ -8,6 +8,7 @@ import {
   Color,
   Graphics,
   Vector,
+  vec,
 } from "excalibur";
 import { Player } from "./player";
 import config from "./config";
@@ -29,6 +30,7 @@ import { Background } from "./background";
 import { WeightMap } from "./weightmap";
 import { ProgressMeter } from "./progress-meter";
 import { PlayerTrail } from "./playerTrail";
+import { Beetle } from "./beetle";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -39,6 +41,9 @@ export class Level extends Scene {
   terrainWeightMap: WeightMap<Terrain> = new WeightMap(this.terrainRandom);
   collectibleWeightMap: WeightMap<Collectible> = new WeightMap(
     this.collectibleRandom
+  );
+  beetleWeightMap: WeightMap<(x: number, y: number) => Beetle> = new WeightMap(
+    Beetle.random
   );
 
   onScreenChunkId = 0;
@@ -55,6 +60,8 @@ export class Level extends Scene {
   gameOver: GameOver | null = null;
 
   chunks: TileMap[] = [];
+
+  beetles: Beetle[] = [];
 
   state: GlobalState = GlobalState.GetInstance();
   speedPowerUp!: PowerUp;
@@ -82,6 +89,7 @@ export class Level extends Scene {
     );
 
     this.player = new Player(this);
+
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
     this.progressMeter = new ProgressMeter();
@@ -100,6 +108,7 @@ export class Level extends Scene {
 
     this.buildTerrainWeightMap();
     this.buildCollectibleWeightMap(speedPowerUpTimer);
+    this.buildBeetleWeightMap();
     const tileMap = this.generateChunk(config.TileWidth * this.start);
     this.setCellToTerrain(tileMap.getCellByIndex(4), DirtTerrain); // Make sure the player entry is always allowed.
 
@@ -122,6 +131,18 @@ export class Level extends Scene {
     );
     this.collectibleWeightMap.add(1, this.speedPowerUp);
     this.collectibleWeightMap.add(99, null);
+  }
+
+  buildBeetleWeightMap(): void {
+    this.beetleWeightMap.add(2, (x: number, y: number) => {
+      const beetlePos = vec(
+        config.TileWidth * x - config.TileWidth / 2,
+        config.TileWidth * y - config.TileWidth / 2
+      );
+
+      return new Beetle(beetlePos.x, beetlePos.y, this);
+    });
+    this.beetleWeightMap.add(98, null);
   }
 
   onPostUpdate() {
@@ -215,6 +236,19 @@ export class Level extends Scene {
       if (terrain!.tag() === "dirt") {
         var collectible = this.collectibleWeightMap.randomSelect(null);
         this.setCellCollectible(cell, collectible);
+
+        var beetle = this.beetleWeightMap.randomSelect(null);
+        if (beetle) {
+          const xTile = Math.floor(cell.x / config.TileWidth) + 1;
+          const yTile = Math.floor(cell.y / config.TileWidth);
+          const yTileOffset = Math.floor(
+            (yPos - this.start) / config.TileWidth
+          );
+          console.log("Beetle", xTile, yTile + yTileOffset);
+          const newBeetle = beetle(xTile, yTile + yTileOffset);
+          this.add(newBeetle);
+          // this.beetles.push(newBeetle);
+        }
       }
     }
 

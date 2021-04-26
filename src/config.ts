@@ -20,6 +20,7 @@ export default {
 
   DigTime: 200,
   SpaceMoveDuration: 200,
+  BeetleSpaceMoveDuration: 1000,
   PowerUpSpeedIncreaseFactor: 2,
   PowerUpDurationSeconds: 2,
 
