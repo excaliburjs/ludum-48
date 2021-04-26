@@ -13,7 +13,8 @@ import fallWav from "./sound/fall.wav";
 import clankWav from "./sound/clank.wav";
 import clankMp3 from "./sound/clank.mp3";
 import pickupWav from "./sound/getitem.wav";
-import backgroundWav from "./sound/backgroundalt.wav";
+import backgroundMp3 from "./sound/background.mp3";
+import backgroundWav from "./sound/background.wav";
 import modal from "./images/modal.png";
 import snek from "./images/snek.png";
 import speedPowerUp from "./images/energy-drink.png";
@@ -56,7 +57,7 @@ let Resources = {
   DigSound: new Sound(digMp3, digWav),
   ClankSound: new Sound(clankMp3, clankWav),
   PickUpSound: new Sound(pickupWav),
-  BackgroundMusic: new Sound(backgroundWav),
+  BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
   Modal: new Graphics.ImageSource(modal),
   Snek: new Graphics.ImageSource(snek),
   SpeedPowerUp: new Graphics.ImageSource(speedPowerUp),

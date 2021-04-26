@@ -329,8 +329,6 @@ export class UndergroundSet extends Scene {
   }
 
   digAndLeave() {
-    this.background.graphics.use("default");
-
     if (this.state.GameWon) {
       this.gameOver?.updateEndScreen("The snake's face melted 🤘🤘🤘");
       this.gameOver?.show();
@@ -341,6 +339,8 @@ export class UndergroundSet extends Scene {
     this.remove(this.guitarist!);
     this.remove(this.vocalist!);
     this.remove(this.drummer!);
+
+    this.background.graphics.use("default");
 
     // tumble and merge back together to dig out of viewport
     this.drummer = new Actor({
