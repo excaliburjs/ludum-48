@@ -258,6 +258,16 @@ export class Snek extends Actor {
     return locations;
   }
 
+  getSnekBodyGridCoords() {
+    const locations: Vector[] = [];
+    for (let i = 0; i < this.snekBody.length; i++) {
+      const bodySegment = this.snekBody[i];
+      locations[i] = bodySegment.pos.clone();
+    }
+    // console.log({ locations });
+    return locations;
+  }
+
   areNumbersApproximatelyEqual(value1: number, value2: number): boolean {
     const precision = 0.01;
 

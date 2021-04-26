@@ -16,7 +16,6 @@ export module Every {
   }
 
   export class Minute extends Interval {
-    
     constructor(action: Function, minutes: number) { 
       super(action, minutes * 60 * 1000);
     }

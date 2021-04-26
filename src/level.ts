@@ -7,6 +7,7 @@ import {
   TileMap,
   Color,
   Graphics,
+  Vector,
 } from "excalibur";
 import { Player } from "./player";
 import config from "./config";
@@ -27,6 +28,7 @@ import { GlobalState } from "./globalState";
 import { Background } from "./background";
 import { WeightMap } from "./weightmap";
 import { ProgressMeter } from "./progress-meter";
+import { PlayerTrail } from "./playerTrail";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -155,9 +157,9 @@ export class Level extends Scene {
   checkGameState() {
     if (this.state.GameOver) return;
     if (
-      this.player?.pos.x == this.snek?.pos.x &&
-      this.player?.pos.y == this.snek?.pos.y
-    ) {
+      this.snek?.getSnekBodyGridCoords().findIndex(snekBits => snekBits.x == this.player?.pos.x && snekBits.y == this.player.pos.y) !== -1
+     )
+    {
       this.gameOver?.updateEndScreen("Press 'R' to reset.");
       this.gameOver?.show();
       this.state.GameOver = true;
@@ -187,7 +189,7 @@ export class Level extends Scene {
     this.gameOver?.show();
   }
 
-  startGameWonSequence() {}
+  startGameWonSequence() { }
 
   getTile(xpos: number, ypos: number): Cell | null {
     return (
@@ -281,7 +283,7 @@ export class Level extends Scene {
     } else {
       newChunk = this.generateChunk(
         this.onScreenChunkId * (config.TileWidth * config.ChunkHeight) +
-          this.start * config.TileWidth
+        this.start * config.TileWidth
       );
       this.chunks.push(newChunk);
     }

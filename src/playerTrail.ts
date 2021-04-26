@@ -33,6 +33,7 @@ class Queue<T> implements IQueue<T> {
   }
 }
 export class PlayerTrail extends Queue<Vector> {
+
   static instance: PlayerTrail;
   private constructor() {
     super();
@@ -65,5 +66,10 @@ export class PlayerTrail extends Queue<Vector> {
         (path) => path.x === item.x && path.y === item.y
       ) !== -1
     );
+  }
+
+  ClearAfter(pos: Vector) {
+    var index = this.storage.findIndex(path => path.x == pos.x && path.y == pos.y);
+    this.storage = this.storage.slice(0, index + 1);
   }
 }

@@ -229,7 +229,7 @@ export class Player extends Actor {
             if (!this.trail.Contains(this.pos.clone())) {
               this.trail.enqueue(this.pos.clone());
             } else {
-              this.trail.RemoveLast();
+              this.trail.ClearAfter(this.pos.clone());
             }
           });
       }
