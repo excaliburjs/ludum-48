@@ -71,8 +71,7 @@ export class ProgressMeter extends ScreenElement {
 
   updateProgress(currentProgress: number) {
     this.progress = Util.clamp(currentProgress, 0, this.totalDistance);
-    this.text.text =
-      ((this.progress / this.totalDistance) * 100).toFixed(1) + "M";
+    this.text.text = this.progress.toFixed(1) + "M";
   }
 
   onPreUpdate() {

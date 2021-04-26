@@ -1,5 +1,3 @@
-import {Scene} from "excalibur"
-
 export class GlobalState {
   static instance: GlobalState;
   HasSpeedPowerUp = false;
@@ -13,4 +11,7 @@ export class GlobalState {
   }
 
   public GameOver = false;
+  public Round = 0;
+  public RoundWon = false;
+  public GameWon = false;
 }

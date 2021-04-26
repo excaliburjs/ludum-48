@@ -44,9 +44,9 @@ export class GameOver extends ScreenElement {
     });
   }
 
-  public updateEndScreen() {
+  public updateEndScreen(text: string) {
     const cardPos = vec(this.pos.x, this.pos.y);
-    let text = "Press 'R' to reset.";
+
     this.card = new DialogCard([text], {
       pos: cardPos,
       topPadding: 30,

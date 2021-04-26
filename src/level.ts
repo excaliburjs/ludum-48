@@ -141,7 +141,7 @@ export class Level extends Scene {
       }
     }
     this.updateProgress();
-    this.checkGameOver();
+    this.checkGameState();
   }
 
   updateProgress() {
@@ -152,17 +152,42 @@ export class Level extends Scene {
     this.progressMeter!.updateProgress(progress);
   }
 
-  checkGameOver() {
+  checkGameState() {
     if (this.state.GameOver) return;
     if (
       this.player?.pos.x == this.snek?.pos.x &&
       this.player?.pos.y == this.snek?.pos.y
     ) {
-      this.gameOver?.updateEndScreen();
+      this.gameOver?.updateEndScreen("Press 'R' to reset.");
       this.gameOver?.show();
       this.state.GameOver = true;
     }
+
+    //
+    // Round over?
+    //
+    if (this.state.GameWon || this.state.RoundWon) return;
+    if (this.progressMeter!.progress >= config.DistanceToComplete) {
+      this.state.RoundWon = true;
+
+      if (this.state.Round === 3) {
+        // transition to final flame set
+        this.state.GameWon = true;
+        this.startGameWonSequence();
+      } else {
+        // transition to underground set
+        this.startRoundOverSequence();
+      }
+    }
   }
+
+  startRoundOverSequence() {
+    this.state.GameOver = true;
+    this.gameOver?.updateEndScreen(`The snake's face melts 🤘🤘🤘`);
+    this.gameOver?.show();
+  }
+
+  startGameWonSequence() {}
 
   getTile(xpos: number, ypos: number): Cell | null {
     return (
