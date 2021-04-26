@@ -120,6 +120,7 @@ export class Beetle extends Actor {
       if (!this.moving) {
         this.moving = true;
       } else {
+        this.moving = false;
         return;
       }
 
