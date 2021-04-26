@@ -31,6 +31,7 @@ const UNDERGROUND_CONFIG = {
 };
 
 export class UndergroundSet extends Scene {
+  private background!: Actor;
   private drummer: Actor | undefined;
   private guitarist: Actor | undefined;
   private bassist: Actor | undefined;
@@ -47,15 +48,19 @@ export class UndergroundSet extends Scene {
 
   onInitialize(engine: Engine) {
     this.camera.pos = vec(0, 0);
-    const background = new Actor({
+    this.background = new Actor({
       x: 0,
       y: 0,
       width: engine.drawWidth,
       height: engine.drawHeight,
       anchor: vec(0, 0),
     });
-    background.graphics.add(Resources.UndergroundSet.toSprite());
-    this.add(background);
+    this.background.graphics.add(Resources.UndergroundSet.toSprite());
+    this.background.graphics.add(
+      "instruments",
+      Resources.UndergroundSetInstruments.toSprite()
+    );
+    this.add(this.background);
 
     const spawnPos = engine.screenToWorldCoordinates(
       vec(this.playerScreenPos.x, 0)
@@ -185,6 +190,8 @@ export class UndergroundSet extends Scene {
   }
 
   swapToBand() {
+    this.background.graphics.hide("instruments");
+
     this.remove(this.bassist!);
     this.remove(this.guitarist!);
     this.remove(this.vocalist!);
