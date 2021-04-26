@@ -21,7 +21,7 @@ export class Beetle extends Actor {
     this.moveBeetle();
   }, 1000 / 1000);
 
-  private sprite!: Graphics.Sprite;
+  private animation!: Graphics.Animation;
 
   constructor(x: number, y: number, private level: Level) {
     super({
@@ -38,8 +38,23 @@ export class Beetle extends Actor {
   }
 
   onInitialize() {
-    this.sprite = Resources.Beetle.toSprite();
-    this.graphics.use(this.sprite);
+    const sheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.Beetle,
+      grid: {
+        spriteWidth: 64,
+        spriteHeight: 64,
+        rows: 1,
+        columns: 3,
+      },
+    });
+
+    this.animation = Graphics.Animation.fromSpriteSheet(
+      sheet,
+      [0, 1, 2],
+      100,
+      Graphics.AnimationStrategy.PingPong
+    );
+    this.graphics.use(this.animation);
   }
 
   moveBeetle() {
