@@ -9,6 +9,8 @@ import {
   Graphics,
   Vector,
   vec,
+  CameraStrategy,
+  Actor,
 } from "excalibur";
 import { Player } from "./player";
 import config from "./config";
@@ -31,6 +33,7 @@ import { WeightMap } from "./weightmap";
 import { ProgressMeter } from "./progress-meter";
 import { PlayerTrail } from "./playerTrail";
 import { Beetle } from "./beetle";
+import { UndergroundSet } from "./undergroundSet";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -65,6 +68,7 @@ export class Level extends Scene {
 
   state: GlobalState = GlobalState.GetInstance();
   speedPowerUp!: PowerUp;
+  cameraStrategy!: CameraStrategy<Actor>;
 
   onInitialize(engine: Engine) {
     // engine.input.keyboard.on('press', (evt) => {
@@ -99,7 +103,8 @@ export class Level extends Scene {
     this.add(this.gameOver);
     this.add(this.progressMeter);
 
-    this.camera.addStrategy(new ElasticToActorStrategy(this.player, 0.2, 0.2));
+    this.cameraStrategy = new ElasticToActorStrategy(this.player, 0.2, 0.2);
+    this.camera.addStrategy(this.cameraStrategy);
     this.camera.on("postupdate", (e) => {
       this.camera.pos.x = this.camera.viewport.width / 2;
     });
@@ -146,6 +151,16 @@ export class Level extends Scene {
   }
 
   onPostUpdate() {
+    // stop camera follow when distanceToComplete is within viewport
+    // as we'll be transitioning to underground set
+    if (
+      this.camera.pos.y + (config.TileWidth * config.ChunkHeight) / 2 >=
+      config.DistanceToComplete * config.TileWidth +
+        config.TileWidth * (this.start + 1)
+    ) {
+      this.camera.removeStrategy(this.cameraStrategy);
+    }
+
     if (this.currentChunk && this.player) {
       if (
         this.camera.pos.y >
@@ -194,25 +209,30 @@ export class Level extends Scene {
     if (this.state.GameWon || this.state.RoundWon) return;
     if (this.progressMeter!.progress >= config.DistanceToComplete) {
       this.state.RoundWon = true;
+      this.state.GameOver = true;
 
       if (this.state.Round === 3) {
         // transition to final flame set
         this.state.GameWon = true;
-        this.startGameWonSequence();
-      } else {
-        // transition to underground set
-        this.startRoundOverSequence();
       }
+
+      // transition to underground set
+      this.transitionToUndergroundSet();
     }
   }
 
-  startRoundOverSequence() {
-    this.state.GameOver = true;
-    this.gameOver?.updateEndScreen(`The snake's face melts 🤘🤘🤘`);
-    this.gameOver?.show();
+  transitionToUndergroundSet() {
+    const undergroundSet = new UndergroundSet(
+      this.engine.worldToScreenCoordinates(this.player!.pos)
+    );
+    this.engine.addScene("set", undergroundSet);
+    this.engine.goToScene("set");
   }
 
-  startGameWonSequence() { }
+  transitionBackFromUndergroundSet() {
+    // Remove undergroundset scene
+    this.engine.removeScene("set");
+  }
 
   getTile(xpos: number, ypos: number): Cell | null {
     return (
