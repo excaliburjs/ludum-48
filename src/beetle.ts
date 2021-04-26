@@ -43,11 +43,18 @@ export class Beetle extends Actor {
   }
 
   moveBeetle() {
-    const dirs = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
-    const randomDirIndex = Beetle.random.integer(0, dirs.length - 1);
-    const randomeDir = dirs[randomDirIndex];
+    let dirs = [Vector.Up, Vector.Down, Vector.Left, Vector.Right];
 
-    this.moveToNearestTile(this.pos.add(randomeDir.scale(config.TileWidth)));
+    dirs = dirs.filter((d) => {
+      const maybeDir = this.pos.add(d.scale(config.TileWidth));
+      return this.isValidMove(maybeDir.x, maybeDir.y);
+    });
+
+    if (dirs.length > 0) {
+      const randomDirIndex = Beetle.random.integer(0, dirs.length - 1);
+      const randomeDir = dirs[randomDirIndex];
+      this.moveToNearestTile(this.pos.add(randomeDir.scale(config.TileWidth)));
+    }
   }
 
   onPreUpdate(_engine: Engine, delta: number) {
