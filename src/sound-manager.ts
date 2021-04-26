@@ -9,6 +9,7 @@ export class SoundManager {
     Resources.BackgroundMusic.volume = Config.BackgroundVolume;
     Resources.PickUpSound.volume = Config.PickupSoundVolume;
     Resources.FallSound.volume = Config.BackgroundVolume;
+    Resources.ChuChu.volume = Config.ChuchuVolume;
 
     Resources.DigSound1.volume = Config.DigSoundVolume;
     Resources.DigSound2.volume = Config.DigSoundVolume;
