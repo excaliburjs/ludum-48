@@ -9,8 +9,8 @@ export default {
   ChuchuVolume: 0.1,
 
   // Progress meter
-  DistanceToComplete: 60,
-  DistanceToRound: 20,
+  DistanceToComplete: 210,
+  DistanceToRound: 70,
   MeterTilesHigh: 20,
 
   // Board Layout
