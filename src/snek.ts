@@ -54,7 +54,7 @@ export class Snek extends Actor {
   private headAnim = Graphics.Animation.fromSpriteSheet(
     this.spritesheet,
     [7, 15, 23],
-    300, 
+    300,
     Graphics.AnimationStrategy.PingPong
   );
 
@@ -113,8 +113,6 @@ export class Snek extends Actor {
 
   private bodyTurboAnimations = [];
 
-
-
   constructor(public level: Level) {
     super({
       pos: vec(0, config.TileWidth * 5 - config.TileWidth / 2),
@@ -127,7 +125,15 @@ export class Snek extends Actor {
     );
     this.state = GlobalState.GetInstance();
 
-    this.bodyDefaultAnimations = [this.body1Anim, this.body2Anim, this.body3Anim, this.body4Anim, this.body5Anim, this.body6Anim, this.body7Anim];
+    this.bodyDefaultAnimations = [
+      this.body1Anim,
+      this.body2Anim,
+      this.body3Anim,
+      this.body4Anim,
+      this.body5Anim,
+      this.body6Anim,
+      this.body7Anim,
+    ];
     this.bodyTurboAnimations = []; //TODO
   }
 
@@ -257,7 +263,7 @@ export class Snek extends Actor {
       bodySegment.graphics.add(
         "default",
         // this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
-        this.bodyDefaultAnimations[i+1]
+        this.bodyDefaultAnimations[i + 1]
       );
 
       bodySegment.onPreUpdate = () => {
@@ -297,8 +303,6 @@ export class Snek extends Actor {
     this.scene.add(this.snekBody[2]);
     this.scene.add(this.snekBody[4]);
     this.scene.add(this.snekBody[6]);
-
-
   }
 
   moveSnekBody(prevHeadX: number, prevHeadY: number) {
@@ -323,28 +327,18 @@ export class Snek extends Actor {
     }
   }
 
-  getSnekBodyLocations() {
-    const locations: Vector[] = [];
-    for (let i = 0; i < this.snekBody.length; i++) {
-      const bodySegment = this.snekBody[i];
-      const location = new Vector(
-        Math.floor(bodySegment.pos.x / config.TileWidth),
-        Math.floor(bodySegment.pos.y / config.TileWidth)
-      );
-      locations[i] = location;
-    }
-    // console.log({ locations });
-    return locations;
+  getSnekBodyLocations(): Vector[] {
+    return this.snekBody.map(
+      (s) =>
+        new Vector(
+          Math.floor(s.pos.x / config.TileWidth),
+          Math.floor(s.pos.y / config.TileWidth)
+        )
+    );
   }
 
-  getSnekBodyGridCoords() {
-    const locations: Vector[] = [];
-    for (let i = 0; i < this.snekBody.length; i++) {
-      const bodySegment = this.snekBody[i];
-      locations[i] = bodySegment.pos.clone();
-    }
-    // console.log({ locations });
-    return locations;
+  getSnekBodyGridCoords(): Vector[] {
+    return this.snekBody.map((s) => s.pos.clone());
   }
 
   areNumbersApproximatelyEqual(value1: number, value2: number): boolean {
