@@ -8,8 +8,10 @@ import {
   Util,
   Timer,
   Graphics,
+  Random,
 } from "excalibur";
 import { Resources } from "./resources";
+import config from "./config";
 
 const BAND_POSITION_VECTORS = {
   drummer: vec(285, 617),
@@ -23,6 +25,9 @@ const UNDERGROUND_CONFIG = {
   fallRotationInDegreesPerSecond: 120,
   setDuration: 5000,
   leaveDuration: 1500,
+  snekBodyRotationInDegreesPerSecondMin: 150,
+  snekBodyRotationInDegreesPerSecondMax: 220,
+  snekBodyMoveSpeed: 100,
 };
 
 export class UndergroundSet extends Scene {
@@ -170,6 +175,13 @@ export class UndergroundSet extends Scene {
       repeats: false,
     });
     this.add(swapToBandTimer);
+
+    // damage the snek!!!
+    const snek = new SnakeUnderAttack();
+    snek.pos = this.engine.screenToWorldCoordinates(
+      vec(this.engine.drawWidth * 0.75, 0)
+    );
+    this.add(snek);
   }
 
   swapToBand() {
@@ -288,6 +300,75 @@ export class UndergroundSet extends Scene {
     this.remove(this.drummer!);
 
     // tumble and merge back together to dig out of viewport
+    this.drummer = new Actor({
+      x: this.drummerPos.x,
+      y: this.drummerPos.y,
+      scale: vec(2, 2),
+      width: 20,
+      height: 40,
+    });
+    this.guitarist = new Actor({
+      x: this.guitaristPos.x,
+      y: this.guitaristPos.y,
+      scale: vec(2, 2),
+      width: 20,
+      height: 40,
+    });
+    this.bassist = new Actor({
+      x: this.bassistPos.x,
+      y: this.bassistPos.y,
+      scale: vec(2, 2),
+      width: 20,
+      height: 40,
+    });
+    this.vocalist = new Actor({
+      x: this.vocalistPos.x,
+      y: this.vocalistPos.y,
+      scale: vec(2, 2),
+      width: 20,
+      height: 40,
+    });
+
+    this.drummer.graphics.add(Resources.MeerkatDrummerFrontFacing.toSprite());
+    this.guitarist.graphics.add(
+      Resources.MeerkatGuitaristFrontFacing.toSprite()
+    );
+    this.bassist.graphics.add(Resources.MeerkatBassistFrontFacing.toSprite());
+    this.vocalist.graphics.add(Resources.MeerkatVocalistFrontFacing.toSprite());
+
+    this.add(this.drummer);
+    this.add(this.guitarist);
+    this.add(this.bassist);
+    this.add(this.vocalist);
+
+    const endingPos = this.engine.screenToWorldCoordinates(
+      vec(this.playerScreenPos.x, this.engine.drawHeight)
+    );
+
+    this.drummer.actions.easeTo(
+      endingPos.x,
+      endingPos.y,
+      UNDERGROUND_CONFIG.leaveDuration,
+      EasingFunctions.EaseOutCubic
+    );
+    this.guitarist.actions.easeTo(
+      endingPos.x,
+      endingPos.y,
+      UNDERGROUND_CONFIG.leaveDuration,
+      EasingFunctions.EaseOutCubic
+    );
+    this.bassist.actions.easeTo(
+      endingPos.x,
+      endingPos.y,
+      UNDERGROUND_CONFIG.leaveDuration,
+      EasingFunctions.EaseOutCubic
+    );
+    this.vocalist.actions.easeTo(
+      endingPos.x,
+      endingPos.y,
+      UNDERGROUND_CONFIG.leaveDuration,
+      EasingFunctions.EaseOutCubic
+    );
 
     this.add(
       new Timer({
@@ -299,4 +380,74 @@ export class UndergroundSet extends Scene {
   }
 
   onDeactivate() {}
+}
+
+class SnakeUnderAttack extends Actor {
+  onInitialize(engine: Engine) {
+    const spritesheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.Snek,
+      grid: {
+        rows: 1,
+        columns: 8,
+        spriteHeight: 96,
+        spriteWidth: 96,
+      },
+    });
+
+    this.graphics.add(spritesheet.sprites[config.SnekBodyLength]);
+    this.actions.easeTo(
+      this.pos.x,
+      this.pos.y + 200,
+      UNDERGROUND_CONFIG.fallDuration
+    );
+
+    const snekBody: Actor[] = [];
+    for (let i = 0; i < config.SnekBodyLength; i++) {
+      const spawnPos = vec(this.pos.x - (i + 1) * config.TileWidth, this.pos.y);
+      const bodySegment = new Actor({
+        x: spawnPos.x,
+        y: spawnPos.y,
+        width: config.TileWidth,
+        height: config.TileWidth,
+      });
+      bodySegment.graphics.add(
+        "default",
+        spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+      );
+
+      const restingPos = vec(spawnPos.x, spawnPos.y + 200);
+      bodySegment.actions
+        .easeTo(restingPos.x, restingPos.y, UNDERGROUND_CONFIG.fallDuration)
+        .asPromise()
+        .then(() => {
+          bodySegment.rx = Util.toRadians(
+            Util.randomIntInRange(
+              UNDERGROUND_CONFIG.snekBodyRotationInDegreesPerSecondMin,
+              UNDERGROUND_CONFIG.snekBodyRotationInDegreesPerSecondMax
+            )
+          );
+          bodySegment.actions
+            .moveBy(-5, -5, UNDERGROUND_CONFIG.snekBodyMoveSpeed)
+            .moveBy(10, 10, UNDERGROUND_CONFIG.snekBodyMoveSpeed)
+            .moveBy(-5, -5, UNDERGROUND_CONFIG.snekBodyMoveSpeed)
+            .moveTo(
+              restingPos.x,
+              restingPos.y,
+              UNDERGROUND_CONFIG.snekBodyMoveSpeed
+            )
+            .repeatForever();
+        });
+      snekBody.push(bodySegment);
+    }
+
+    engine.currentScene.add(snekBody[0]);
+    engine.currentScene.add(snekBody[2]);
+    engine.currentScene.add(snekBody[4]);
+    engine.currentScene.add(snekBody[6]);
+
+    engine.currentScene.add(snekBody[1]);
+    engine.currentScene.add(snekBody[3]);
+    engine.currentScene.add(snekBody[5]);
+    engine.currentScene.add(snekBody[7]);
+  }
 }
