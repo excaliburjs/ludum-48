@@ -29,6 +29,9 @@
   },
   "devDependencies": {
     "@types/dat.gui": "^0.7.6",
+    "@types/zepto": "^1.0.30",
+    "@types/storejs": "^2.0.3",
+    "@types/classnames": "^2.2.10",
     "husky": "4.2.5",
     "lint-staged": "10.5.4",
     "node-static": "0.7.11",
@@ -51,6 +54,8 @@
     "*.{js,ts,css,scss,md}": "prettier --write"
   },
   "dependencies": {
+    "store": "^2.0.12",
+    "classnames": "^2.2.6",
     "dat.gui": "^0.7.7"
   }
 }

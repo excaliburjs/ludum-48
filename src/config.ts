@@ -1,6 +1,9 @@
 export default {
   TerrainRandomSeed: Math.floor(10000 * Math.random()), //1337,
-  CollectibleRandomSeed: Math.floor(10000 * Math.random()),//7331,
+  CollectibleRandomSeed: Math.floor(10000 * Math.random()), //7331,
+
+  BackgroundVolume: 0.1,
+  SoundVolume: 0.3,
 
   // Progress meter
   DistanceToComplete: 200,
