@@ -23,6 +23,9 @@ import progressMeter from "./images/meter.png";
 import spriteFont from "./images/spritefont.png";
 import avatar from "./images/meerkat_avatars.png";
 import digging from "./images/digging.png";
+import digging2 from "./images/digging_2.png";
+import digging3 from "./images/digging_3.png";
+import digging4 from "./images/digging_4.png";
 import frontFacing from "./images/meerkat_front-facing.png";
 import chuChuMp3 from "./sound/chuchu_alt.mp3";
 import chuChuWav from "./sound/chuchu_alt.wav";
@@ -87,6 +90,9 @@ let Resources = {
   SpriteFont: new Graphics.ImageSource(spriteFont),
   Avatar: new Graphics.ImageSource(avatar),
   Digging: new Graphics.ImageSource(digging),
+  Digging2: new Graphics.ImageSource(digging2),
+  Digging3: new Graphics.ImageSource(digging3),
+  Digging4: new Graphics.ImageSource(digging4),
   FrontFacing: new Graphics.ImageSource(frontFacing),
   ChuChu: new Sound(chuChuMp3, chuChuWav),
   Beetle: new Graphics.ImageSource(beetle),

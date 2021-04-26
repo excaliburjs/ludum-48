@@ -54,9 +54,17 @@ export class Player extends Actor {
   onInitialize(engine: Engine) {
     this.frontFacing = Resources.FrontFacing.toSprite();
     this.graphics.add(this.frontFacing);
+    const possibleDigs = [
+      Resources.Digging,
+      Resources.Digging2,
+      Resources.Digging3,
+      Resources.Digging4,
+    ];
+    const currentDig =
+      possibleDigs[Math.floor(Math.random() * possibleDigs.length)];
 
     const spriteSheet = Graphics.SpriteSheet.fromGrid({
-      image: Resources.Digging,
+      image: currentDig,
       grid: {
         spriteWidth: 64,
         spriteHeight: 64,
