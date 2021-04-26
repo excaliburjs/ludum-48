@@ -103,6 +103,8 @@ class Game extends Engine {
     });
 
     game.input.keyboard.on("press", (e) => {
+      if (this.state.RoundWon) return;
+
       if (this.state.GameOver) {
         if (e.key === Input.Keys.R) {
           const sceneKeys = this.scenes.Keys;
