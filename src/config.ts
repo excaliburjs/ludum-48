@@ -1,6 +1,6 @@
 export default {
-  TerrainRandomSeed: 6685, //Math.floor(10000 * Math.random()), //1337,
-  CollectibleRandomSeed: 7331, // Math.floor(10000 * Math.random()), //7331,
+  TerrainRandomSeed: Math.floor(10000 * Math.random()), //1337,
+  CollectibleRandomSeed: Math.floor(10000 * Math.random()), //7331,
 
   BackgroundVolume: 0.1,
   SoundVolume: 0.3,
