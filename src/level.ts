@@ -279,15 +279,14 @@ export class Level extends Scene {
 
         var beetle = this.beetleWeightMap.randomSelect(null);
         if (beetle) {
-          const xTile = Math.floor(cell.x / config.TileWidth) + 1;
+          const xTile = Math.floor(cell.x / config.TileWidth);
           const yTile = Math.floor(cell.y / config.TileWidth);
-          const yTileOffset = Math.floor(
-            (yPos - this.start) / config.TileWidth
+          console.log("Beetle", xTile, yTile);
+          const newBeetle = beetle(xTile, yTile);
+          setTimeout(() =>
+            this.finishDig(newBeetle.pos.x, newBeetle.pos.y, true)
           );
-          console.log("Beetle", xTile, yTile + yTileOffset);
-          const newBeetle = beetle(xTile, yTile + yTileOffset);
           this.add(newBeetle);
-          // this.beetles.push(newBeetle);
         }
       }
     }
@@ -397,7 +396,7 @@ export class Level extends Scene {
     }
   }
 
-  finishDig(xpos: number, ypos: number): void {
+  finishDig(xpos: number, ypos: number, isBeetle = false): void {
     var tilemap = this.currentChunk;
     var tile = tilemap?.getCellByPoint(xpos, ypos);
     if (!tile) {
@@ -411,7 +410,7 @@ export class Level extends Scene {
     );
 
     this.setCellToTerrain(tile, tunnelTerrain);
-    if (tile.tags.indexOf("speedPowerUp") !== -1) {
+    if (tile.tags.indexOf("speedPowerUp") !== -1 && !isBeetle) {
       this.speedPowerUp.apply();
       Resources.PickUpSound.play();
     }

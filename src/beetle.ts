@@ -109,7 +109,7 @@ export class Beetle extends Actor {
         if (terrain.mineable() && !Terrain.HasBeetle(futureTile)) {
           futureTile.addTag("beetle");
           this.actions.delay(digDelay).callMethod(() => {
-            this.level.finishDig(worldPos.x, worldPos.y);
+            this.level.finishDig(worldPos.x, worldPos.y, true);
           });
           this.actions
             .easeTo(
