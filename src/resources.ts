@@ -54,6 +54,8 @@ import dig6 from "./sound/dig chugs/HMRhyB Chug-E.wav";
 import dig7 from "./sound/dig chugs/HMRhyB Chug-F.wav";
 import dig8 from "./sound/dig chugs/HMRhyB Chug-G.wav";
 
+import groundDig from "./sound/dig.wav";
+
 let Resources = {
   Instructions: new Graphics.ImageSource(instructions),
   Sword: new Graphics.ImageSource(sword),
@@ -72,6 +74,7 @@ let Resources = {
   DigSound6: new Sound(dig6),
   DigSound7: new Sound(dig7),
   DigSound8: new Sound(dig8),
+  GroundDig: new Sound(groundDig),
   ClankSound: new Sound(clankMp3, clankWav),
   PickUpSound: new Sound(pickupWav),
   BackgroundMusic: new Sound(backgroundMp3, backgroundWav),

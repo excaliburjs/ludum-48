@@ -330,7 +330,7 @@ export class UndergroundSet extends Scene {
 
   digAndLeave() {
     if (this.state.GameWon) {
-      this.gameOver?.updateEndScreen("The snake's face melted 🤘🤘🤘");
+      this.gameOver?.updateEndScreen(["The snake's face melted", "🤘🤘🤘"]);
       this.gameOver?.show();
       return;
     }
@@ -436,7 +436,6 @@ export class UndergroundSet extends Scene {
 }
 
 class SnakeUnderAttack extends Actor {
-
   private spritesheet = Graphics.SpriteSheet.fromGrid({
     image: Resources.Snek,
     grid: {
@@ -449,7 +448,10 @@ class SnakeUnderAttack extends Actor {
 
   onInitialize(engine: Engine) {
     this.z = 11;
-    this.graphics.add("default", this.spritesheet.sprites[config.SnekBodyLength]);
+    this.graphics.add(
+      "default",
+      this.spritesheet.sprites[config.SnekBodyLength]
+    );
 
     this.actions.easeTo(
       this.pos.x,
@@ -516,6 +518,5 @@ class SnakeUnderAttack extends Actor {
     // engine.currentScene.add(snekBody[7]);
 
     // engine.currentScene.add(snekBody[0]);
-
   }
 }

@@ -6,6 +6,7 @@ import {
   vec,
   Vector,
   Traits,
+  Random,
 } from "excalibur";
 import { Level } from "./level";
 import { Resources } from "./resources";
@@ -248,6 +249,19 @@ export class Snek extends Actor {
       )
       .callMethod(() => {
         this.moving = false;
+        const sound = new Random().pickOne([
+          Resources.DigSound1,
+          Resources.DigSound2,
+          Resources.DigSound3,
+          Resources.DigSound4,
+          Resources.DigSound5,
+          Resources.DigSound6,
+          Resources.DigSound7,
+          Resources.DigSound8,
+        ]);
+    
+        sound.play();
+        
       });
 
     this.moveSnekBody(currentTileX, currentTileY);

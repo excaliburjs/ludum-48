@@ -100,18 +100,19 @@ class DirtTerrainImpl extends Terrain {
   }
 
   playSound() {
-    const sound = new Random().pickOne([
-      Resources.DigSound1,
-      Resources.DigSound2,
-      Resources.DigSound3,
-      Resources.DigSound4,
-      Resources.DigSound5,
-      Resources.DigSound6,
-      Resources.DigSound7,
-      Resources.DigSound8,
-    ]);
+    Resources.GroundDig.play();
+    // const sound = new Random().pickOne([
+    //   Resources.DigSound1,
+    //   Resources.DigSound2,
+    //   Resources.DigSound3,
+    //   Resources.DigSound4,
+    //   Resources.DigSound5,
+    //   Resources.DigSound6,
+    //   Resources.DigSound7,
+    //   Resources.DigSound8,
+    // ]);
 
-    sound.play();
+    // sound.play();
   }
 }
 
