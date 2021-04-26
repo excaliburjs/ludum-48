@@ -308,11 +308,13 @@ export class Level extends Scene {
 
       for (let x = 0; x < curRow.length; x++) {
         //only validate if there's a previous row
+        const curCell = curRow[x];
+
         if (!prevRow) {
+          this.setCellToTerrain(curCell, defaultPathable);
           continue;
         }
 
-        const curCell = curRow[x];
         const curTerrain = Terrain.GetTerrain(curRow[x]);
         const upperLeftTile = x != 0 ? prevRow[x - 1] : null;
         const upperRightTile = x != curRow.length - 1 ? prevRow[x + 1] : null;
