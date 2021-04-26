@@ -43,11 +43,77 @@ export class Snek extends Actor {
     image: Resources.Snek,
     grid: {
       rows: 1,
-      columns: 8,
+      columns: 24,
       spriteHeight: 96,
       spriteWidth: 96,
     },
   });
+
+  // default animations
+
+  private headAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [7, 15, 23],
+    300, 
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private bodyDefaultAnimations: Graphics.Animation[] = [];
+
+  private body1Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [6, 14, 22],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body2Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [5, 13, 21],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body3Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [4, 12, 20],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body4Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [3, 11, 19],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body5Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [2, 10, 18],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body6Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [1, 9, 17],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  private body7Anim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [0, 8, 16],
+    config.SnakeAnimationFrameDuration,
+    Graphics.AnimationStrategy.PingPong
+  );
+
+  // turbo animations
+
+  private bodyTurboAnimations = [];
+
+
 
   constructor(public level: Level) {
     super({
@@ -60,10 +126,15 @@ export class Snek extends Actor {
       (t) => !(t instanceof Traits.TileMapCollisionDetection)
     );
     this.state = GlobalState.GetInstance();
+
+    this.bodyDefaultAnimations = [this.body1Anim, this.body2Anim, this.body3Anim, this.body4Anim, this.body5Anim, this.body6Anim, this.body7Anim];
+    this.bodyTurboAnimations = []; //TODO
   }
 
   onInitialize(engine: Engine) {
-    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]); // add the graphic of the head
+    // this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]); // add the graphic of the head
+    this.graphics.add("default", this.headAnim);
+    // this.graphics.show("default");
     // console.log(this.spritesheet.sprites);
     this.createSnekBody();
   }
@@ -185,7 +256,8 @@ export class Snek extends Actor {
       // add the initial graphic for each segment
       bodySegment.graphics.add(
         "default",
-        this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+        // this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+        this.bodyDefaultAnimations[i+1]
       );
 
       bodySegment.onPreUpdate = () => {
@@ -216,15 +288,17 @@ export class Snek extends Actor {
     }
 
     // layering segments for smoother corner movement animations
+    this.scene.add(this.snekBody[1]);
+    this.scene.add(this.snekBody[3]);
+    this.scene.add(this.snekBody[5]);
+    this.scene.add(this.snekBody[7]);
+
     this.scene.add(this.snekBody[0]);
     this.scene.add(this.snekBody[2]);
     this.scene.add(this.snekBody[4]);
     this.scene.add(this.snekBody[6]);
 
-    this.scene.add(this.snekBody[1]);
-    this.scene.add(this.snekBody[3]);
-    this.scene.add(this.snekBody[5]);
-    this.scene.add(this.snekBody[7]);
+
   }
 
   moveSnekBody(prevHeadX: number, prevHeadY: number) {

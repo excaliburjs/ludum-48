@@ -54,4 +54,5 @@ export default {
   //   SnekMinSecondsPerSquare: 250 / 1000,
   SnekBodyLength: 7, // head is 1 tile, this is the rest
   SnakeMoveDuration: 100,
+  SnakeAnimationFrameDuration: 100,
 };
