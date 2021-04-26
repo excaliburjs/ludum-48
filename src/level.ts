@@ -71,7 +71,6 @@ export class Level extends Scene {
   cameraStrategy!: CameraStrategy<Actor>;
 
   onInitialize(engine: Engine) {
-    
     Terrain.Initialize();
 
     let speedPowerUpTimer = new PowerUpTimer(
@@ -85,12 +84,20 @@ export class Level extends Scene {
       config.PowerUpDurationSeconds
     );
 
+    const instructions = new Actor({
+      pos: vec(engine.halfDrawWidth + 50, 100),
+      width: 10,
+      height: 200,
+    });
+    instructions.graphics.use(Resources.Instructions.toSprite());
+
     this.player = new Player(this);
 
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
     this.progressMeter = new ProgressMeter();
 
+    this.add(instructions);
     this.add(this.player);
     this.add(this.snek);
     this.add(this.gameOver);
