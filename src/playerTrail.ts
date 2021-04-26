@@ -1,59 +1,69 @@
 import { Vector } from "excalibur";
 interface IQueue<T> {
-    enqueue(item: T): void;
-    dequeue(): T | undefined;
-    size(): number;
+  enqueue(item: T): void;
+  dequeue(): T | undefined;
+  size(): number;
 }
 class Queue<T> implements IQueue<T> {
-    protected storage: T[] = [];
+  protected storage: T[] = [];
 
-    constructor(private capacity: number = Infinity) { }
+  constructor(private capacity: number = Infinity) {}
 
-    enqueue(item: T): void {
-        if (this.size() === this.capacity) {
-            throw Error("Queue has reached max capacity, you cannot add more items");
-        }
-        this.storage.push(item);
+  enqueue(item: T): void {
+    if (this.size() === this.capacity) {
+      throw Error("Queue has reached max capacity, you cannot add more items");
     }
+    this.storage.push(item);
+  }
 
-    dequeue(): T | undefined {
-        return this.storage.shift();
-    }
+  dequeue(): T | undefined {
+    return this.storage.shift();
+  }
 
-    peekLast(): T | undefined {
-        return this.storage[this.size() - 1];
-    }
+  peekLast(): T | undefined {
+    return this.storage[this.size() - 1];
+  }
 
-    size(): number {
-        return this.storage.length;
-    }
+  size(): number {
+    return this.storage.length;
+  }
 
-    clear(): void {
-        this.storage = [];
-    }
+  clear(): void {
+    this.storage = [];
+  }
 }
 export class PlayerTrail extends Queue<Vector> {
-    static instance: PlayerTrail;
-    private constructor() {
-        super();
-    }
+  static instance: PlayerTrail;
+  private constructor() {
+    super();
+  }
 
-    public static GetInstance(): PlayerTrail {
-        if (!PlayerTrail.instance) {
-            PlayerTrail.instance = new PlayerTrail();
-        }
-        return PlayerTrail.instance;
-    }
+  public get trail(): readonly Vector[] {
+    return this.storage;
+  }
 
-    Remove(item: Vector) {
-        this.storage = this.storage.filter((path) => !(path.y === item.y && path.x === item.x));
+  public static GetInstance(): PlayerTrail {
+    if (!PlayerTrail.instance) {
+      PlayerTrail.instance = new PlayerTrail();
     }
-    
-    RemoveLast(){
-        this.storage.pop();
-    }
+    return PlayerTrail.instance;
+  }
 
-    Contains(item: Vector): boolean {
-        return this.storage.findIndex((path) => path.x === item.x && path.y === item.y) !== -1;
-    }
+  Remove(item: Vector) {
+    this.storage = this.storage.filter(
+      (path) => !(path.y === item.y && path.x === item.x)
+    );
+  }
+
+  RemoveLast() {
+    this.storage.pop();
+  }
+
+  Contains(item: Vector): boolean {
+    return (
+      this.storage.findIndex(
+        (path) => path.x === item.x && path.y === item.y
+      ) !== -1
+    );
+  }
 }

@@ -35,7 +35,8 @@ export default {
   SnekSlowDownBy: 25,
   SnekSlowDownDistance: 4,
 
-  SnekStraitPathBoost: 25,
+  SnekStraitPathBoost: 30,
+  SnekStraitDownCount: 5,
 
   /**************************
    * Snek Config

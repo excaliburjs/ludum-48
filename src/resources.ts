@@ -23,6 +23,8 @@ import spriteFont from "./images/spritefont.png";
 import avatar from "./images/meerkat_avatars.png";
 import digging from "./images/digging.png";
 import frontFacing from "./images/meerkat_front-facing.png";
+import chuChuMp3 from "./sound/chuchu.mp3";
+import chuChuWav from "./sound/chuchu.wav";
 
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
@@ -45,6 +47,7 @@ let Resources = {
   Avatar: new Graphics.ImageSource(avatar),
   Digging: new Graphics.ImageSource(digging),
   FrontFacing: new Graphics.ImageSource(frontFacing),
+  ChuChu: new Sound(chuChuMp3, chuChuWav),
 };
 
 Resources.BackgroundMusic.loop = true;

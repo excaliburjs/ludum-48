@@ -16,8 +16,6 @@ export class Snek extends Actor {
   private playerTrail: PlayerTrail = PlayerTrail.GetInstance();
   private timePerTile: number = config.SnekStartingSpeed;
 
-  private last5Positions: Vector[] = [];
-
   // private snekCalculatedSecondsPerSquare: number =
   //   config.SnekStartingSecondsPerSquare;
 
@@ -84,17 +82,35 @@ export class Snek extends Actor {
       const distance = Math.sqrt(distX * distX + distY * distY);
       if (distance > config.SnekFasterSpeedDistance * config.TileWidth) {
         console.log("FASTER SNEK");
-        this.timePerTile = config.SnekFasterSpeed;
+        this.timePerTile = Math.min(config.SnekFasterSpeed, this.timePerTile);
       }
 
       if (distance > config.SnekFastestSpeedDistance * config.TileWidth) {
         console.log("FASTEST SNEK");
-        this.timePerTile = config.SnekFastestSpeed;
+        this.timePerTile = Math.min(config.SnekFastestSpeed, this.timePerTile);
       }
 
       if (distance < config.SnekSlowDownDistance * config.TileWidth) {
         console.log("SLOW SNEK DOWN");
         this.timePerTile += config.SnekSlowDownBy;
+      }
+    }
+
+    // Steam roll
+    const trail = this.playerTrail.trail;
+    if (trail.length >= 2) {
+      let sameXCoordinate = 0;
+      for (let i = 0; i < trail.length - 1; i++) {
+        if (trail[i].x === trail[i + 1].x) {
+          sameXCoordinate++;
+        } else {
+          break;
+        }
+      }
+      if (sameXCoordinate >= config.SnekStraitDownCount) {
+        console.log("CHU CHU!", sameXCoordinate);
+        Resources.ChuChu.play();
+        this.timePerTile -= config.SnekStraitPathBoost;
       }
     }
   }
