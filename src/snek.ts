@@ -270,6 +270,7 @@ export class Snek extends Actor {
       if (sameXCoordinate >= config.SnekStraitDownCount) {
         console.log("CHU CHU!", sameXCoordinate);
         Resources.ChuChu.play();
+        this.switchAnimation('turbo');
         this.timePerTile -= config.SnekStraitPathBoost;
         this.chuChuCooldown = config.SnekStraitPathBoostCooldown;
       }
