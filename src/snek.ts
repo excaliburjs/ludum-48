@@ -43,8 +43,8 @@ export class Snek extends Actor {
     grid: {
       rows: 1,
       columns: 8,
-      spriteHeight: 64,
-      spriteWidth: 64,
+      spriteHeight: 96,
+      spriteWidth: 96,
     },
   });
 
@@ -61,7 +61,8 @@ export class Snek extends Actor {
   }
 
   onInitialize(engine: Engine) {
-    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]);
+    this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]); // add the graphic of the head
+    // console.log(this.spritesheet.sprites);
     this.createSnekBody();
   }
 
@@ -157,9 +158,13 @@ export class Snek extends Actor {
       bodySegment.traits = bodySegment.traits.filter(
         (t) => !(t instanceof Traits.TileMapCollisionDetection)
       );
+
+      // add the initial graphic for each segment
       bodySegment.graphics.add(
+        "default",
         this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
       );
+
       bodySegment.onPreUpdate = () => {
         const first = i === 0;
         const last = i === config.SnekBodyLength - 1;
@@ -176,28 +181,41 @@ export class Snek extends Actor {
             prior = this.snekBody[i - 1];
             next = this.snekBody[i + 1];
           }
-          bodySegment.rotation = Math.atan2(
+          let newRotation = Math.atan2(
             prior.pos.y - next.pos.y,
             prior.pos.x - next.pos.x
           );
+          bodySegment.rotation = newRotation;
         }
       };
 
       this.snekBody.push(bodySegment);
-      this.scene.add(bodySegment);
     }
+
+    // layering segments for smoother corner movement animations
+    this.scene.add(this.snekBody[0]);
+    this.scene.add(this.snekBody[2]);
+    this.scene.add(this.snekBody[4]);
+    this.scene.add(this.snekBody[6]);
+
+    this.scene.add(this.snekBody[1]);
+    this.scene.add(this.snekBody[3]);
+    this.scene.add(this.snekBody[5]);
+    this.scene.add(this.snekBody[7]);
+
   }
 
   moveSnekBody(prevHeadX: number, prevHeadY: number) {
     const snekBodyLocations: Vector[] = this.getSnekBodyLocations();
 
     // move the first body segment to where the head just was
-    this.snekBody[0].actions.easeTo(
+    this.snekBody[0].actions
+    .easeTo(
       prevHeadX * config.TileWidth + config.TileWidth / 2,
       prevHeadY * config.TileWidth + config.TileWidth / 2,
       config.SnakeMoveDuration,
       EasingFunctions.EaseInOutCubic
-    );
+    );//todo play a cool steam animation or something on each joint
 
     // move each remaining segment to the position that the one ahead of it was occupying
     for (let i = 1; i < this.snekBody.length; i++) {
@@ -206,7 +224,7 @@ export class Snek extends Actor {
         snekBodyLocations[i - 1].y * config.TileWidth + config.TileWidth / 2,
         config.SnakeMoveDuration,
         EasingFunctions.EaseInOutCubic
-      );
+      ); //todo play a cool steam animation or something on each joint
     }
   }
 
@@ -220,7 +238,18 @@ export class Snek extends Actor {
       );
       locations[i] = location;
     }
-    console.log({ locations });
+    // console.log({ locations });
     return locations;
+  }
+
+  areNumbersApproximatelyEqual(value1: number, value2: number): boolean {
+    const precision = 0.01;
+
+    if (Math.abs(value1 - value2) <= precision) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
