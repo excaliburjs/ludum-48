@@ -71,7 +71,6 @@ export class GameOver extends ScreenElement {
     this.button.on("pointerdown", () => {
       if (this.button.isKilled()) return;
       if (this.state.GameOver) {
-        debugger;
         endGame();
       }
     });
