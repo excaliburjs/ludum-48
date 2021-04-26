@@ -98,6 +98,12 @@ export class Game extends Engine {
         }
       }
     });
+
+    this.input.pointers.primary.on("up", (e) => {
+      if (this.state.GameOver) {
+        this.state.newGameFun();
+      }
+    });
   }
 
   NewGame(): void {

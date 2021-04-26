@@ -44,7 +44,7 @@ export class DialogCard extends ScreenElement {
         } as any),
         pos: vec(
           this.width / 2,
-          this.height * ((index + 1) / (this.text.length + 1)) + this.topPadding
+          300 * ((index + 1) / (this.text.length + 1)) + this.topPadding
         ),
       });
     }

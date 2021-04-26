@@ -208,7 +208,10 @@ export class Level extends Scene {
             snekBits.x == this.player?.pos.x && snekBits.y == this.player.pos.y
         ) !== -1
     ) {
-      this.gameOver?.updateEndScreen("Press 'R' to reset.");
+      this.gameOver?.updateEndScreen([
+        "The Snek got you before",
+        "your metal concert, Encore!?",
+      ]);
       this.gameOver?.show();
       this.state.GameOver = true;
     }

@@ -49,10 +49,10 @@ export class GameOver extends ScreenElement {
     });
   }
 
-  public updateEndScreen(text: string) {
+  public updateEndScreen(text: string[]) {
     const cardPos = vec(this.pos.x, this.pos.y);
 
-    this.card = new DialogCard([text], {
+    this.card = new DialogCard(text, {
       pos: cardPos,
       topPadding: 30,
     });
@@ -71,7 +71,7 @@ export class GameOver extends ScreenElement {
     this.button.on("pointerdown", () => {
       if (this.button.isKilled()) return;
       if (this.state.GameOver) {
-        endGame();
+        // endGame();
       }
     });
     this.scene.add(this.button);
