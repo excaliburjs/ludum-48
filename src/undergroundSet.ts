@@ -6,6 +6,8 @@ import {
   Vector,
   EasingFunctions,
   Util,
+  Timer,
+  Graphics,
 } from "excalibur";
 import { Resources } from "./resources";
 
@@ -26,6 +28,11 @@ export class UndergroundSet extends Scene {
   private guitaristFalling: Actor | undefined;
   private bassistFalling: Actor | undefined;
   private vocalistFalling: Actor | undefined;
+
+  private drummerPos!: Vector;
+  private guitaristPos!: Vector;
+  private vocalistPos!: Vector;
+  private bassistPos!: Vector;
 
   constructor(private playerScreenPos: Vector) {
     super();
@@ -93,6 +100,19 @@ export class UndergroundSet extends Scene {
     this.add(this.guitaristFalling);
     this.add(this.bassistFalling);
     this.add(this.vocalistFalling);
+
+    this.drummerPos = this.engine.screenToWorldCoordinates(
+      BAND_POSITION_VECTORS.drummer
+    );
+    this.guitaristPos = this.engine.screenToWorldCoordinates(
+      BAND_POSITION_VECTORS.guitarist
+    );
+    this.bassistPos = this.engine.screenToWorldCoordinates(
+      BAND_POSITION_VECTORS.bassist
+    );
+    this.vocalistPos = this.engine.screenToWorldCoordinates(
+      BAND_POSITION_VECTORS.vocalist
+    );
   }
 
   /**
@@ -123,43 +143,138 @@ export class UndergroundSet extends Scene {
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
 
-    const drummerPos = this.engine.screenToWorldCoordinates(
-      BAND_POSITION_VECTORS.drummer
-    );
-    const guitaristPos = this.engine.screenToWorldCoordinates(
-      BAND_POSITION_VECTORS.guitarist
-    );
-    const bassistPos = this.engine.screenToWorldCoordinates(
-      BAND_POSITION_VECTORS.bassist
-    );
-    const vocalistPos = this.engine.screenToWorldCoordinates(
-      BAND_POSITION_VECTORS.vocalist
-    );
-
     this.drummerFalling!.actions.easeTo(
-      drummerPos.x,
-      drummerPos.y,
+      this.drummerPos.x,
+      this.drummerPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
     this.guitaristFalling!.actions.easeTo(
-      guitaristPos.x,
-      guitaristPos.y,
+      this.guitaristPos.x,
+      this.guitaristPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
     this.vocalistFalling!.actions.easeTo(
-      vocalistPos.x,
-      vocalistPos.y,
+      this.vocalistPos.x,
+      this.vocalistPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
     this.bassistFalling!.actions.easeTo(
-      bassistPos.x,
-      bassistPos.y,
+      this.bassistPos.x,
+      this.bassistPos.y,
       UNDERGROUND_CONFIG.fallDuration,
       EasingFunctions.EaseInCubic
     );
+
+    const swapToBandTimer = new Timer({
+      interval: UNDERGROUND_CONFIG.fallDuration,
+      fcn: () => this.swapToBand(),
+      repeats: false,
+    });
+    this.add(swapToBandTimer);
+  }
+
+  swapToBand() {
+    this.remove(this.bassistFalling!);
+    this.remove(this.guitaristFalling!);
+    this.remove(this.vocalistFalling!);
+    this.remove(this.drummerFalling!);
+
+    const drummerPlaying = new Actor({
+      x: this.drummerPos.x,
+      y: this.drummerPos.y,
+      width: 60,
+      height: 40,
+      scale: vec(2, 2),
+    });
+    const guitaristPlaying = new Actor({
+      x: this.guitaristPos.x,
+      y: this.guitaristPos.y,
+      width: 60,
+      height: 40,
+      scale: vec(2, 2),
+    });
+    const bassistPlaying = new Actor({
+      x: this.bassistPos.x,
+      y: this.bassistPos.y,
+      width: 60,
+      height: 40,
+      scale: vec(2, 2),
+    });
+    const vocalistPlaying = new Actor({
+      x: this.vocalistPos.x,
+      y: this.vocalistPos.y,
+      width: 60,
+      height: 40,
+      scale: vec(2, 2),
+    });
+
+    const bandGridConfig = {
+      rows: 1,
+      columns: 3,
+      spriteWidth: 60,
+      spriteHeight: 40,
+    };
+    const drummerSpritesheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.MeerkatDrummerPlaying,
+      grid: bandGridConfig,
+    });
+
+    drummerPlaying.graphics.use(
+      Graphics.Animation.fromSpriteSheet(
+        drummerSpritesheet,
+        [0],
+        100,
+        Graphics.AnimationStrategy.PingPong
+      )
+    );
+
+    const guitaristSpritesheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.MeerkatGuitaristPlaying,
+      grid: bandGridConfig,
+    });
+
+    guitaristPlaying.graphics.use(
+      Graphics.Animation.fromSpriteSheet(
+        guitaristSpritesheet,
+        [0],
+        100,
+        Graphics.AnimationStrategy.PingPong
+      )
+    );
+
+    const bassistSpritesheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.MeerkatBassistPlaying,
+      grid: bandGridConfig,
+    });
+    bassistPlaying.graphics.use(
+      Graphics.Animation.fromSpriteSheet(
+        bassistSpritesheet,
+        [0],
+        100,
+        Graphics.AnimationStrategy.PingPong
+      )
+    );
+
+    const vocalistSpritesheet = Graphics.SpriteSheet.fromGrid({
+      image: Resources.MeerkatVocalistPlaying,
+      grid: bandGridConfig,
+    });
+    vocalistPlaying.graphics.use(
+      Graphics.Animation.fromSpriteSheet(
+        vocalistSpritesheet,
+        [0],
+        100,
+        Graphics.AnimationStrategy.PingPong
+      )
+    );
+
+    this.add(drummerPlaying);
+    this.add(guitaristPlaying);
+    this.add(bassistPlaying);
+    this.add(vocalistPlaying);
   }
 
   onDeactivate() {}
