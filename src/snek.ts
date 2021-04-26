@@ -105,7 +105,7 @@ export class Snek extends Actor {
   private body7Anim = Graphics.Animation.fromSpriteSheet(
     this.spritesheet,
     [0, 8, 16],
-    config.SnakeAnimationFrameDuration,
+    500,
     Graphics.AnimationStrategy.PingPong
   );
 
@@ -176,6 +176,12 @@ export class Snek extends Actor {
       if (distance < config.SnekSlowDownDistance * config.TileWidth) {
         console.log("SLOW SNEK DOWN");
         this.timePerTile += config.SnekSlowDownBy;
+      }
+
+      if (this.state.SnakePause) {
+        console.log("SNEK takes a recovery break");
+        this.timePerTile += config.SnekSlowDownByAfterConcert;
+        this.state.SnakePause = false;
       }
     }
 
@@ -263,7 +269,7 @@ export class Snek extends Actor {
       bodySegment.graphics.add(
         "default",
         // this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
-        this.bodyDefaultAnimations[i + 1]
+        this.bodyDefaultAnimations[i]
       );
 
       bodySegment.onPreUpdate = () => {
@@ -294,15 +300,14 @@ export class Snek extends Actor {
     }
 
     // layering segments for smoother corner movement animations
-    this.scene.add(this.snekBody[1]);
-    this.scene.add(this.snekBody[3]);
-    this.scene.add(this.snekBody[5]);
-    this.scene.add(this.snekBody[7]);
-
     this.scene.add(this.snekBody[0]);
     this.scene.add(this.snekBody[2]);
     this.scene.add(this.snekBody[4]);
     this.scene.add(this.snekBody[6]);
+
+    this.scene.add(this.snekBody[1]);
+    this.scene.add(this.snekBody[3]);
+    this.scene.add(this.snekBody[5]);
   }
 
   moveSnekBody(prevHeadX: number, prevHeadY: number) {

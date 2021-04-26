@@ -31,6 +31,8 @@ export default {
 
   RockDigDelay: 100,
 
+  SnekSlowDownByAfterConcert: 75,
+
   SnekStartingSpeed: 800,
   SnekFastestSpeed: 200,
   SnekFastestSpeedDistance: 15,

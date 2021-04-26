@@ -248,6 +248,7 @@ export class Level extends Scene {
     this.state.GameOver = false;
     this.state.Round += 1;
     this.state.RoundWon = false;
+    this.state.SnakePause = true;
 
     this.camera.addStrategy(this.cameraStrategy);
   }

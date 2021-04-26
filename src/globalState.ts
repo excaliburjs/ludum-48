@@ -13,6 +13,7 @@ export class GlobalState {
   public GameOver = false;
   public Round = 1;
   public RoundWon = false;
+  public SnakePause = false;
   public GameWon = false;
   public newGameFun!: () => void;
 }

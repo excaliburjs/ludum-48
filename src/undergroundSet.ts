@@ -436,18 +436,21 @@ export class UndergroundSet extends Scene {
 }
 
 class SnakeUnderAttack extends Actor {
-  onInitialize(engine: Engine) {
-    const spritesheet = Graphics.SpriteSheet.fromGrid({
-      image: Resources.Snek,
-      grid: {
-        rows: 1,
-        columns: 8,
-        spriteHeight: 96,
-        spriteWidth: 96,
-      },
-    });
 
-    this.graphics.add(spritesheet.sprites[config.SnekBodyLength]);
+  private spritesheet = Graphics.SpriteSheet.fromGrid({
+    image: Resources.Snek,
+    grid: {
+      rows: 1,
+      columns: 8,
+      spriteHeight: 96,
+      spriteWidth: 96,
+    },
+  });
+
+  onInitialize(engine: Engine) {
+    this.z = 11;
+    this.graphics.add("default", this.spritesheet.sprites[config.SnekBodyLength]);
+
     this.actions.easeTo(
       this.pos.x,
       this.pos.y + 200,
@@ -465,7 +468,7 @@ class SnakeUnderAttack extends Actor {
       });
       bodySegment.graphics.add(
         "default",
-        spritesheet.sprites[config.SnekBodyLength - (i + 1)]
+        this.spritesheet.sprites[config.SnekBodyLength - (i + 1)]
       );
 
       const restingPos = vec(spawnPos.x, spawnPos.y + 200);
@@ -493,14 +496,26 @@ class SnakeUnderAttack extends Actor {
       snekBody.push(bodySegment);
     }
 
-    engine.currentScene.add(snekBody[0]);
-    engine.currentScene.add(snekBody[2]);
-    engine.currentScene.add(snekBody[4]);
-    engine.currentScene.add(snekBody[6]);
+    this.scene.add(snekBody[0]);
+    this.scene.add(snekBody[2]);
+    this.scene.add(snekBody[4]);
+    this.scene.add(snekBody[6]);
 
-    engine.currentScene.add(snekBody[1]);
-    engine.currentScene.add(snekBody[3]);
-    engine.currentScene.add(snekBody[5]);
-    engine.currentScene.add(snekBody[7]);
+    this.scene.add(snekBody[1]);
+    this.scene.add(snekBody[3]);
+    this.scene.add(snekBody[5]);
+    // engine.currentScene.add(snekBody[7]);
+
+    // engine.currentScene.add(snekBody[2]);
+    // engine.currentScene.add(snekBody[4]);
+    // engine.currentScene.add(snekBody[6]);
+
+    // engine.currentScene.add(snekBody[1]);
+    // engine.currentScene.add(snekBody[3]);
+    // engine.currentScene.add(snekBody[5]);
+    // engine.currentScene.add(snekBody[7]);
+
+    // engine.currentScene.add(snekBody[0]);
+
   }
 }
