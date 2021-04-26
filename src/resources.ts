@@ -9,12 +9,11 @@ import rock from "./images/rock_001.png";
 import rock2 from "./images/rock_002.png";
 import digWav from "./sound/dig.wav";
 import digMp3 from "./sound/dig.mp3";
+import fallWav from "./sound/fall.wav";
 import clankWav from "./sound/clank.wav";
 import clankMp3 from "./sound/clank.mp3";
-import pickupMp3 from "./sound/getitem.mp3";
 import pickupWav from "./sound/getitem.wav";
-import backgroundMp3 from "./sound/background.mp3";
-import backgroundWav from "./sound/background.wav";
+import backgroundWav from "./sound/backgroundalt.wav";
 import modal from "./images/modal.png";
 import snek from "./images/snek.png";
 import speedPowerUp from "./images/energy-drink.png";
@@ -39,6 +38,11 @@ import bassistMeerkatPlaying from "./images/animated_meerkats/bass_guitar_animat
 import guitaristMeerkatPlaying from "./images/animated_meerkats/guitar_animation.png";
 import vocalistMeerkatPlaying from "./images/animated_meerkats/singer_jumping_animation.png";
 
+import setMusic1Wav from "./sound/set1.wav";
+import setMusic2Wav from "./sound/set2.wav";
+import setMusic3LeadWav from "./sound/set3lead.wav";
+import setMusic3BgWav from "./sound/set3bg.wav";
+
 let Resources = {
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
@@ -50,8 +54,8 @@ let Resources = {
   Rock2: new Graphics.ImageSource(rock2),
   DigSound: new Sound(digMp3, digWav),
   ClankSound: new Sound(clankMp3, clankWav),
-  PickUpSound: new Sound(pickupMp3, pickupWav),
-  BackgroundMusic: new Sound(backgroundMp3, backgroundWav),
+  PickUpSound: new Sound(pickupWav),
+  BackgroundMusic: new Sound(backgroundWav),
   Modal: new Graphics.ImageSource(modal),
   Snek: new Graphics.ImageSource(snek),
   SpeedPowerUp: new Graphics.ImageSource(speedPowerUp),
@@ -85,6 +89,12 @@ let Resources = {
   MeerkatBassistPlaying: new Graphics.ImageSource(bassistMeerkatPlaying),
   MeerkatVocalistPlaying: new Graphics.ImageSource(vocalistMeerkatPlaying),
   MeerkatGuitaristPlaying: new Graphics.ImageSource(guitaristMeerkatPlaying),
+
+  SetMusic1: new Sound(setMusic1Wav),
+  SetMusic2: new Sound(setMusic2Wav),
+  SetMusic3Lead: new Sound(setMusic3LeadWav),
+  SetMusic3Background: new Sound(setMusic3BgWav),
+  FallSound: new Sound(fallWav),
 };
 
 Resources.BackgroundMusic.loop = true;

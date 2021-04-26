@@ -243,13 +243,6 @@ export class Level extends Scene {
   }
 
   transitionBackFromUndergroundSet() {
-    // TODO: final screen / won / etc
-    if (this.state.GameWon) {
-      this.gameOver?.updateEndScreen("The snake's face melted 🤘🤘🤘");
-      this.gameOver?.show();
-      return;
-    }
-
     // Remove undergroundset scene
     this.engine.removeScene("set");
     this.state.GameOver = false;

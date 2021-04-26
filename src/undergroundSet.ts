@@ -12,6 +12,9 @@ import {
 } from "excalibur";
 import { Resources } from "./resources";
 import config from "./config";
+import { SoundManager } from "./sound-manager";
+import { GlobalState } from "./globalState";
+import { GameOver } from "./gameOver";
 
 const BAND_POSITION_VECTORS = {
   drummer: vec(285, 617),
@@ -21,9 +24,10 @@ const BAND_POSITION_VECTORS = {
 };
 
 const UNDERGROUND_CONFIG = {
-  fallDuration: 2000,
+  fallDuration: 3000,
   fallRotationInDegreesPerSecond: 120,
-  setDuration: 5000,
+  setDuration: 3000,
+  setDurationAlt: 4000,
   leaveDuration: 1500,
   snekBodyRotationInDegreesPerSecondMin: 150,
   snekBodyRotationInDegreesPerSecondMax: 220,
@@ -42,12 +46,20 @@ export class UndergroundSet extends Scene {
   private vocalistPos!: Vector;
   private bassistPos!: Vector;
 
+  private state: GlobalState;
+  private gameOver!: GameOver;
+
   constructor(private playerScreenPos: Vector) {
     super();
+
+    this.state = GlobalState.GetInstance();
   }
 
   onInitialize(engine: Engine) {
     this.camera.pos = vec(0, 0);
+
+    this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
+
     this.background = new Actor({
       x: 0,
       y: 0,
@@ -55,12 +67,23 @@ export class UndergroundSet extends Scene {
       height: engine.drawHeight,
       anchor: vec(0, 0),
     });
-    this.background.graphics.add(Resources.UndergroundSet.toSprite());
-    this.background.graphics.add(
-      "instruments",
-      Resources.UndergroundSetInstruments.toSprite()
-    );
+    const group = new Graphics.GraphicsGroup({
+      members: [
+        {
+          graphic: Resources.UndergroundSet.toSprite(),
+          pos: vec(0, 0),
+        },
+        {
+          graphic: Resources.UndergroundSetInstruments.toSprite(),
+          pos: vec(0, 0),
+        },
+      ],
+    });
+    this.background.graphics.add(group);
+    this.background.graphics.add("empty", Resources.UndergroundSet.toSprite());
+
     this.add(this.background);
+    this.add(this.gameOver);
 
     const spawnPos = engine.screenToWorldCoordinates(
       vec(this.playerScreenPos.x, 0)
@@ -136,6 +159,7 @@ export class UndergroundSet extends Scene {
    * Transition to new level (wipe?) from top of screen.
    */
   onActivate() {
+    SoundManager.muteBackgroundMusic();
     this.drummer!.rx = Util.toRadians(
       UNDERGROUND_CONFIG.fallRotationInDegreesPerSecond
     );
@@ -174,6 +198,8 @@ export class UndergroundSet extends Scene {
       EasingFunctions.EaseInCubic
     );
 
+    Resources.FallSound.play();
+
     const swapToBandTimer = new Timer({
       interval: UNDERGROUND_CONFIG.fallDuration,
       fcn: () => this.swapToBand(),
@@ -190,7 +216,7 @@ export class UndergroundSet extends Scene {
   }
 
   swapToBand() {
-    this.background.graphics.hide("instruments");
+    this.background.graphics.use("empty");
 
     this.remove(this.bassist!);
     this.remove(this.guitarist!);
@@ -291,16 +317,26 @@ export class UndergroundSet extends Scene {
     this.add(this.bassist);
     this.add(this.vocalist);
 
+    SoundManager.playSetMusic(this.state.Round);
+
     this.add(
       new Timer({
         fcn: () => this.digAndLeave(),
-        interval: UNDERGROUND_CONFIG.setDuration,
+        interval: this.getSetDuration(),
         repeats: false,
       })
     );
   }
 
   digAndLeave() {
+    this.background.graphics.use("default");
+
+    if (this.state.GameWon) {
+      this.gameOver?.updateEndScreen("The snake's face melted 🤘🤘🤘");
+      this.gameOver?.show();
+      return;
+    }
+
     this.remove(this.bassist!);
     this.remove(this.guitarist!);
     this.remove(this.vocalist!);
@@ -386,7 +422,17 @@ export class UndergroundSet extends Scene {
     );
   }
 
-  onDeactivate() {}
+  onDeactivate() {
+    SoundManager.unmuteBackgroundMusic();
+  }
+
+  getSetDuration() {
+    if (this.state.Round === 1) {
+      return UNDERGROUND_CONFIG.setDuration;
+    } else {
+      return UNDERGROUND_CONFIG.setDurationAlt;
+    }
+  }
 }
 
 class SnakeUnderAttack extends Actor {

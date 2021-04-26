@@ -7,6 +7,8 @@ import { Resources } from "./resources";
 export class SoundManager {
   static setSoundSpecificVolume() {
     Resources.BackgroundMusic.volume = Config.BackgroundVolume;
+    Resources.PickUpSound.volume = Config.PickupSoundVolume;
+    Resources.FallSound.volume = Config.BackgroundVolume;
     // Resources.sndCardExpired.volume = Config.CueCardExpiredVolume;
     // Resources.sndCardSuccess.volume = Config.CueCardSuccessVolume;
     // Resources.sndDoorOpen.volume = Config.DoorOpenVolume;
@@ -102,6 +104,30 @@ export class SoundManager {
     Resources.BackgroundMusic.volume = Config.BackgroundVolume;
 
     SoundManager._updateMusicButton();
+  }
+
+  static playSetMusic(round: number) {
+    Resources.SetMusic1.volume = Preferences.muteAll ? 0 : Config.SoundVolume;
+    Resources.SetMusic2.volume = Preferences.muteAll ? 0 : Config.SoundVolume;
+    Resources.SetMusic3Lead.volume = Preferences.muteAll
+      ? 0
+      : Config.SoundVolume;
+    Resources.SetMusic3Background.volume = Preferences.muteAll
+      ? 0
+      : Config.SoundVolume;
+
+    switch (round) {
+      case 1:
+        Resources.SetMusic1.play();
+        break;
+      case 2:
+        Resources.SetMusic2.play();
+        break;
+      case 3:
+        Resources.SetMusic3Lead.play();
+        Resources.SetMusic3Background.play();
+        break;
+    }
   }
 
   private static _updateMusicButton() {
