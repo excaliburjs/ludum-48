@@ -27,6 +27,8 @@ export class Snek extends Actor {
 
   private snekBody: Actor[] = [];
 
+  private isMouthOpen = false;
+
   private moveSnekTimer = new Every.Second(() => {
     this.moveSnek();
   }, this.timePerTile / 1000);
@@ -44,7 +46,7 @@ export class Snek extends Actor {
     image: Resources.Snek,
     grid: {
       rows: 1,
-      columns: 56,
+      columns: 72,
       spriteHeight: 96,
       spriteWidth: 96,
     },
@@ -108,6 +110,21 @@ export class Snek extends Actor {
     [0, 8, 16],
     500,
     Graphics.AnimationStrategy.PingPong
+  );
+
+  // snake open mouth
+  private mouthAnim = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [55, 63, 71],
+    50,
+    Graphics.AnimationStrategy.Freeze
+  );
+
+  private mouthAnimReverse = Graphics.Animation.fromSpriteSheet(
+    this.spritesheet,
+    [71, 63, 55],
+    50,
+    Graphics.AnimationStrategy.Freeze
   );
   
 
@@ -207,6 +224,8 @@ export class Snek extends Actor {
     // this.graphics.add(this.spritesheet.sprites[config.SnekBodyLength]); // add the graphic of the head
     this.graphics.add("default", this.headAnim);
     this.graphics.add("turbo", this.headTurboAnim);
+    this.graphics.add("openMouth", this.mouthAnim);
+    this.graphics.add("closeMouth", this.mouthAnimReverse);
     // this.graphics.show("default");
     // console.log(this.spritesheet.sprites);
     this.createSnekBody();
@@ -230,6 +249,7 @@ export class Snek extends Actor {
       const distX = playerPos.x - this.pos.x;
       const distY = playerPos.y - this.pos.y;
       const distance = Math.sqrt(distX * distX + distY * distY);
+
       if (distance > config.SnekFasterSpeedDistance * config.TileWidth) {
         console.log("FASTER SNEK");
         this.timePerTile = Math.min(config.SnekFasterSpeed, this.timePerTile);
@@ -254,7 +274,20 @@ export class Snek extends Actor {
         this.state.SnakePause = false;
         this.switchAnimation('default');
       }
+
+      if (distance <= 128 && !this.isMouthOpen) {
+        this.isMouthOpen = true;
+        this.graphics.hide();
+        this.graphics.show("openMouth");
+      }
+      if (distance > 128 && this.isMouthOpen) {
+        this.graphics.hide();
+        this.graphics.show("closeMouth");
+        this.isMouthOpen = false;
+      }
     }
+
+    
 
     // Steam roll
     const trail = this.playerTrail.trail;
@@ -298,13 +331,19 @@ export class Snek extends Actor {
 
   switchAnimation(key: string) {
     if (key === 'turbo') {
-      this.graphics.show("turbo");
+      if (!this.isMouthOpen) {
+        this.graphics.hide();
+        this.graphics.show("turbo");
+      }
       for (let i = 0; i < config.SnekBodyLength; i++) {
         this.snekBody[i].graphics.hide();
         this.snekBody[i].graphics.show("turbo");
       }
     } else {
-      this.graphics.show("default");
+      if (!this.isMouthOpen) {
+        this.graphics.hide();
+        this.graphics.show("default");
+      }
       for (let i = 0; i < config.SnekBodyLength; i++) {
         this.snekBody[i].graphics.hide();
         this.snekBody[i].graphics.show("default");
