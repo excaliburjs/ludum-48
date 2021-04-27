@@ -34,6 +34,7 @@ import { ProgressMeter } from "./progress-meter";
 import { PlayerTrail } from "./playerTrail";
 import { Beetle } from "./beetle";
 import { UndergroundSet } from "./undergroundSet";
+import { Title } from "./title";
 
 export class Level extends Scene {
   start = 5; // tiles down
@@ -61,6 +62,9 @@ export class Level extends Scene {
   progressMeter: ProgressMeter | null = null;
 
   gameOver: GameOver | null = null;
+
+  titleHasBeenShown = false;
+  title: Title | null = null;
 
   chunks: TileMap[] = [];
 
@@ -95,12 +99,14 @@ export class Level extends Scene {
     });
     instructions.graphics.use(Resources.Instructions.toSprite());
 
+    this.title = new Title();
     this.player = new Player(this);
 
     this.snek = new Snek(this);
     this.gameOver = new GameOver(engine.drawWidth, engine.drawHeight);
     this.progressMeter = new ProgressMeter();
 
+    this.add(this.title);
     this.add(instructions);
     this.add(this.player);
     this.add(this.snek);
@@ -129,6 +135,10 @@ export class Level extends Scene {
   onActivate(prevScene: Scene) {
     if (prevScene instanceof UndergroundSet) {
       this.transitionBackFromUndergroundSet();
+    }
+    if (!this.titleHasBeenShown) {
+      this.title?.show();
+      this.titleHasBeenShown = true;
     }
   }
 

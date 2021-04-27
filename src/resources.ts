@@ -1,6 +1,7 @@
 import { Graphics, Sound } from "excalibur";
 
 import instructions from "./images/instructions.png";
+import title from "./images/meerkatika.png";
 import sword from "./images/sword.png";
 import dirt from "./images/dirt_001.png";
 import dirtBones from "./images/dirt_bones.png";
@@ -61,6 +62,7 @@ import dig8 from "./sound/dig chugs/HMRhyB Chug-G.wav";
 import groundDig from "./sound/dig.wav";
 
 let Resources = {
+  Title: new Graphics.ImageSource(title),
   Instructions: new Graphics.ImageSource(instructions),
   Sword: new Graphics.ImageSource(sword),
   Dirt: new Graphics.ImageSource(dirt),
