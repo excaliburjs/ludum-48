@@ -84,7 +84,7 @@ export class Game extends Engine {
     this.state.newGameFun();
 
     this.input.keyboard.on("press", (e) => {
-      if (e.key === Input.Keys.Semicolon) {
+      if (e.key === Input.Keys.Semicolon && debugMenu) {
         this.toggleDebug();
       }
     });
